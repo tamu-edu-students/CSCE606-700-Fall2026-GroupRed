@@ -1,24 +1,10 @@
-# README
+# Technical Documentation
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* Detailed instructions for taking the code from zero (fresh fork/clone) to deployed
 
-Things you may want to cover:
+* Architectural schemas, e.g. system diagram, class diagram, database diagram
 
-* Ruby version
+# User Guide
 
-* System dependencies
+* A comprehensive guide on how to use your application, library or software for end-users.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
