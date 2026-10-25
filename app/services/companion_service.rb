@@ -32,7 +32,7 @@ class CompanionService
   end
 
   def self.client
-    @client ||= Anthropic::Client.new(api_key: ENV["ANTHROPIC_API_KEY"], timeout: 15, max_retries: 1)
+    @client ||= Anthropic::Client.new(api_key: ENV["ANTHROPIC_API_KEY"], timeout: 10, max_retries: 0)
   end
 
   def self.system_prompt(companion)
