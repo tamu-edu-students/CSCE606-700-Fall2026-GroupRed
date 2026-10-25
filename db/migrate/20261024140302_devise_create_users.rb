@@ -10,7 +10,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.1]
       t.date :date_of_birth, null: false
       t.string :role, null: false, default: "user"
       t.datetime :suspended_at
-      
+
       t.timestamps null: false
     end
 
