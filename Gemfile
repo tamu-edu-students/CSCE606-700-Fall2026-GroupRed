@@ -5,7 +5,7 @@ gem "rails", "~> 8.1.4"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 2.1"
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -35,7 +35,6 @@ gem "image_processing", "~> 2.2"
 
 gem "pg"
 
-gem "rspec"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -49,6 +48,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "rspec-rails"
+
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -58,6 +61,12 @@ end
 
 group :test do
   gem "cucumber-rails", require: false
+
   gem "database_cleaner"
 end
+
 gem "devise", "~> 5.0"
+
+gem "simplecov", require: false
+
+gem "shoulda-matchers"
