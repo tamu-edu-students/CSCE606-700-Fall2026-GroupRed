@@ -42,5 +42,17 @@ jobs:
       - name: Prepare database
         run: bin/rails db:prepare
 
-      - name: Run Cucumber tests
+      - name: Run RSpec
+        run: bundle exec rspec
+
+      - name: Run Cucumber
         run: bundle exec cucumber
+
+      - name: Check coverage is at least 90%
+        run: |
+          coverage=$(ruby -rjson -e 'puts JSON.parse(File.read("coverage/.last_run.json"))["result"]["line"]')
+          echo "Combined line coverage: ${coverage}%"
+          ruby -e "exit(#{coverage} >= 90 ? 0 : 1)" || { echo "Coverage is below 90%"; exit 1; }
+
+      - name: RuboCop
+        run: bin/rubocop
