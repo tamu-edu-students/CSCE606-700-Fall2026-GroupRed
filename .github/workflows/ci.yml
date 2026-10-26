@@ -50,9 +50,11 @@ jobs:
 
       - name: Check coverage is at least 90%
         run: |
-          coverage=$(ruby -rjson -e 'puts JSON.parse(File.read("coverage/.last_run.json"))["result"]["line"]')
-          echo "Combined line coverage: ${coverage}%"
-          ruby -e "exit(#{coverage} >= 90 ? 0 : 1)" || { echo "Coverage is below 90%"; exit 1; }
+          ruby -rjson -e '
+            coverage = JSON.parse(File.read("coverage/.last_run.json"))["result"]["line"]
+            puts "Combined line coverage: #{coverage}%"
+            abort("Coverage is below 90%") if coverage < 90
+          '
 
       - name: RuboCop
         run: bin/rubocop
