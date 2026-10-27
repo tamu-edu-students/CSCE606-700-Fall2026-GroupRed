@@ -61,3 +61,4 @@ group :test do
   gem "database_cleaner"
 end
 gem "devise", "~> 5.0"
+gem "anthropic"

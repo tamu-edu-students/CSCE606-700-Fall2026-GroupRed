@@ -1,0 +1,9 @@
+<% content_for :title, "Meet #{@companion.name}" %>
+
+<section class="companion" aria-labelledby="companion-name">
+  <h1 id="companion-name">Meet <%= @companion.name %></h1>
+  <p class="companion-personality">Personality: <%= @companion.personality %></p>
+  <blockquote class="companion-greeting">
+    <p><%= @greeting %></p>
+  </blockquote>
+</section>

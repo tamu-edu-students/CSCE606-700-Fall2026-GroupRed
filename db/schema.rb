@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_140302) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_172947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "companions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", default: "Wingman", null: false
+    t.string "personality", default: "playful and honest, like a close friend", null: false
+    t.text "memory_summary"
+    t.text "greeting"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_companions_on_user_id", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -24,4 +35,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_140302) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
+
+  add_foreign_key "companions", "users"
 end
