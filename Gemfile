@@ -63,10 +63,11 @@ group :test do
   gem "cucumber-rails", require: false
 
   gem "database_cleaner"
+
+  gem "simplecov", require: false
+
+  gem "shoulda-matchers"
 end
 
 gem "devise", "~> 5.0"
-
-gem "simplecov", require: false
-
-gem "shoulda-matchers"
+gem "anthropic"
