@@ -1,0 +1,26 @@
+<% content_for :title, "My profile" %>
+
+<section class="profile" aria-labelledby="profile-name">
+  <h1 id="profile-name"><%= @profile.display_name %></h1>
+  <p><%= @profile.age %> years old</p>
+
+  <dl>
+    <dt>Gender</dt>
+    <dd><%= @profile.gender.presence || "Not set" %></dd>
+
+    <dt>Interested in</dt>
+    <dd><%= @profile.interested_in.presence || "Not set" %></dd>
+
+    <dt>Age range</dt>
+    <dd><%= @profile.age_min || "Any" %> to <%= @profile.age_max || "Any" %></dd>
+  </dl>
+
+  <h2>About me</h2>
+  <% if @profile.bio.present? %>
+    <%= simple_format(@profile.bio) %>
+  <% else %>
+    <p>No bio yet.</p>
+  <% end %>
+
+  <p><%= link_to "Edit profile", edit_profile_path %></p>
+</section>
