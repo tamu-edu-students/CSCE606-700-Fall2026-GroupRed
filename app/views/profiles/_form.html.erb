@@ -1,0 +1,43 @@
+<%= form_with model: profile, url: profile_path do |form| %>
+  <% if profile.errors.any? %>
+    <div class="form-errors" role="alert">
+      <ul>
+        <% profile.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :display_name %>
+    <%= form.text_field :display_name %>
+  </div>
+
+  <div>
+    <%= form.label :bio %>
+    <%= form.text_area :bio, rows: 4 %>
+  </div>
+
+  <div>
+    <%= form.label :gender %>
+    <%= form.select :gender, Profile::GENDERS, include_blank: true %>
+  </div>
+
+  <div>
+    <%= form.label :interested_in %>
+    <%= form.select :interested_in, Profile::INTERESTED_IN, include_blank: true %>
+  </div>
+
+  <div>
+    <%= form.label :age_min, "Youngest age I'm interested in" %>
+    <%= form.number_field :age_min, min: 18 %>
+  </div>
+
+  <div>
+    <%= form.label :age_max, "Oldest age I'm interested in" %>
+    <%= form.number_field :age_max, min: 18 %>
+  </div>
+
+  <%= form.submit "Save profile" %>
+<% end %>
