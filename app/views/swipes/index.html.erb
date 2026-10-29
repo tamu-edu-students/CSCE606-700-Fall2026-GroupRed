@@ -1,3 +1,10 @@
 <h1>Swipe Page</h1>
 
-<p>This is my new Rails view.</p>
+<% if @prospect %>
+  <h2><%= @prospect.display_name %></h2>
+  <p>Bio: <%= @prospect.bio %></p>
+  <p>Age: <%= @prospect.age %></p>
+  <p>Gender: <%= @prospect.gender %></p>
+<% else %>
+  <p>No more profiles available.</p>
+<% end %>
