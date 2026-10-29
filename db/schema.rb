@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_222030) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_29_013753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_222030) do
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
+  create_table "swipes", force: :cascade do |t|
+    t.bigint "swiper_id", null: false
+    t.bigint "prospect_id", null: false
+    t.boolean "liked", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["prospect_id"], name: "index_swipes_on_prospect_id"
+    t.index ["swiper_id", "prospect_id"], name: "index_swipes_on_swiper_id_and_prospect_id", unique: true
+    t.index ["swiper_id"], name: "index_swipes_on_swiper_id"
+    t.check_constraint "swiper_id <> prospect_id", name: "swipes_cannot_target_self"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -51,4 +63,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_222030) do
 
   add_foreign_key "companions", "users"
   add_foreign_key "profiles", "users"
+  add_foreign_key "swipes", "profiles", column: "prospect_id"
+  add_foreign_key "swipes", "profiles", column: "swiper_id"
 end
