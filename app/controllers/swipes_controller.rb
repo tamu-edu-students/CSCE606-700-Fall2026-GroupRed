@@ -16,6 +16,15 @@ class SwipesController < ApplicationController
 
     if @swipe.save
       redirect_to swipes_path, notice: "Swipe recorded successfully."
+      if @swipe.liked
+        # Check if the prospect has also liked the swiper.
+        if Swipe.exists?(swiper_id: @swipe.prospect_id, prospect_id: @swipe.swiper_id, liked: true)
+          # Create a match if both have liked each other.
+          profile_ids = [@swipe.swiper_id, @swipe.prospect_id].sort
+          Match.create(profile_id_1: profile_ids[0], profile_id_2: profile_ids[1])
+          flash[:notice] = "It's a match!"
+        end
+      end
     else
       redirect_to swipes_path, alert: "Failed to record swipe."
     end
