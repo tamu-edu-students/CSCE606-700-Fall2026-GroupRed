@@ -1,3 +1,10 @@
-<h1>Welcome to WingmAIn</h1>
+<div>
+    <h1>Welcome to WingmAIn</h1>
 
-<%= link_to "Sign Up", new_user_registration_path%>
+    <% unless user_signed_in? %>
+        <%= link_to "Sign Up", new_user_registration_path%>
+        <%= link_to "Sign In", new_user_session_path%>
+    <% else %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
+    <% end %>
+</div>
