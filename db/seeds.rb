@@ -98,4 +98,24 @@ demo_profiles.each_with_index do |person, index|
   )
 end
 
+# Seed Swipes
+Swipe.find_or_create_by!(swiper_id: 2, prospect_id: 10) do |swipe|
+  swipe.liked = true
+end
+
+Swipe.find_or_create_by!(swiper_id: 2, prospect_id: 12) do |swipe|
+  swipe.liked = false
+end
+
+Swipe.find_or_create_by!(swiper_id: 10, prospect_id: 2) do |swipe|
+  swipe.liked = true
+end
+
+Swipe.find_or_create_by!(swiper_id: 10, prospect_id: 6) do |swipe|
+  swipe.liked = false
+end
+
+# Seed Matches
+Match.find_or_create_by!(profile_1_id: 2, profile_2_id: 10)
+
 log.call("Seeded #{demo_profiles.size} demo profiles (password: #{demo_password})")
