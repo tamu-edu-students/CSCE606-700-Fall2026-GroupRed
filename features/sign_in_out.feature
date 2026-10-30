@@ -21,3 +21,15 @@ Feature: User sign in and out
     Scenario: A signed out user cannot access account settings
         When I visit the account settings page
         Then I should be redirected to the sign in page
+
+    Scenario: A visitor sees sign in and registration links
+        When I visit the home page
+        Then I should see a sign in link
+        And I should see a sign up link
+
+    Scenario: A signed in visitor sees authenticated navigation
+        Given I am signed in
+        When I visit the home page
+        Then I should see a sign out button
+        And I should see a profile link
+        And I should not see a sign in link
