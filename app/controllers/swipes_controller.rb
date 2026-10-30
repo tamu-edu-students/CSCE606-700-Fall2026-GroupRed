@@ -21,7 +21,7 @@ class SwipesController < ApplicationController
         if Swipe.exists?(swiper_id: @swipe.prospect_id, prospect_id: @swipe.swiper_id, liked: true)
           # Create a match if both have liked each other.
           profile_ids = [@swipe.swiper_id, @swipe.prospect_id].sort
-          Match.create(profile_id_1: profile_ids[0], profile_id_2: profile_ids[1])
+          Match.create(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
           flash[:notice] = "It's a match!"
         end
       end
