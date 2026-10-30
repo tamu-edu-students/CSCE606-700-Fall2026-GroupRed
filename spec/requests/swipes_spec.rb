@@ -18,6 +18,8 @@ RSpec.describe "Swipes", type: :request do
   before { sign_in user }
 
   it "filters prospects by their calculated age" do
+    existing_profiles = Profile.where.not(id: profile.id).to_a
+
     matching_profile = create(
       :profile,
       display_name: "Age Match",
@@ -28,6 +30,7 @@ RSpec.describe "Swipes", type: :request do
       age_min: 25,
       age_max: 27
     )
+
     create(
       :profile,
       display_name: "Too Old",
@@ -37,13 +40,23 @@ RSpec.describe "Swipes", type: :request do
       interested_in: "Men"
     )
 
-    get swipes_path
+    # Exclude existing profiles (such as seeded profiles) from the results.
+    existing_profiles.each do |existing_profile|
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: existing_profile,
+        liked: false
+      )
+    end
 
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include(matching_profile.display_name)
-    expect(response.body).to include(matching_profile.bio)
-    expect(response.body).not_to include("Too Old")
-  end
+  get swipes_path
+
+  expect(response).to have_http_status(:ok)
+  expect(response.body).to include(matching_profile.display_name)
+  expect(response.body).to include(matching_profile.bio)
+  expect(response.body).not_to include("Too Old")
+end
 
   it "records a like" do
     prospect = create(
@@ -86,7 +99,19 @@ RSpec.describe "Swipes", type: :request do
     post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
 
     expect(response).to redirect_to(swipes_path)
-    expect(Match.count).to eq(1)
+    profile_ids = [ profile.id, prospect.id ].sort
+
+    match = Match.find_by!(
+      profile_1_id: profile_ids[0],
+      profile_2_id: profile_ids[1]
+    )
+
+    expect(
+      Match.where(
+        profile_1_id: profile_ids[0],
+        profile_2_id: profile_ids[1]
+      ).count
+    ).to eq(1)
 
     match = Match.first
     expect(match.profile_1_id).to eq([ profile.id, prospect.id ].min)
