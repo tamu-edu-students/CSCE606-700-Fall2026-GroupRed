@@ -1,0 +1,16 @@
+<h1>Matches</h1>
+<% if @matches.any? %>
+  <ul>
+    <% @matches.each do |match| %>
+      <% other_profile = match.profile_1 == current_user.profile ? match.profile_2 : match.profile_1 %>
+      <li>
+        <h2><%= other_profile.display_name %></h2>
+        <p>Bio: <%= other_profile.bio %></p>
+        <p>Age: <%= other_profile.age %></p>
+        <p>Gender: <%= other_profile.gender %></p>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No matches yet.</p>
+<% end %>

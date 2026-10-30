@@ -1,0 +1,14 @@
+<h1>Swipe Page</h1>
+
+<% if @prospect %>
+  <h2><%= @prospect.display_name %></h2>
+  <p>Bio: <%= @prospect.bio %></p>
+  <p>Age: <%= @prospect.age %></p>
+  <p>Gender: <%= @prospect.gender %></p>
+
+  <%= button_to "Like", swipes_path(prospect_id: @prospect.id, action_type: "like"), method: :post %>
+  <%= button_to "Dislike", swipes_path(prospect_id: @prospect.id, action_type: "dislike"), method: :post %>
+
+<% else %>
+  <p>No more profiles available.</p>
+<% end %>

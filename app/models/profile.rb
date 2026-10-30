@@ -23,4 +23,14 @@ class Profile < ApplicationRecord
 
     errors.add(:age_min, "must be less than or equal to the oldest age") if age_min > age_max
   end
+
+  has_many :given_swipes,
+         class_name: "Swipe",
+         foreign_key: :swiper_id,
+         dependent: :destroy
+
+  has_many :received_swipes,
+          class_name: "Swipe",
+          foreign_key: :prospect_id,
+          dependent: :destroy
 end
