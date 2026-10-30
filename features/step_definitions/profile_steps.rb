@@ -24,6 +24,10 @@ When("I fill in the profile form with:") do |table|
   end
 end
 
+When("I fill in the profile {string} with {int} characters") do |label, length|
+  fill_in label, with: "a" * length
+end
+
 When("I save my profile") do
   click_button "Save profile"
 end

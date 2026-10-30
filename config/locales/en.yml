@@ -29,3 +29,8 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    attributes:
+      profile:
+        age_min: "Youngest age"
+        age_max: "Oldest age"
