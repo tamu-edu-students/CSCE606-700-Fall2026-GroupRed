@@ -107,7 +107,7 @@ After every `git pull`, run `bundle install` and `bin/rails db:migrate` to pick 
 ### System diagram
 
 ```mermaid
-flowchart LR
+flowchart TB
   Browser["User's browser<br/>(HTML forms, no JS required)"] -->|HTTPS| Rails["Rails 8.1 app<br/>(Puma on Heroku)"]
   Rails --> DB[("Heroku Postgres")]
   Rails -->|CompanionService| AI["Anthropic API"]
