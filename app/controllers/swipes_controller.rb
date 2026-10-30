@@ -6,6 +6,21 @@ class SwipesController < ApplicationController
     @prospect = find_potential_profiles.order(:id).first
   end
 
+  def create
+    @swipe = Swipe.new(
+      swiper_id: current_user.profile.id,
+      prospect_id: params[:prospect_id],
+      liked: params[:action_type] == "like"
+    )
+    @swipe.swiper = current_user.profile
+
+    if @swipe.save
+      redirect_to swipes_path, notice: "Swipe recorded successfully."
+    else
+      redirect_to swipes_path, alert: "Failed to record swipe."
+    end
+  end
+
   private
 
   def set_profile
@@ -61,6 +76,5 @@ class SwipesController < ApplicationController
 
     prospects
   end
-
 
 end
