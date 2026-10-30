@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :swipe do
-    swiper { nil }
-    prospect { nil }
+    association :swiper, factory: :profile
+    association :prospect, factory: :profile
     liked { false }
   end
 end

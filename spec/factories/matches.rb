@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :match do
-    profile_id_1 { nil }
-    profile_id_2 { nil }
+    association :profile_1, factory: :profile
+    association :profile_2, factory: :profile
   end
 end
