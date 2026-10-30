@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "rails_helper"
 
 describe "User registration", type: :request do
@@ -44,4 +45,3 @@ describe "User registration", type: :request do
     end
   end
 end
-
