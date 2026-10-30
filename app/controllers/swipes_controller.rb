@@ -1,6 +1,6 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index]
+  before_action :set_profile, only: %i[index create]
 
   def index
     @prospect = find_potential_profiles.order(:id).first
@@ -8,20 +8,19 @@ class SwipesController < ApplicationController
 
   def create
     @swipe = Swipe.new(
-      swiper_id: current_user.profile.id,
+      swiper_id: @profile.id,
       prospect_id: params[:prospect_id],
       liked: params[:action_type] == "like"
     )
-    @swipe.swiper = current_user.profile
 
     if @swipe.save
-      redirect_to swipes_path, notice: "Swipe recorded successfully."
+      flash[:notice] = "Swipe recorded successfully."
       if @swipe.liked
         # Check if the prospect has also liked the swiper.
         if Swipe.exists?(swiper_id: @swipe.prospect_id, prospect_id: @swipe.swiper_id, liked: true)
           # Create a match if both have liked each other.
           profile_ids = [ @swipe.swiper_id, @swipe.prospect_id ].sort
-          Match.create(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+          Match.find_or_create_by!(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
           flash[:notice] = "It's a match!"
         end
       end
