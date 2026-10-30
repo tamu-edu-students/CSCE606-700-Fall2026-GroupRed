@@ -89,8 +89,8 @@ RSpec.describe "Swipes", type: :request do
     expect(Match.count).to eq(1)
 
     match = Match.first
-    expect(match.profile_1_id).to eq([profile.id, prospect.id].min)
-    expect(match.profile_2_id).to eq([profile.id, prospect.id].max)
+    expect(match.profile_1_id).to eq([ profile.id, prospect.id ].min)
+    expect(match.profile_2_id).to eq([ profile.id, prospect.id ].max)
   end
 
   it "does not create duplicate matches" do
