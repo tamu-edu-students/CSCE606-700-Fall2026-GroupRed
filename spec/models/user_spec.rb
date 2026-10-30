@@ -22,6 +22,51 @@ RSpec.describe User, type: :model do
   end
 
   it { is_expected.to have_one(:profile).dependent(:destroy) }
+  it { is_expected.to have_many(:blocks).dependent(:destroy) }
+  it { is_expected.to have_many(:received_blocks).dependent(:destroy) }
+
+  describe "blocking" do
+    let(:sam) { create(:user) }
+    let(:alex) { create(:user) }
+    let(:jo) { create(:user) }
+
+    before { create(:block, blocker: sam, blocked: alex) }
+
+    it "lists the people a user blocked" do
+      expect(sam.blocked_users).to contain_exactly(alex)
+    end
+
+    it "knows who the user is blocking" do
+      expect(sam.blocking?(alex)).to be(true)
+      expect(alex.blocking?(sam)).to be(false)
+    end
+
+    it "treats a block as working both ways" do
+      expect(sam.blocked_with?(alex)).to be(true)
+      expect(alex.blocked_with?(sam)).to be(true)
+      expect(sam.blocked_with?(jo)).to be(false)
+    end
+
+    it "hides blocked people from each other in both directions" do
+      expect(User.not_blocked_with(sam)).to include(jo)
+      expect(User.not_blocked_with(sam)).not_to include(alex)
+      expect(User.not_blocked_with(alex)).not_to include(sam)
+    end
+
+    it "removes blocks when either user is deleted" do
+      expect { alex.destroy }.to change(Block, :count).by(-1)
+    end
+  end
+
+  describe "#display_name" do
+    it "uses the profile's display name" do
+      expect(create(:profile, display_name: "Sam").user.display_name).to eq("Sam")
+    end
+
+    it "falls back when there is no profile" do
+      expect(build(:user).display_name).to eq("Someone")
+    end
+  end
 
   describe "#age" do
     include ActiveSupport::Testing::TimeHelpers

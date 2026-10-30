@@ -1,0 +1,18 @@
+<% content_for :title, "Blocked people" %>
+
+<section class="blocks" aria-labelledby="blocks-heading">
+  <h1 id="blocks-heading">Blocked people</h1>
+
+  <% if @blocked_users.any? %>
+    <ul>
+      <% @blocked_users.each do |person| %>
+        <li>
+          <%= person.display_name %>
+          <%= button_to "Unblock #{person.display_name}", person_block_path(person), method: :delete %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>You haven't blocked anyone.</p>
+  <% end %>
+</section>
