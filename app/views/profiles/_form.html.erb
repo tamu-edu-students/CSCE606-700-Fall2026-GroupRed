@@ -1,6 +1,7 @@
 <%= form_with model: profile, url: profile_path do |form| %>
   <% if profile.errors.any? %>
     <div class="form-errors" role="alert">
+      <h2>Your profile could not be saved</h2>
       <ul>
         <% profile.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -31,12 +32,12 @@
 
   <div>
     <%= form.label :age_min, "Youngest age I'm interested in" %>
-    <%= form.number_field :age_min, min: 18 %>
+    <%= form.number_field :age_min, min: Profile::MIN_AGE %>
   </div>
 
   <div>
     <%= form.label :age_max, "Oldest age I'm interested in" %>
-    <%= form.number_field :age_max, min: 18 %>
+    <%= form.number_field :age_max, min: Profile::MIN_AGE %>
   </div>
 
   <%= form.submit "Save profile" %>

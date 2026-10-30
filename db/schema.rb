@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_30_171844) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_30_141500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "blocks", force: :cascade do |t|
+    t.bigint "blocker_id", null: false
+    t.bigint "blocked_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_id"], name: "index_blocks_on_blocked_id"
+    t.index ["blocker_id", "blocked_id"], name: "index_blocks_on_blocker_id_and_blocked_id", unique: true
+    t.index ["blocker_id"], name: "index_blocks_on_blocker_id"
+  end
 
   create_table "companions", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -71,6 +81,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_30_171844) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "blocks", "users", column: "blocked_id"
+  add_foreign_key "blocks", "users", column: "blocker_id"
   add_foreign_key "companions", "users"
   add_foreign_key "matches", "profiles", column: "profile_1_id"
   add_foreign_key "matches", "profiles", column: "profile_2_id"

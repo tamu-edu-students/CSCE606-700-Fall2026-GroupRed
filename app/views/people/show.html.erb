@@ -1,0 +1,20 @@
+<% content_for :title, @person.display_name %>
+
+<section class="profile" aria-labelledby="person-name">
+  <h1 id="person-name"><%= @person.display_name %></h1>
+  <p><%= @person.age %> years old</p>
+
+  <% if @person.profile.gender.present? %>
+    <p><%= @person.profile.gender %></p>
+  <% end %>
+
+  <h2>About</h2>
+  <% if @person.profile.bio.present? %>
+    <%= simple_format(@person.profile.bio) %>
+  <% else %>
+    <p>No bio yet.</p>
+  <% end %>
+
+  <%= button_to "Block #{@person.display_name}", person_block_path(@person),
+        form: { data: { turbo_confirm: "Block #{@person.display_name}? They won't be able to see or contact you." } } %>
+</section>
