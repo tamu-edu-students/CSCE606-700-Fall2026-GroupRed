@@ -28,7 +28,7 @@ end
 def hide_other_profiles(swiper, keep:)
   return if swiper.nil?
 
-  keep_ids = [swiper.id, *keep.compact.map(&:id)]
+  keep_ids = [ swiper.id, *keep.compact.map(&:id) ]
 
   Profile.where.not(id: keep_ids).find_each do |profile|
     Swipe.find_or_create_by!(swiper: swiper, prospect: profile) do |swipe|
@@ -59,7 +59,7 @@ Given("the other profile has already liked my profile") do
 end
 
 When("I visit the swipe page") do
-  hide_other_profiles(swiper_profile, keep: [@prospect])
+  hide_other_profiles(swiper_profile, keep: [ @prospect ])
   visit swipes_path
 end
 
@@ -82,7 +82,7 @@ Then("my pass should be recorded") do
 end
 
 Then("a match should exist between the two profiles") do
-  profile_ids = [@first_profile.id, @other_profile.id].sort
+  profile_ids = [ @first_profile.id, @other_profile.id ].sort
 
   expect(
     Match.where(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1]).count
