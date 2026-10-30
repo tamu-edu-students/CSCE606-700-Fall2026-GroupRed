@@ -80,6 +80,8 @@ demo_profiles = [
     bio: "Birdwatcher and early riser. Let's catch a sunrise and then a nap." }
 ]
 
+created_profiles = {}
+
 demo_profiles.each_with_index do |person, index|
   email = "#{person[:name].downcase.gsub(/[^a-z ]/, "").split.join(".")}@wingmain.test"
   birthday = (person[:age].years + (index * 11).days).ago.to_date
@@ -96,6 +98,47 @@ demo_profiles.each_with_index do |person, index|
     age_min: person[:range].min,
     age_max: person[:range].max
   )
+  created_profiles[person[:name]] = profile
 end
+
+# Seed Swipes
+Swipe.find_or_create_by!(
+  swiper: created_profiles["Peter Parker"],
+  prospect: created_profiles["Selina Kyle"]
+) do |swipe|
+  swipe.liked = true
+end
+
+Swipe.find_or_create_by!(
+  swiper: created_profiles["Peter Parker"],
+  prospect: created_profiles["Ella Vator"]
+) do |swipe|
+  swipe.liked = false
+end
+
+Swipe.find_or_create_by!(
+  swiper: created_profiles["Selina Kyle"],
+  prospect: created_profiles["Peter Parker"]
+) do |swipe|
+  swipe.liked = true
+end
+
+Swipe.find_or_create_by!(
+  swiper: created_profiles["Selina Kyle"],
+  prospect: created_profiles["John Deere"]
+) do |swipe|
+  swipe.liked = false
+end
+
+# Seed Matches
+profile_ids = [
+  created_profiles["Peter Parker"].id,
+  created_profiles["Selina Kyle"].id
+].sort
+
+Match.find_or_create_by!(
+  profile_1_id: profile_ids[0],
+  profile_2_id: profile_ids[1]
+)
 
 log.call("Seeded #{demo_profiles.size} demo profiles (password: #{demo_password})")
