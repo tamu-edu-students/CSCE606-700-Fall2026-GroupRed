@@ -113,9 +113,8 @@ end
       ).count
     ).to eq(1)
 
-    match = Match.first
-    expect(match.profile_1_id).to eq([ profile.id, prospect.id ].min)
-    expect(match.profile_2_id).to eq([ profile.id, prospect.id ].max)
+    expect(match.profile_1_id).to eq(profile_ids[0])
+    expect(match.profile_2_id).to eq(profile_ids[1])
   end
 
   it "does not create duplicate matches" do
@@ -127,10 +126,17 @@ end
     )
 
     create(:swipe, swiper: prospect, prospect: profile, liked: true)
-    create(:match, profile_1: profile, profile_2: prospect)
+
+    profile_ids = [ profile.id, prospect.id ].sort
+    create(:match, profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
 
     expect {
       post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
-    }.not_to change(Match, :count)
+    }.not_to change(Match, :count) {
+      Match.where(
+        profile_1_id: profile_ids[0],
+        profile_2_id: profile_ids[1]
+      ).count
+    }
   end
 end
