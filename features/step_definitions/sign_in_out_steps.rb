@@ -63,7 +63,9 @@ Then('I should be signed in') do
 end
 
 Then('I should see authenticated navigation') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_link("My Profile", href: profile_path)
+  expect(page).to have_link("Account Settings", href: edit_user_registration_path)
+  expect(page).to have_button("Sign Out")
 end
 
 When('I sign in with an incorrect password') do
