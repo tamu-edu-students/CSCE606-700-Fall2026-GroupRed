@@ -42,18 +42,27 @@ jobs:
       - name: Prepare database
         run: bin/rails db:prepare
 
-      - name: Run RSpec
-        run: bundle exec rspec
+      - name: Run RSpec (unit test coverage)
+        run: COVERAGE_DIR=coverage/rspec bundle exec rspec
 
-      - name: Run Cucumber
-        run: bundle exec cucumber
+      - name: Run Cucumber (acceptance test coverage)
+        run: COVERAGE_DIR=coverage/cucumber bundle exec cucumber
 
-      - name: Check coverage is at least 90%
+      - name: Run both suites (total coverage)
+        run: |
+          COVERAGE_DIR=coverage/total bundle exec rspec
+          COVERAGE_DIR=coverage/total bundle exec cucumber
+
+      - name: Check coverage is at least 90% (RSpec, Cucumber and total)
         run: |
           ruby -rjson -e '
-            coverage = JSON.parse(File.read("coverage/.last_run.json"))["result"]["line"]
-            puts "Combined line coverage: #{coverage}%"
-            abort("Coverage is below 90%") if coverage < 90
+            failed = false
+            %w[rspec cucumber total].each do |suite|
+              coverage = JSON.parse(File.read("coverage/#{suite}/.last_run.json"))["result"]["line"]
+              puts "#{suite}: #{coverage}%"
+              failed = true if coverage < 90
+            end
+            abort("Coverage is below 90%") if failed
           '
 
       - name: RuboCop
