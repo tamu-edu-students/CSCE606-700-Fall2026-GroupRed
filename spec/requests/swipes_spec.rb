@@ -40,9 +40,9 @@ RSpec.describe "Swipes", type: :request do
     get swipes_path
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Matching bio")
-    expect(response.body).not_to include("Excluded bio")
-    expect(response.body).to include(matching_profile.age.to_s)
+    expect(response.body).to include(matching_profile.display_name)
+    expect(response.body).to include(matching_profile.bio)
+    expect(response.body).not_to include("Too Old")
   end
 
   it "records a like" do
