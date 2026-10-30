@@ -24,7 +24,9 @@ RSpec.describe "Swipes", type: :request do
       bio: "Matching bio",
       user: create(:user, date_of_birth: 26.years.ago.to_date),
       gender: "Woman",
-      interested_in: "Men"
+      interested_in: "Men",
+      age_min: 25,
+      age_max: 27
     )
     create(
       :profile,
