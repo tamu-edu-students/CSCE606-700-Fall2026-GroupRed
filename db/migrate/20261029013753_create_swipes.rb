@@ -14,7 +14,7 @@ class CreateSwipes < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :swipes, [:swiper_id, :prospect_id], unique: true
+    add_index :swipes, [ :swiper_id, :prospect_id ], unique: true
 
     add_check_constraint :swipes,
                          "swiper_id != prospect_id",

@@ -6,6 +6,6 @@ class CreateMatches < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :matches, [:profile_1_id, :profile_2_id], unique: true
+    add_index :matches, [ :profile_1_id, :profile_2_id ], unique: true
   end
 end
