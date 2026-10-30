@@ -63,7 +63,7 @@ Then('I should be signed in') do
 end
 
 Then('I should see authenticated navigation') do
-  expect(page).to have_link("My Profile", href: profile_path)
+  expect(page).to have_link("View your profile", href: profile_path)
   expect(page).to have_link("Account Settings", href: edit_user_registration_path)
   expect(page).to have_button("Sign Out")
 end

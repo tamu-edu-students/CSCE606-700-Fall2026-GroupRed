@@ -64,7 +64,7 @@ describe "User sessions and authentication", type: :request do
       get root_path
 
       expect(response.body).to include("Sign Out")
-      expect(response.body).to include("My Profile")
+      expect(response.body).to include("View your profile")
       expect(response.body).not_to include("Sign In")
     end
   end
