@@ -1,0 +1,33 @@
+<% content_for :title, "Customize your companion" %>
+
+<section class="companion" aria-labelledby="companion-heading">
+  <h1 id="companion-heading">Customize your companion</h1>
+
+  <%= form_with model: @companion, url: companion_path do |form| %>
+    <% if @companion.errors.any? %>
+      <div class="form-errors" role="alert">
+        <h2>Your companion could not be saved</h2>
+        <ul>
+          <% @companion.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :name %>
+      <%= form.text_field :name, maxlength: 40 %>
+    </div>
+
+    <div>
+      <%= form.label :personality %>
+      <%= form.text_area :personality, rows: 3, maxlength: 200,
+            placeholder: "e.g. sarcastic but supportive, loves bad puns" %>
+    </div>
+
+    <%= form.submit "Save companion" %>
+  <% end %>
+
+  <p><%= link_to "Back", companion_path %></p>
+</section>
