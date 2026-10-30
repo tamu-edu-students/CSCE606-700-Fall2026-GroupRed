@@ -78,15 +78,10 @@ Feature: User sign in and out
         When I visit "/companion"
         Then I should see the companion page
 
-    Scenario: A signed-in user can access their profile
+    Scenario: A signed-in user can set up their profile
         Given I am signed in
         When I visit "/profile"
-        Then I should see their profile
-
-    Scenario: A signed-in user can access profile editing
-        Given I am signed in
-        When I visit "/profile/edit"
-        Then I should see the profile editing page
+        Then I should see profile setup
 
     Scenario: A signed-in user can access account settings
         Given I am signed in

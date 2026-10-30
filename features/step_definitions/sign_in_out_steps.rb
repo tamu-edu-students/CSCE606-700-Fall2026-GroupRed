@@ -1,7 +1,7 @@
 Given("a registered user exists") do
   User.create!(
     email: "test@example.com",
-    date_of_birth: Date.new(2000,1,1),
+    date_of_birth: Date.new(2000, 1, 1),
     password: "password123",
     password_confirmation: "password123"
   )
@@ -69,41 +69,42 @@ Then('I should see authenticated navigation') do
 end
 
 When('I sign in with an incorrect password') do
-  pending # Write code here that turns the phrase above into concrete actions
+  fill_in "Email", with: "test@example.com"
+  fill_in "Password", with: "incorrectpassword123"
+  click_button "Log in"
 end
 
 Then('I should see an authentication error') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_content("Invalid email or password.")
 end
 
 Then('I should remain signed out') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).not_to have_button("Sign Out")
 end
 
 When('I sign out') do
-  pending # Write code here that turns the phrase above into concrete actions
+  click_button "Sign Out"
 end
 
 Then('I should be signed out') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).not_to have_button("Sign Out")
 end
 
 Then('I should see public navigation') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_link("Sign In", href: new_user_session_path)
+  expect(page).to have_link("Sign Up", href: new_user_registration_path)
+  expect(page).not_to have_button("Sign Out")
 end
 
 Then('I should see the companion page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(companion_path)
 end
 
-Then('I should see their profile') do
-  pending # Write code here that turns the phrase above into concrete actions
+Then('I should see profile setup') do
+  expect(page).to have_current_path(new_profile_path)
 end
 
-Then('I should see the profile editing page') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
 
 Then('I should see the account settings page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(edit_user_registration_path)
 end
