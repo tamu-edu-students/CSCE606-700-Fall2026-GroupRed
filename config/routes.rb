@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get "matches/index"
   devise_for :users
   resource :companion, only: :show
   resource :profile, only: %i[ show new create edit update ]
