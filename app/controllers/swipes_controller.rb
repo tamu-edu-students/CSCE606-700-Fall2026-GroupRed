@@ -7,9 +7,18 @@ class SwipesController < ApplicationController
   end
 
   def create
+      prospect = Profile.joins(:user)
+                      .merge(User.not_blocked_with(@profile.user))
+                      .find_by(id: params[:prospect_id])
+
+    unless prospect
+      redirect_to swipes_path, alert: "That profile is unavailable."
+      return
+    end
+
     @swipe = Swipe.new(
       swiper_id: @profile.id,
-      prospect_id: params[:prospect_id],
+      prospect_id: prospect.id,
       liked: params[:action_type] == "like"
     )
 
@@ -24,6 +33,7 @@ class SwipesController < ApplicationController
           flash[:notice] = "It's a match!"
         end
       end
+      redirect_to swipes_path
     else
       redirect_to swipes_path, alert: "Failed to record swipe."
     end
@@ -44,6 +54,7 @@ class SwipesController < ApplicationController
     oldest_date_of_birth = today - @profile.age_min.years
 
     prospects = Profile.joins(:user)
+                      .merge(User.not_blocked_with(@profile.user))
                       .where(users: { date_of_birth: youngest_date_of_birth..oldest_date_of_birth })
                       .where.not(id: @profile.id)
                       .where.not(
