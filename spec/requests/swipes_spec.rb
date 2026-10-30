@@ -42,4 +42,18 @@ RSpec.describe "Swipes", type: :request do
     expect(response.body).not_to include("Excluded bio")
     expect(response.body).to include(matching_profile.age.to_s)
   end
+
+  it "records a like" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+
+    post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
+
+    expect(response).to redirect_to(swipes_path)
+    expect(Swipe.find_by(swiper: profile, prospect: prospect).liked).to be(true)
+  end
 end

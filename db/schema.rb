@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_29_013753) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_30_171844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_29_013753) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_companions_on_user_id", unique: true
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.bigint "profile_id_1_id", null: false
+    t.bigint "profile_id_2_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id_1_id"], name: "index_matches_on_profile_id_1_id"
+    t.index ["profile_id_2_id"], name: "index_matches_on_profile_id_2_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -62,6 +71,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_29_013753) do
   end
 
   add_foreign_key "companions", "users"
+  add_foreign_key "matches", "profiles", column: "profile_id_1_id"
+  add_foreign_key "matches", "profiles", column: "profile_id_2_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "swipes", "profiles", column: "prospect_id"
   add_foreign_key "swipes", "profiles", column: "swiper_id"
