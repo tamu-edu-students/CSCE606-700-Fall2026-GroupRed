@@ -25,6 +25,10 @@ Given('I am on the registration page') do
   visit new_user_registration_path
 end
 
+Given("the current number of users is recorded") do
+  @user_count_before = User.count
+end
+
 When('I register with a blank email') do
   fill_in "Email", with: ""
   fill_in "Password", with: "password123"
@@ -42,11 +46,7 @@ Then('I should see a blank email validation error') do
 end
 
 Then('no additional account should be created') do
-  expect(User.count).to eq(1)
-end
-
-Then('no account should be created') do
-  expect(User.count).to eq(0)
+  expect(User.count).to eq(@user_count_before)
 end
 
 Given('a registered user exists with email {string}') do |string|
