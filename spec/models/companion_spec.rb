@@ -13,4 +13,28 @@ RSpec.describe Companion, type: :model do
   it "defaults to the name Wingman" do
     expect(subject.name).to eq("Wingman")
   end
+
+  it "trims spaces around the name and personality" do
+    subject.update!(name: "  Rex  ", personality: "  grumpy  ")
+    expect(subject.reload).to have_attributes(name: "Rex", personality: "grumpy")
+  end
+
+  describe "saved greeting" do
+    before { subject.update!(greeting: "Hi, I'm Wingman!") }
+
+    it "is cleared when the name changes" do
+      subject.update!(name: "Rex")
+      expect(subject.reload.greeting).to be_nil
+    end
+
+    it "is cleared when the personality changes" do
+      subject.update!(personality: "grumpy but loyal")
+      expect(subject.reload.greeting).to be_nil
+    end
+
+    it "is kept when nothing about the companion changes" do
+      subject.update!(name: "Wingman")
+      expect(subject.reload.greeting).to eq("Hi, I'm Wingman!")
+    end
+  end
 end
