@@ -22,46 +22,70 @@ Then("a user account should be created") do
 end
 
 Given('I am on the registration page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  visit new_user_registration_path
 end
 
 When('I register with a blank email') do
-  pending # Write code here that turns the phrase above into concrete actions
+  fill_in "Email", with: ""
+  fill_in "Password", with: "password123"
+  fill_in "Password confirmation", with: "password123"
+  fill_in "Date of birth", with: Date.new(2000, 1, 1)
+  click_button "Sign up"
 end
 
-Then('I should see an email validation error') do
-  pending # Write code here that turns the phrase above into concrete actions
+Then('I should see a duplicate email validation error') do
+  expect(page).to have_content("Email has already been taken")
+end
+
+Then('I should see a blank email validation error') do
+  expect(page).to have_content("Email can't be blank")
+end
+
+Then('no additional account should be created') do
+  expect(User.count).to eq(1)
 end
 
 Then('no account should be created') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(User.count).to eq(0)
 end
 
 Given('a registered user exists with email {string}') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+  User.create!(
+    email: string,
+    date_of_birth: Date.new(2000, 1, 1),
+    password: "password123",
+    password_confirmation: "password123"
+  )
 end
 
 When('I register with email {string}') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Given('I am on the registraion page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  fill_in "Email", with: string
+  fill_in "Date of birth", with: "2000-01-01"
+  fill_in "Password", with: "password123"
+  fill_in "Password confirmation", with: "password123"
+  click_button "Sign up"
 end
 
 When('I register with a password that is too short') do
-  pending # Write code here that turns the phrase above into concrete actions
+  fill_in "Email", with: "test@example.com"
+  fill_in "Date of birth", with: "2000-01-01"
+  fill_in "Password", with: "pw123"
+  fill_in "Password confirmation", with: "pw123"
+  click_button "Sign up"
 end
 
 Then('I should see a password length validation error') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_content("Password is too short (minimum is 6 characters)")
 end
 
-When('I register with a dob indicating I am under {int}') do |int|
-# When('I register with a dob indicating I am under {float}') do |float|
-  pending # Write code here that turns the phrase above into concrete actions
+When('I register with a dob indicating I am under 18') do
+  fill_in "Email", with: "test@example.com"
+  fill_in "Date of birth", with: 18.years.ago + 1.day
+  fill_in "Password", with: "password123"
+  fill_in "Password confirmation", with: "password123"
+  click_button "Sign up"
 end
 
 Then('I should see an age validation error') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_content("Date of birth must indicate an age of at least 18 years")
 end

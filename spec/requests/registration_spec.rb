@@ -43,5 +43,57 @@ describe "User registration", type: :request do
       expect(user.role).to eq("user")
       expect(user.encrypted_password).not_to eq("password123")
     end
+
+    it "rejects a blank email" do
+      params = valid_attributes.deep_dup
+      params[:email] = ""
+
+      expect {
+        post user_registration_path, params: params
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Email")
+    end
+
+    it "rejects a duplicate email" do
+      User.create!(
+        email: "test@example.com",
+        password: "password123",
+        date_of_birth: 20.years.ago.to_date
+      )
+
+      expect {
+        post user_registration_path, params: valid_attributes
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Email")
+    end
+
+    it "rejects a password below the minimum length" do
+      params = valid_attributes.deep_dup
+      params[:password] = "pw123"
+      params[:password_confirmation] = "pw123"
+
+      expect {
+        post user_registration_path, params: params
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Password")
+    end
+
+    it "rejects a visitor under 18" do
+      params = valid_attributes.deep_dup
+      params[:date_of_birth] = 17.years.ago.to_date
+
+      expect {
+        post user_registration_path, params: params
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Date of birth")
+    end
   end
 end
