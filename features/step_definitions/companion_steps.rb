@@ -6,6 +6,19 @@ Given("the companion says {string}") do |text|
   allow(CompanionService).to receive(:ask).and_return(text)
 end
 
+Given("the companion says {string} and then {string}") do |first, second|
+  allow(CompanionService).to receive(:ask).and_return(first, second)
+end
+
+Given("the companion says {string} and then nothing") do |first|
+  allow(CompanionService).to receive(:ask).and_return(first, nil)
+end
+
+When("I ask my companion {string}") do |text|
+  fill_in "body", with: text
+  click_button "Send"
+end
+
 Given("the companion service is down") do
   allow(CompanionService).to receive(:ask).and_return(nil)
 end

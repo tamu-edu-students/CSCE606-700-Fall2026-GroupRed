@@ -68,6 +68,14 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
+  # Tests never call the real AI, even if a key is set locally.
+  config.around do |example|
+    key = ENV.delete("ANTHROPIC_API_KEY")
+    example.run
+  ensure
+    ENV["ANTHROPIC_API_KEY"] = key if key
+  end
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end

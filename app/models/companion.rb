@@ -1,5 +1,8 @@
 class Companion < ApplicationRecord
+  DAILY_MESSAGE_LIMIT = 20
+
   belongs_to :user
+  has_many :companion_messages, dependent: :destroy
 
   normalizes :name, :personality, with: ->(value) { value.strip }
 
@@ -9,6 +12,10 @@ class Companion < ApplicationRecord
 
   # handoff to CompanionService write a new one.
   before_save :clear_greeting, if: -> { will_save_change_to_name? || will_save_change_to_personality? }
+
+  def out_of_messages_today?
+    companion_messages.where(role: "user", created_at: Time.current.all_day).count >= DAILY_MESSAGE_LIMIT
+  end
 
   private
 
