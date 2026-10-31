@@ -1,7 +1,14 @@
-<h1>wingmAIn</h1>
-<p>The app is running :)</p>
+<div>
+    <h1>Welcome to WingmAIn</h1>
 
-<%= link_to "Sign Up", new_user_registration_path%>
-<%= link_to "View your profile", profile_path %>
-<%= link_to "View your matches", matches_path %>
-<%= link_to "Swipe through profiles", swipes_path %>
+    <% unless user_signed_in? %>
+        <%= link_to "Sign Up", new_user_registration_path%>
+        <%= link_to "Sign In", new_user_session_path%>
+    <% else %>
+        <%= link_to "View your profile", profile_path %>
+        <%= link_to "View your matches", matches_path %>
+        <%= link_to "Swipe through profiles", swipes_path %>
+        <%= link_to "Account Settings", edit_user_registration_path %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
+    <% end %>
+</div>
