@@ -19,6 +19,30 @@ RSpec.describe Companion, type: :model do
     expect(subject.reload).to have_attributes(name: "Rex", personality: "grumpy")
   end
 
+  describe "#out_of_messages_today?" do
+    let(:profile) { create(:profile) }
+
+    def send_messages(count, at: Time.current)
+      count.times { subject.companion_messages.create!(profile: profile, role: "user", body: "Hi", created_at: at) }
+    end
+
+    it "is false under the daily limit" do
+      send_messages(Companion::DAILY_MESSAGE_LIMIT - 1)
+      expect(subject).not_to be_out_of_messages_today
+    end
+
+    it "is true once the daily limit is reached" do
+      send_messages(Companion::DAILY_MESSAGE_LIMIT)
+      expect(subject).to be_out_of_messages_today
+    end
+
+    it "only counts today's messages from the user" do
+      send_messages(Companion::DAILY_MESSAGE_LIMIT, at: 1.day.ago)
+      subject.companion_messages.create!(profile: profile, role: "companion", body: "Hey")
+      expect(subject).not_to be_out_of_messages_today
+    end
+  end
+
   describe "saved greeting" do
     before { subject.update!(greeting: "Hi, I'm Wingman!") }
 

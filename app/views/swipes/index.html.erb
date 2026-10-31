@@ -6,7 +6,7 @@
   <p>Age: <%= @prospect.age %></p>
   <p>Gender: <%= @prospect.gender %></p>
 
-  <%= render "companion_reaction", companion: @companion, reaction: @reaction %>
+  <%= render "companion_reaction", companion: @companion, reaction: @reaction, messages: @messages, profile: @prospect %>
 
   <%= button_to "Like", swipes_path(prospect_id: @prospect.id, action_type: "like"), method: :post %>
   <%= button_to "Dislike", swipes_path(prospect_id: @prospect.id, action_type: "dislike"), method: :post %>

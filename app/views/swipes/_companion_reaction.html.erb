@@ -1,6 +1,25 @@
 <section class="companion-reaction" aria-labelledby="companion-reaction-heading">
   <h3 id="companion-reaction-heading"><%= companion.name %> says</h3>
-  <blockquote>
-    <p><%= reaction %></p>
-  </blockquote>
+
+  <% if messages.any? %>
+    <ol class="companion-chat">
+      <% messages.each do |message| %>
+        <li class="companion-chat-<%= message.role %>">
+          <strong><%= message.role == "user" ? "You" : companion.name %>:</strong>
+          <%= message.body %>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <blockquote>
+      <p><%= reaction %></p>
+    </blockquote>
+  <% end %>
+
+  <%= form_with url: companion_messages_path, local: true do |form| %>
+    <%= form.hidden_field :profile_id, value: profile.id %>
+    <%= form.label :body, "Ask #{companion.name} about #{profile.display_name}" %>
+    <%= form.text_area :body, maxlength: 500, required: true, rows: 2 %>
+    <%= form.submit "Send" %>
+  <% end %>
 </section>
