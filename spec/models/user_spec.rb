@@ -86,4 +86,37 @@ RSpec.describe User, type: :model do
       expect(build(:user, date_of_birth: Date.new(2000, 10, 27)).age).to eq(26)
     end
   end
+
+  describe "date of birth validation" do
+    include ActiveSupport::Testing::TimeHelpers
+
+    before { travel_to Date.new(2026, 10, 27) }
+    after { travel_back }
+
+    it "rejects users under 18" do
+      user = build(:user, date_of_birth: Date.new(2008, 10, 28))
+
+      expect(user).not_to be_valid
+      expect(user.errors[:date_of_birth]).to be_present
+    end
+
+    it "accepts users who turn 18 today" do
+      user = build(:user, date_of_birth: Date.new(2008, 10, 27))
+
+      expect(user).to be_valid
+    end
+
+    it "accepts users older than 18" do
+      user = build(:user, date_of_birth: Date.new(2000, 1, 1))
+
+      expect(user).to be_valid
+    end
+
+    it "rejects a missing date of birth" do
+      user = build(:user, date_of_birth: nil)
+
+      expect(user).not_to be_valid
+      expect(user.errors[:date_of_birth]).to be_present
+    end
+  end
 end

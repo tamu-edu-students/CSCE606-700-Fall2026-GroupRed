@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :validatable
 
+  validates :date_of_birth, presence: true
+  validate :must_be_at_least_18
+
   has_one :companion, dependent: :destroy
   has_one :profile, dependent: :destroy
 
@@ -41,5 +44,13 @@ class User < ApplicationRecord
 
   def create_default_companion
     create_companion!
+  end
+
+  def must_be_at_least_18
+    return if date_of_birth.blank?
+
+    if date_of_birth > 18.years.ago.to_date
+      errors.add(:date_of_birth, "must indicate an age of at least 18 years")
+    end
   end
 end
