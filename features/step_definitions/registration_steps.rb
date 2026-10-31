@@ -80,7 +80,7 @@ end
 
 When('I register with a dob indicating I am under 18') do
   fill_in "Email", with: "test@example.com"
-  fill_in "Date of birth", with: 18.years.ago + 1.day
+  fill_in "Date of birth", with: (18.years.ago + 1.day).to_date.iso8601
   fill_in "Password", with: "password123"
   fill_in "Password confirmation", with: "password123"
   click_button "Sign up"

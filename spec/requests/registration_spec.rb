@@ -49,11 +49,11 @@ describe "User registration", type: :request do
       params[:email] = ""
 
       expect {
-        post user_registration_path, params: params
+        post user_registration_path, params: { user: params }
       }.not_to change(User, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Email")
+      expect(response.body).to include("Email can&#39;t be blank")
     end
 
     it "rejects a duplicate email" do
@@ -64,11 +64,11 @@ describe "User registration", type: :request do
       )
 
       expect {
-        post user_registration_path, params: valid_attributes
+        post user_registration_path, params: { user: valid_attributes }
       }.not_to change(User, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Email")
+      expect(response.body).to include("Email has already been taken")
     end
 
     it "rejects a password below the minimum length" do
@@ -77,11 +77,11 @@ describe "User registration", type: :request do
       params[:password_confirmation] = "pw123"
 
       expect {
-        post user_registration_path, params: params
+        post user_registration_path, params: { user: params }
       }.not_to change(User, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Password")
+      expect(response.body).to include("Password is too short (minimum is 6 characters)")
     end
 
     it "rejects a visitor under 18" do
@@ -89,11 +89,11 @@ describe "User registration", type: :request do
       params[:date_of_birth] = 17.years.ago.to_date
 
       expect {
-        post user_registration_path, params: params
+        post user_registration_path, params: { user: params }
       }.not_to change(User, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include("Date of birth")
+      expect(response.body).to include("Date of birth must indicate an age of at least 18 years")
     end
   end
 end
