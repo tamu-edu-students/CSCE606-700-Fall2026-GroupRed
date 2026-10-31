@@ -9,6 +9,10 @@ class CompanionMessagesController < ApplicationController
     return redirect_to swipes_path, alert: "That profile isn't available." unless profile
 
     companion = current_user.companion || current_user.create_companion!
+    if companion.out_of_messages_today?
+      return redirect_to swipes_path, alert: "#{companion.name} needs a break. Chat again tomorrow!"
+    end
+
     message = companion.companion_messages.new(profile: profile, role: "user", body: params[:body].to_s.strip)
 
     unless message.valid?
