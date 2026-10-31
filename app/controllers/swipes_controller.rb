@@ -8,6 +8,7 @@ class SwipesController < ApplicationController
 
     @companion = current_user.companion || current_user.create_companion!
     @reaction = CompanionService.react(@companion, @prospect)
+    @messages = @companion.companion_messages.about(@prospect)
   end
 
   def create
