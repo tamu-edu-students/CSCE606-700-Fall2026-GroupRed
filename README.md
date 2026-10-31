@@ -3,7 +3,7 @@
 A dating web app where you never browse alone: every user gets an AI companion that reacts to profiles, chats with them about each person, and helps them start conversations.
 
 - **Live app:** https://wingmain-427a5124258b.herokuapp.com
-- **Product Backlog:** GitHub Projects board linked to this repository
+- **Product Backlog:** [GitHub Projects board](https://github.com/orgs/tamu-edu-students/projects/207) · [Burnup charts](https://github.com/orgs/tamu-edu-students/projects/207/insights)
 - **Team:** Colin Bakker, Jason Atkins, Christopher Parker, Zachary Williams, Can Ercan, Sugam Mishra
 
 ---
@@ -38,16 +38,16 @@ git clone https://github.com/tamu-edu-students/CSCE606-700-Fall2026-GroupRed.git
 cd CSCE606-700-Fall2026-GroupRed
 bundle install
 bin/rails db:prepare   # creates and migrates the development and test databases
-bin/rails db:seed      # demo data: an admin plus 30 profiles
+bin/rails db:seed      # demo data: an admin, 30 profiles, sample swipes and a match
 bin/rails server
 ```
 
 Open http://localhost:3000.
 
-**Demo logins** (local and production): any seeded profile, e.g. `peter.parker@wingmain.test`, password `password123`.
+**Demo logins** (local and production): any seeded profile, e.g. `peter.parker@wingmain.test`, password `password123`. Peter already has a match with Selina Kyle, so his Matches page isn't empty.
 The admin account is `admin@wingmain.test`; locally its password is `password123`.
 
-**AI companion locally:** set `ANTHROPIC_API_KEY` to get real AI replies. Without it, the companion shows a friendly fallback message and everything else works.
+**AI companion locally:** set `ANTHROPIC_API_KEY` to get real AI replies. Without it, the companion shows a friendly fallback message and everything else works. The test suites always remove this key, so tests never call the real API.
 
 ### 3. Run the tests
 
@@ -125,12 +125,18 @@ erDiagram
   USERS ||--|| COMPANIONS : "has one"
   USERS ||--o{ BLOCKS : "blocks (blocker)"
   USERS ||--o{ BLOCKS : "is blocked (blocked)"
+  PROFILES ||--o{ SWIPES : "swipes (swiper)"
+  PROFILES ||--o{ SWIPES : "is swiped on (prospect)"
+  PROFILES ||--o{ MATCHES : "profile_1"
+  PROFILES ||--o{ MATCHES : "profile_2"
+  COMPANIONS ||--o{ COMPANION_MESSAGES : "says / hears"
+  PROFILES ||--o{ COMPANION_MESSAGES : "is discussed in"
 
   USERS {
     bigint id PK
     string email "unique"
     string encrypted_password
-    date date_of_birth
+    date date_of_birth "18+"
     string role "user or admin"
     datetime suspended_at
   }
@@ -152,6 +158,24 @@ erDiagram
     text memory_summary
     text greeting
   }
+  COMPANION_MESSAGES {
+    bigint id PK
+    bigint companion_id FK
+    bigint profile_id FK
+    string role "user or companion"
+    text body
+  }
+  SWIPES {
+    bigint id PK
+    bigint swiper_id FK
+    bigint prospect_id FK
+    boolean liked
+  }
+  MATCHES {
+    bigint id PK
+    bigint profile_1_id FK
+    bigint profile_2_id FK
+  }
   BLOCKS {
     bigint id PK
     bigint blocker_id FK
@@ -163,10 +187,13 @@ erDiagram
 
 | Class | Responsibility |
 | --- | --- |
-| `User` | Devise account; owns a profile and companion; block helpers (`blocked_with?`, `User.not_blocked_with`) |
+| `User` | Devise account (18+); owns a profile and companion; block helpers (`blocked_with?`, `User.not_blocked_with`) |
 | `Profile` | Dating profile and preferences, with validations (name ≤ 40, bio ≤ 500, ages ≥ 18) |
-| `Companion` | The user's AI companion; created automatically at sign-up |
-| `CompanionService` | Only place that calls the AI API; 10-second timeout and a fallback message on errors |
+| `Swipe` | One profile liking or passing on another; one swipe per pair, never yourself |
+| `Match` | Created when two profiles like each other; one per pair |
+| `Companion` | The user's AI companion; created at sign-up; name and personality are customizable; 20 chat messages per day |
+| `CompanionMessage` | The companion's reaction to a profile and the chat about it |
+| `CompanionService` | Only place that calls the AI API: greetings, profile reactions (`react`), and chat replies (`reply`); sends only profile fields, never email or birth date; 10-second timeout and a fallback message on errors |
 | `Block` | One user blocking another; blocks apply both ways |
 
 ---
@@ -176,24 +203,44 @@ erDiagram
 ## Getting started
 
 1. Go to the home page and click **Sign Up**.
-2. Enter your email, date of birth, and a password (6+ characters).
-3. Create your profile: display name, bio, gender, who you're interested in, and the age range you're looking for.
+2. Enter your email, date of birth (you must be 18 or older), and a password (6+ characters).
+3. Click **View your profile** and create your profile: display name, bio, gender, who you're interested in, and the age range you're looking for.
+
+Returning users click **Sign In** on the home page. When you're signed in, the home page shows links to your profile, matches, swiping, and **Account Settings** (change your email or password), plus a **Sign Out** button.
 
 ## Your profile
 
-- **View it** at **My profile** (`/profile`).
+- **View it** with **View your profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
+
+## Swiping through profiles
+
+Click **Swipe through profiles** (`/swipes`). You'll see one profile at a time, chosen to fit both ways: they match your gender and age preferences, and you match theirs. Blocked people never appear.
+
+- Click **Like** or **Dislike** to move to the next profile.
+- When you and someone both like each other, you'll see **"It's a match!"**
+- When there's no one left, the page says **No more profiles available.**
 
 ## Your AI companion
 
-Every account comes with a companion named **Wingman**. Visit `/companion` to meet it. If the AI service is unavailable, you'll see a short "taking a break" message and the rest of the app keeps working.
+Every account comes with a companion named **Wingman**.
+
+- **On the swipe page,** your companion reacts to each profile ("Wingman says…").
+- **Ask it about the profile** in the box under its reaction and click **Send**. Your conversation about that person stays on the page. You can send up to 20 messages a day.
+- **Meet and customize it** at `/companion`: click **Customize Wingman** to change its name and personality. It will greet you again in its new voice.
+
+If the AI service is unavailable, you'll see a short "taking a break" message and the rest of the app keeps working.
+
+## Your matches
+
+Click **View your matches** (`/matches`) to see everyone you've matched with. People you've blocked, or who blocked you, don't appear.
 
 ## Viewing and blocking people
 
 - Each person has a profile page at `/people/<id>`.
-- Click **Block <their name>** on their profile and confirm. Blocking works both ways: neither of you can see the other's profile.
-- Manage blocks at **My profile → Blocked people**, where you can **Unblock** anyone.
+- Click **Block <their name>** on their profile and confirm. Blocking works both ways: neither of you can see the other's profile, swipe on each other, or appear in each other's matches.
+- Manage blocks at **View your profile → Blocked people**, where you can **Unblock** anyone.
 
 ## Coming soon (in progress)
 
-Browsing and liking/passing on profiles, matches, messaging, and the companion reacting to profiles are being built in the current sprint.
+Messaging your matches, profile photos, reporting users, and moderation are being built in Sprint 2.
