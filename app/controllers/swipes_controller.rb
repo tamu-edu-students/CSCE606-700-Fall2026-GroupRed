@@ -4,6 +4,10 @@ class SwipesController < ApplicationController
 
   def index
     @prospect = find_potential_profiles.order(:id).first
+    return unless @prospect
+
+    @companion = current_user.companion || current_user.create_companion!
+    @reaction = CompanionService.react(@companion, @prospect)
   end
 
   def create

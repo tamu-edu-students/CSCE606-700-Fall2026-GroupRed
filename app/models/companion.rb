@@ -1,5 +1,6 @@
 class Companion < ApplicationRecord
   belongs_to :user
+  has_many :companion_messages, dependent: :destroy
 
   normalizes :name, :personality, with: ->(value) { value.strip }
 

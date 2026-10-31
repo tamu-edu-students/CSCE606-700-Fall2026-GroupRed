@@ -4,6 +4,7 @@ class Profile < ApplicationRecord
   MIN_AGE = 18
 
   belongs_to :user
+  has_many :companion_messages, dependent: :destroy
 
   delegate :age, to: :user
 
