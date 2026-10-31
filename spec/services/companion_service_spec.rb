@@ -23,6 +23,46 @@ RSpec.describe CompanionService do
     end
   end
 
+  describe ".react" do
+    let(:profile) do
+      create(:profile, display_name: "Taylor", bio: "I enjoy traveling.", gender: "Woman",
+             user: create(:user, email: "taylor@example.com", date_of_birth: Date.new(2000, 1, 1)))
+    end
+
+    it "saves and returns a new reaction" do
+      allow(described_class).to receive(:ask).and_return("Travel buddy energy!")
+      expect(described_class.react(companion, profile)).to eq("Travel buddy energy!")
+      expect(companion.companion_messages.about(profile).pluck(:role, :body)).to eq([ [ "companion", "Travel buddy energy!" ] ])
+    end
+
+    it "returns the saved reaction without calling the AI" do
+      companion.companion_messages.create!(profile: profile, role: "companion", body: "Seen her before!")
+      expect(described_class).not_to receive(:ask)
+      expect(described_class.react(companion, profile)).to eq("Seen her before!")
+    end
+
+    it "only sends profile fields to the AI" do
+      expect(described_class).to receive(:ask) do |_companion, prompt|
+        expect(prompt).to include("Taylor", "I enjoy traveling.", "Woman", profile.age.to_s)
+        expect(prompt).not_to include("taylor@example.com", "2000-01-01", "2000")
+        "Nice!"
+      end
+      described_class.react(companion, profile)
+    end
+
+    it "notes when the profile has no bio" do
+      profile.update!(bio: "", gender: "")
+      expect(described_class).to receive(:ask).with(companion, a_string_including("Bio: No bio yet")).and_return("Mysterious!")
+      described_class.react(companion, profile)
+    end
+
+    it "returns the fallback and saves nothing when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+      expect(described_class.react(companion, profile)).to eq(CompanionService::FALLBACK)
+      expect(companion.companion_messages).to be_empty
+    end
+  end
+
   describe ".ask" do
     let(:messages) { double("messages") }
     let(:fake_client) { double("client", messages: messages) }
