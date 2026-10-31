@@ -7,7 +7,7 @@ class Companion < ApplicationRecord
   validates :personality, presence: true, length: { maximum: 200 }
   validates :user_id, uniqueness: true
 
-  # handoff to CompanionService write a new one.
+  # Clear the saved greeting so CompanionService writes a new one in the new voice.
   before_save :clear_greeting, if: -> { will_save_change_to_name? || will_save_change_to_personality? }
 
   private

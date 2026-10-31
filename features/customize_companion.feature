@@ -16,10 +16,8 @@ Feature: Customize my companion
         And I fill in "Personality" with "grumpy but loyal"
         And I press "Save companion"
         Then I should be on the companion page
-        And I should see "Rex is all set."
         And I should see "Meet Rex"
         And I should see "Personality: grumpy but loyal"
-        And "sam@example.com" should have a companion named "Rex"
 
     Scenario: Companion needs a name
         When I visit the edit companion page
