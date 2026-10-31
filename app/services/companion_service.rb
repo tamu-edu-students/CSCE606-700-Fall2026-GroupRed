@@ -22,6 +22,28 @@ class CompanionService
     companion.companion_messages.create!(profile: profile, role: "companion", body: reaction.truncate(500)).body
   end
 
+  def self.reply(companion, profile, text)
+    history = companion.companion_messages.about(profile).map do |message|
+      { role: message.role == "user" ? "user" : "assistant", content: message.body }
+    end
+    turns = [ { role: "user", content: profile_details(profile) }, *history, { role: "user", content: text } ]
+
+    answer = ask(companion, merge_turns(turns))
+    return nil if answer.nil?
+
+    CompanionMessage.transaction do
+      companion.companion_messages.create!(profile: profile, role: "user", body: text)
+      companion.companion_messages.create!(profile: profile, role: "companion", body: answer.truncate(500))
+    end
+    answer
+  end
+
+  def self.merge_turns(turns)
+    turns.slice_when { |a, b| a[:role] != b[:role] }.map do |group|
+      { role: group.first[:role], content: group.map { |turn| turn[:content] }.join("\n\n") }
+    end
+  end
+
   def self.profile_details(profile)
     details = [ "Your friend is looking at this dating profile:", "Name: #{profile.display_name}", "Age: #{profile.age}" ]
     details << "Gender: #{profile.gender}" if profile.gender.present?
@@ -38,7 +60,7 @@ class CompanionService
       thinking: { type: "disabled" },
       output_config: { effort: "low" },
       system_: system_prompt(companion),
-      messages: [ { role: "user", content: prompt } ]
+      messages: prompt.is_a?(Array) ? prompt : [ { role: "user", content: prompt } ]
     )
 
     text = response.content.select { |block| block.type == :text }.map(&:text).join.strip
@@ -55,8 +77,9 @@ class CompanionService
   def self.system_prompt(companion)
     "You are #{companion.name}, a dating app companion who helps your friend browse profiles. " \
       "Your personality is #{companion.personality}. Keep jokes playful and kind, never make fun of " \
-      "anyone's looks or identity, and talk like a real friend texting, not an assistant."
+      "anyone's looks or identity, and talk like a real friend texting, not an assistant. " \
+      "Keep every reply to a few sentences."
   end
 
-  private_class_method :client, :system_prompt, :profile_details
+  private_class_method :client, :system_prompt, :profile_details, :merge_turns
 end
