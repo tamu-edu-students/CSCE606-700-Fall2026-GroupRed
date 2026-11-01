@@ -82,6 +82,7 @@ When("I correct the youngest age to 21 and save my profile") do
 end
 
 Then("I should see the bio error and my original bio should remain") do
+  expect(page).to have_content("Edit your profile")
   expect(page).to have_content("Bio is too long (maximum is 500 characters)")
   visit profile_path
   expect(page).to have_content("Short bio.")
