@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Wingm A In" %></title>
+    <title><%= content_for(:title) || "WingmAIn" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Wingm A In">
+    <meta name="application-name" content="WingmAIn">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -24,14 +24,35 @@
   </head>
 
   <body>
-    <% if notice.present? %>
-      <p class="notice"><%= notice %></p>
-    <% end %>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <% if alert.present? %>
-      <p class="alert"><%= alert %></p>
-    <% end %>
+    <header class="site-header">
+      <nav aria-label="Primary navigation">
+        <%= link_to "WingmAIn", root_path, class: "site-brand" %>
+        <% if user_signed_in? %>
+          <%= link_to "Profile", profile_path %>
+          <%= link_to "Matches", matches_path %>
+          <%= link_to "Discover", swipes_path %>
+          <%= link_to "Account settings", edit_user_registration_path %>
+          <%= button_to "Sign out", destroy_user_session_path, method: :delete %>
+        <% else %>
+          <%= link_to "Sign in", new_user_session_path %>
+          <%= link_to "Sign up", new_user_registration_path %>
+        <% end %>
+      </nav>
+    </header>
 
-    <%= yield %>
+    <div class="flash-messages" aria-live="polite">
+      <% if notice.present? %>
+        <p class="notice" role="status"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="alert" role="alert"><%= alert %></p>
+      <% end %>
+    </div>
+
+    <main id="main-content" tabindex="-1">
+      <%= yield %>
+    </main>
   </body>
 </html>

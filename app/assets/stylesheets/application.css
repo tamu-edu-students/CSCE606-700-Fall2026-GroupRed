@@ -8,3 +8,98 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  color: #1f2937;
+  background: #ffffff;
+}
+
+a {
+  color: #174ea6;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #b45309;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 1;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  background: #174ea6;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.site-header {
+  padding: 1rem;
+  color: #ffffff;
+  background: #172554;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+
+.site-header a {
+  color: #ffffff;
+}
+
+.site-brand {
+  margin-right: auto;
+  font-weight: 700;
+}
+
+.site-header button {
+  padding: 0.4rem 0.7rem;
+  color: #172554;
+  background: #ffffff;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.flash-messages,
+main {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.notice,
+.alert {
+  padding: 0.75rem 1rem;
+  border-left: 0.3rem solid;
+}
+
+.notice {
+  border-color: #166534;
+  background: #f0fdf4;
+}
+
+.alert {
+  border-color: #b91c1c;
+  background: #fef2f2;
+}
