@@ -23,4 +23,6 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   root "home#index"
+
+  get "not-authorized", to: "errors#forbidden", as: :not_authorized
 end
