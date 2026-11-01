@@ -49,3 +49,10 @@ Deliver a deployed, tested foundation for the mid-project deliverable (Nov 2): u
 - One branch per issue, named `<issue#>-short-name`.
 - Every PR description starts with `Closes #<issue>` and gets one approval; the author merges.
 - Run `bundle exec rspec && bundle exec cucumber && bin/rubocop` before pushing.
+
+## Planning history
+
+- **Oct 21:** Colin created the repository and outlined the Scrum process: user stories as issues with story points, a Product Backlog in GitHub Projects with a Product Goal, Sprints as Project iterations, burndown charts, reviews and retrospectives.
+- **Oct 22:** Zachary added the user stories from the proposal as GitHub issues (12 stories). The Product Backlog board (Project #207) was created.
+- **Oct 23:** Colin set up Cucumber, PostgreSQL, CI, and the initial Heroku deploy. The team discussed how to split stories and assign points, and noted that early setup tasks (Devise, testing) blocked most other work.
+- **Oct 24:** Work divided into six lanes (A–F) with roughly equal story points; each member claimed a lane. Sprint 1 (Iteration 1, Oct 24 – Nov 2) began.
