@@ -47,3 +47,42 @@ end
 Then("{string} should not have a profile") do |email|
   expect(User.find_by!(email: email).profile).to be_nil
 end
+
+Then("I should see the profile details for Sam") do
+  expect(page).to have_content("Sam")
+  expect(page).to have_content("30 years old")
+  expect(page).to have_content("I like hiking and coffee.")
+  expect(page).to have_content("Women")
+  expect(page).to have_content("25 to 35")
+end
+
+Then("I should see the full profile for Sam") do
+  expect(page).to have_content("Sam")
+  expect(page).to have_content("30 years old")
+  expect(page).to have_content("I like hiking and coffee.")
+  expect(page).to have_content("Man")
+  expect(page).to have_content("Women")
+  expect(page).to have_content("25 to 35")
+end
+
+Then("I should see the updated profile details") do
+  expect(page).to have_content("Profile updated.")
+  expect(page).to have_content("Samuel")
+  expect(page).to have_content("Now with a bio.")
+end
+
+Then("I should see the profile was created successfully") do
+  expect(page).to have_current_path(profile_path)
+  expect(page).to have_content("Profile created.")
+end
+
+When("I correct the youngest age to 21 and save my profile") do
+  fill_in "Youngest age I'm interested in", with: 21
+  click_button "Save profile"
+end
+
+Then("I should see the bio error and my original bio should remain") do
+  expect(page).to have_content("Bio is too long (maximum is 500 characters)")
+  visit profile_path
+  expect(page).to have_content("Short bio.")
+end
