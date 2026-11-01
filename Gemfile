@@ -50,6 +50,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "rspec-rails"
+  gem "axe-core-capybara"
+  gem "selenium-webdriver"
 
   gem "factory_bot_rails"
 end
