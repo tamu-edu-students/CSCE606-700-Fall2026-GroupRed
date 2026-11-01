@@ -14,7 +14,7 @@ class User < ApplicationRecord
   after_create :create_default_companion
 
   # Everyone except people who blocked `user` or were blocked by them.
-  # Discover and messaging should start hereso a block works both ways.
+  # Discover and messaging should start here so a block works both ways.
   scope :not_blocked_with, ->(user) {
     where.not(id: Block.where(blocker: user).select(:blocked_id))
       .where.not(id: Block.where(blocked: user).select(:blocker_id))
@@ -35,7 +35,7 @@ class User < ApplicationRecord
     blocks.exists?(blocked: other)
   end
 
-  # True if either user has other blcoked
+  # True if either user has the other blocked
   def blocked_with?(other)
     Block.where(blocker: self, blocked: other).or(Block.where(blocker: other, blocked: self)).exists?
   end
