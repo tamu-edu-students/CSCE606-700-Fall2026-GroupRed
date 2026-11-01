@@ -42,11 +42,8 @@ Feature: Profile setup error handling
             | Youngest age I'm interested in | 17  |
         And I save my profile
         Then I should see "Youngest age must be greater than or equal to 18"
-        When I fill in the profile form with:
-            | Youngest age I'm interested in | 21 |
-        And I save my profile
-        Then I should be on my profile page
-        And I should see "Profile created."
+        When I correct the youngest age to 21 and save my profile
+        Then I should see the profile was created successfully
 
     Scenario: Bio that is too long is not saved when editing
         Given a user with email "sam@example.com" exists
@@ -58,7 +55,4 @@ Feature: Profile setup error handling
         And I choose to edit my profile
         And I fill in the profile "Bio" with 501 characters
         And I save my profile
-        Then I should see "Edit your profile"
-        And I should see "Bio is too long (maximum is 500 characters)"
-        When I visit my profile page
-        Then I should see "Short bio."
+        Then I should see the bio error and my original bio should remain

@@ -18,11 +18,7 @@ Feature: Create, view and edit my profile
         And I save my profile
         Then I should be on my profile page
         And I should see "Profile created."
-        And I should see "Sam"
-        And I should see "30 years old"
-        And I should see "I like hiking and coffee."
-        And I should see "Women"
-        And I should see "25 to 35"
+        And I should see the profile details for Sam
 
     Scenario: View my profile
         Given a user with email "sam@example.com" who is 30 years old exists
@@ -35,12 +31,7 @@ Feature: Create, view and edit my profile
             | age_max       | 35                        |
         And I am logged in as "sam@example.com"
         When I visit my profile page
-        Then I should see "Sam"
-        And I should see "30 years old"
-        And I should see "I like hiking and coffee."
-        And I should see "Man"
-        And I should see "Women"
-        And I should see "25 to 35"
+        Then I should see the full profile for Sam
 
     Scenario: Edit my profile
         Given a user with email "sam@example.com" exists
@@ -54,9 +45,7 @@ Feature: Create, view and edit my profile
             | Bio          | Now with a bio. |
         And I save my profile
         Then I should be on my profile page
-        And I should see "Profile updated."
-        And I should see "Samuel"
-        And I should see "Now with a bio."
+        And I should see the updated profile details
 
     Scenario: Visiting my profile before creating one
         Given a user with email "sam@example.com" exists
