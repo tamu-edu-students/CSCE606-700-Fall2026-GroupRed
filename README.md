@@ -57,6 +57,16 @@ bundle exec cucumber    # acceptance tests
 bin/rubocop             # style
 ```
 
+The RSpec suite includes a JavaScript-enabled axe accessibility test. The
+`axe-core-capybara` gem is locked in `Gemfile.lock`, and CI installs Chrome
+automatically. For local system tests, install Google Chrome (or Chromium)
+using your operating system's package manager, then run:
+
+```bash
+bundle install
+bundle exec rspec spec/system/accessibility_spec.rb
+```
+
 CI runs each suite separately and fails if RSpec, Cucumber, or the combined total is under 90% line coverage. To check locally:
 
 ```bash
