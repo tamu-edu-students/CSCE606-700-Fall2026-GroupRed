@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
     @person = User.includes(:profile).find_by(id: params[:id])
     return redirect_to profile_path if @person == current_user
 
-    # msg for mising and blcoked
+    # Same message for missing and blocked profiles
     if @person&.profile.nil? || current_user.blocked_with?(@person)
       redirect_to root_path, alert: NOT_AVAILABLE
     end

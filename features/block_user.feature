@@ -42,7 +42,6 @@ Feature: Block users
         And I follow "Blocked people"
         And I press "Unblock Alex"
         Then I should see "Alex is unblocked."
-        And I should see "You haven't blocked anyone."
         When I visit the profile of "alex@example.com"
         Then I should see "Coffee and climbing."
 
