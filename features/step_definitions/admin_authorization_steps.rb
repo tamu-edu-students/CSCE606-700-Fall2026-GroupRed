@@ -3,7 +3,7 @@ Given('I am signed in as a regular user') do
     email: "regular@example.com",
     password: "password123",
     password_confirmation: "password123",
-    date_of_birth: Date.new(2000,1,1),
+    date_of_birth: Date.new(2000, 1, 1),
     role: "user"
   )
 
@@ -23,7 +23,7 @@ Given('I am signed in as an administrator') do
     email: "regular@example.com",
     password: "password123",
     password_confirmation: "password123",
-    date_of_birth: Date.new(2000,1,1),
+    date_of_birth: Date.new(2000, 1, 1),
     role: "admin"
   )
 
