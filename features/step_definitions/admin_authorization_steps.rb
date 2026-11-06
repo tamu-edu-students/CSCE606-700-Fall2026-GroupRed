@@ -15,7 +15,7 @@ Given('I am signed in as a regular user') do
 end
 
 Then('I should be redirected to the not authorized page') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(not_authorized_path)
 end
 
 Given('I am signed in as an administrator') do
