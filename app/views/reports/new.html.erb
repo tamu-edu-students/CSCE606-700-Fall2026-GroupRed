@@ -1,0 +1,21 @@
+<% content_for :title, "Report #{@person.display_name}" %>
+
+<h1>Report <%= @person.display_name %></h1>
+<p>Tell us what happened. Our moderators review every report.</p>
+
+<%= form_with model: @report, url: person_reports_path(@person) do |f| %>
+  <% if @report.errors.any? %>
+    <div role="alert">
+      <% @report.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= f.label :reason, "Reason" %>
+  <%= f.text_area :reason, rows: 4, maxlength: 500 %>
+
+  <%= f.submit "Submit report" %>
+<% end %>
+
+<p><%= link_to "Back to #{@person.display_name}'s profile", person_path(@person) %></p>
