@@ -20,7 +20,7 @@ end
 
 Given('I am signed in as an administrator') do
   user = User.create!(
-    email: "regular@example.com",
+    email: "admin@example.com",
     password: "password123",
     password_confirmation: "password123",
     date_of_birth: Date.new(2000, 1, 1),
