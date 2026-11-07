@@ -40,6 +40,10 @@ class User < ApplicationRecord
     Block.where(blocker: self, blocked: other).or(Block.where(blocker: other, blocked: self)).exists?
   end
 
+  def admin?
+    role == "admin"
+  end
+
   private
 
   def create_default_companion

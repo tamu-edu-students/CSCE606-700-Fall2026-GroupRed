@@ -1,5 +1,5 @@
 class AdminPolicy < ApplicationPolicy
   def show?
-    user&.role == "admin"
+    user&.admin?
   end
 end
