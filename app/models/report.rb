@@ -10,9 +10,9 @@ class Report < ApplicationRecord
 
   scope :open, -> { where(status: "open") }
 
-  # What the report is about, as shown to peiople ("Alex", "a companion reply")
+  # What the report is about, as shown to people ("Alex", "a companion reply")
   def subject_name
-    reportable.respond_to?(:display_name) ? reportable.display_name : reportable_type.titlesize
+    reportable.respond_to?(:display_name) ? reportable.display_name : reportable_type.titleize
   end
 
   private

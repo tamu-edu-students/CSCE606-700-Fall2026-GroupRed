@@ -3,11 +3,12 @@ class ReportsController < ApplicationController
   before_action :load_person, only: %i[ new create ]
 
   def index
-    @reports = policy_scope(Report).where(reporter: current_user).order(created_at: :desc)
+    @reports = policy_scope(Report).where(reporter: current_user).includes(:reportable).order(created_at: :desc)
   end
 
   def new
     @report = current_user.reports.new(reportable: @person)
+    authorize @report
   end
 
   def create

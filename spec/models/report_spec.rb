@@ -29,4 +29,9 @@ RSpec.describe Report, type: :model do
     person.create_profile!(display_name: "Alex", age_min: 18, age_max: 40)
     expect(build(:report, reportable: person).subject_name).to eq("Alex")
   end
+
+    it "falls back to the type name when the reportable has no display name" do
+    companion = create(:user).companion
+    expect(build(:report, reportable: companion).subject_name).to eq("Companion")
+  end
 end
