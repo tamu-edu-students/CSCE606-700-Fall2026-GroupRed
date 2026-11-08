@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   end
   resources :blocks, only: :index
   resources :swipes, only: %i[ index create ]
-  resources :matches, only: [ :index ]
+  resources :matches, only: %i[ index show ] do
+    resources :messages, only: :create
+  end
 
   get "admin", to: "admin#index", as: :admin
 

@@ -34,3 +34,5 @@ en:
       profile:
         age_min: "Youngest age"
         age_max: "Oldest age"
+      message:
+        body: "Message"
