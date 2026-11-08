@@ -5,6 +5,7 @@ class Profile < ApplicationRecord
 
   belongs_to :user
   has_many :companion_messages, dependent: :destroy
+  has_many :sent_messages, class_name: "Message", foreign_key: :sender_id, inverse_of: :sender, dependent: :destroy
 
   delegate :age, to: :user
 

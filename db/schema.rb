@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_30_221207) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_063600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,6 +57,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_30_221207) do
     t.index ["profile_2_id"], name: "index_matches_on_profile_2_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "sender_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id", "created_at"], name: "index_messages_on_match_id_and_created_at"
+    t.index ["match_id"], name: "index_messages_on_match_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "display_name", null: false
@@ -100,6 +111,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_30_221207) do
   add_foreign_key "companions", "users"
   add_foreign_key "matches", "profiles", column: "profile_1_id"
   add_foreign_key "matches", "profiles", column: "profile_2_id"
+  add_foreign_key "messages", "matches"
+  add_foreign_key "messages", "profiles", column: "sender_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "swipes", "profiles", column: "prospect_id"
   add_foreign_key "swipes", "profiles", column: "swiper_id"
