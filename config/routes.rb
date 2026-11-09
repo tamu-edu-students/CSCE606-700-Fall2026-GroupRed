@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   resource :profile, only: %i[ show new create edit update ]
   resources :people, only: :show do
     resource :block, only: %i[ create destroy ]
+    resources :reports, only: %i[ new create ]
   end
   resources :blocks, only: :index
+  resources :reports, only: :index
   resources :swipes, only: %i[ index create ]
   resources :matches, only: %i[ index show ] do
     resources :messages, only: :create

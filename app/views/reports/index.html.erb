@@ -1,0 +1,23 @@
+<% content_for :title, "My reports" %>
+
+<h1>My reports</h1>
+
+<% if @reports.any? %>
+  <table>
+    <thead>
+      <tr><th scope="col">About</th><th scope="col">Reason</th><th scope="col">Status</th><th scope="col">Sent</th></tr>
+    </thead>
+    <tbody>
+      <% @reports.each do |report| %>
+        <tr>
+          <td><%= report.subject_name %></td>
+          <td><%= report.reason %></td>
+          <td><%= report.status.humanize %></td>
+          <td><%= l report.created_at.to_date, format: :long %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You haven't reported anyone.</p>
+<% end %>

@@ -17,4 +17,5 @@
 
   <%= button_to "Block #{@person.display_name}", person_block_path(@person),
         form: { data: { turbo_confirm: "Block #{@person.display_name}? They won't be able to see or contact you." } } %>
+          <%= link_to "Report #{@person.display_name}", new_person_report_path(@person) %>
 </section>

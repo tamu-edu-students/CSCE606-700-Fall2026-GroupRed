@@ -81,6 +81,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_063600) do
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.bigint "reporter_id", null: false
+    t.string "reportable_type", null: false
+    t.bigint "reportable_id", null: false
+    t.text "reason", null: false
+    t.string "status", default: "open", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable"
+    t.index ["reporter_id"], name: "index_reports_on_reporter_id"
+  end
+
   create_table "swipes", force: :cascade do |t|
     t.bigint "swiper_id", null: false
     t.bigint "prospect_id", null: false
@@ -114,6 +126,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_063600) do
   add_foreign_key "messages", "matches"
   add_foreign_key "messages", "profiles", column: "sender_id"
   add_foreign_key "profiles", "users"
+  add_foreign_key "reports", "users", column: "reporter_id"
   add_foreign_key "swipes", "profiles", column: "prospect_id"
   add_foreign_key "swipes", "profiles", column: "swiper_id"
 end
