@@ -60,4 +60,37 @@ RSpec.describe Profile, type: :model do
     user = build(:user, date_of_birth: 30.years.ago.to_date)
     expect(build(:profile, user: user).age).to eq(30)
   end
+  describe "profile photo" do
+    it "requires alt text when a photo is attached" do
+      profile = build(:profile, photo_alt_text: nil)
+      profile.photo.attach(
+        io: StringIO.new("fake image"),
+        filename: "photo.jpg",
+        content_type: "image/jpeg"
+      )
+
+      expect(profile).not_to be_valid
+    end
+
+    it "rejects unsupported photo types" do
+      profile = build(:profile, photo_alt_text: "Profile photo")
+      profile.photo.attach(
+        io: StringIO.new("fake image"),
+        filename: "photo.gif",
+        content_type: "image/gif"
+      )
+
+      expect(profile).not_to be_valid
+    end
+    it "rejects photos larger than 5 MB" do
+      profile = build(:profile, photo_alt_text: "Profile photo")
+      profile.photo.attach(
+        io: StringIO.new("a" * (5.megabytes + 1)),
+        filename: "large.jpg",
+        content_type: "image/jpeg"
+      )
+
+      expect(profile).not_to be_valid
+    end
+  end
 end

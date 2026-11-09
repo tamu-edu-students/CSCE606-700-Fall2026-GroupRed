@@ -2,6 +2,11 @@
 
 <section class="profile" aria-labelledby="profile-name">
   <h1 id="profile-name"><%= @profile.display_name %></h1>
+
+  <% if @profile.photo.attached? %>
+    <%= image_tag @profile.photo, alt: @profile.photo_alt_text %>
+  <% end %>
+  
   <p><%= @profile.age %> years old</p>
 
   <dl>

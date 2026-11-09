@@ -83,6 +83,26 @@ GEM
       opentelemetry-api (>= 1.2.4, < 2)
       standardwebhooks (~> 1.0)
     ast (2.4.3)
+    aws-eventstream (1.4.1)
+    aws-partitions (1.1303.0)
+    aws-sdk-core (3.265.0)
+      aws-eventstream (~> 1, >= 1.4.1)
+      aws-partitions (~> 1, >= 1.992.0)
+      aws-sigv4 (~> 1.9)
+      base64
+      bigdecimal
+      jmespath (~> 1, >= 1.6.1)
+      logger
+      rexml (~> 3.4, >= 3.4.2)
+    aws-sdk-kms (1.140.0)
+      aws-sdk-core (~> 3, >= 3.265.0)
+      aws-sigv4 (~> 1.5)
+    aws-sdk-s3 (1.239.0)
+      aws-sdk-core (~> 3, >= 3.265.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.5)
+    aws-sigv4 (1.12.1)
+      aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.14.0)
       dumb_delegator
     axe-core-capybara (4.14.0)
@@ -173,6 +193,7 @@ GEM
     ffi (1.17.4-aarch64-linux-musl)
     ffi (1.17.4-arm-linux-gnu)
     ffi (1.17.4-arm-linux-musl)
+    ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
     ffi (1.17.4-x86_64-linux-musl)
@@ -194,6 +215,7 @@ GEM
     jbuilder (2.15.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
+    jmespath (1.6.2)
     json (3.1.0)
     kamal (2.12.0)
       activesupport (>= 7.0)
@@ -250,6 +272,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.4-arm-linux-musl)
       racc (~> 1.4)
+    nokogiri (1.19.4-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.19.4-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-gnu)
@@ -267,6 +291,7 @@ GEM
     pg (1.7.0)
     pg (1.7.0-aarch64-linux)
     pg (1.7.0-aarch64-linux-musl)
+    pg (1.7.0-arm64-darwin)
     pg (1.7.0-x86_64-darwin)
     pg (1.7.0-x86_64-linux)
     pg (1.7.0-x86_64-linux-musl)
@@ -339,6 +364,7 @@ GEM
     responders (3.2.1)
       actionpack (>= 7.0)
       railties (>= 7.0)
+    rexml (3.4.4)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -409,6 +435,7 @@ GEM
     thor (1.5.0)
     thruster (0.1.27)
     thruster (0.1.27-aarch64-linux)
+    thruster (0.1.27-arm64-darwin)
     thruster (0.1.27-x86_64-darwin)
     thruster (0.1.27-x86_64-linux)
     timeout (0.6.1)
@@ -441,6 +468,7 @@ PLATFORMS
   aarch64-linux-musl
   arm-linux-gnu
   arm-linux-musl
+  arm64-darwin-25
   x86_64-darwin
   x86_64-darwin-25
   x86_64-linux
@@ -449,6 +477,7 @@ PLATFORMS
 
 DEPENDENCIES
   anthropic
+  aws-sdk-s3
   axe-core-capybara
   bootsnap
   brakeman

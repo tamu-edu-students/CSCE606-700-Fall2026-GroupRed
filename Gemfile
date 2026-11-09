@@ -75,3 +75,5 @@ end
 
 gem "devise", "~> 5.0"
 gem "anthropic"
+
+gem "aws-sdk-s3", require: false
