@@ -60,4 +60,16 @@ RSpec.describe Profile, type: :model do
     user = build(:user, date_of_birth: 30.years.ago.to_date)
     expect(build(:profile, user: user).age).to eq(30)
   end
+
+  describe "matches" do
+    it "destroys matches when the profile is deleted" do
+      profile_1 = create(:profile)
+      profile_2 = create(:profile)
+      match = Match.create!(profile_1: profile_1, profile_2: profile_2)
+
+      profile_1.destroy
+
+      expect(Match.exists?(match.id)).to be false
+    end
+  end
 end
