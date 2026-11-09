@@ -139,6 +139,8 @@ erDiagram
   PROFILES ||--o{ SWIPES : "is swiped on (prospect)"
   PROFILES ||--o{ MATCHES : "profile_1"
   PROFILES ||--o{ MATCHES : "profile_2"
+  MATCHES ||--o{ MESSAGES : "has"
+  PROFILES ||--o{ MESSAGES : "sends (sender)"
   COMPANIONS ||--o{ COMPANION_MESSAGES : "says / hears"
   PROFILES ||--o{ COMPANION_MESSAGES : "is discussed in"
 
@@ -186,6 +188,12 @@ erDiagram
     bigint profile_1_id FK
     bigint profile_2_id FK
   }
+  MESSAGES {
+    bigint id PK
+    bigint match_id FK
+    bigint sender_id FK
+    text body
+  }
   BLOCKS {
     bigint id PK
     bigint blocker_id FK
@@ -201,6 +209,7 @@ erDiagram
 | `Profile` | Dating profile and preferences, with validations (name ≤ 40, bio ≤ 500, ages ≥ 18) |
 | `Swipe` | One profile liking or passing on another; one swipe per pair, never yourself |
 | `Match` | Created when two profiles like each other; one per pair |
+| `Message` | A message between the two people in a match (1–1000 characters); only someone in the match can send one |
 | `Companion` | The user's AI companion; created at sign-up; name and personality are customizable; 20 chat messages per day |
 | `CompanionMessage` | The companion's reaction to a profile and the chat about it |
 | `CompanionService` | Only place that calls the AI API: greetings, profile reactions (`react`), and chat replies (`reply`); sends only profile fields, never email or birth date; 10-second timeout and a fallback message on errors |
@@ -244,6 +253,8 @@ If the AI service is unavailable, you'll see a short "taking a break" message an
 ## Your matches
 
 Click **View your matches** (`/matches`) to see everyone you've matched with. People you've blocked, or who blocked you, don't appear.
+
+Click **Message &lt;name&gt;** to open your conversation with a match (`/matches/<id>`). Messages from both of you are listed oldest to newest, with who sent each one. Type in the box and click **Send**; a blank message isn't sent. There are no live updates (the app works without JavaScript), so refresh the page to see new replies. If either of you blocks the other, the conversation closes.
 
 ## Viewing and blocking people
 
