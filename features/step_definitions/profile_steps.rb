@@ -87,3 +87,7 @@ Then("I should see the bio error and my original bio should remain") do
   visit profile_path
   expect(page).to have_content("Short bio.")
 end
+
+When("I delete my profile") do
+  page.driver.submit :delete, profile_path, {}
+end
