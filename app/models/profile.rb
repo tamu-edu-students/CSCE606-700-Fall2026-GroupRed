@@ -6,6 +6,17 @@ class Profile < ApplicationRecord
   belongs_to :user
   has_many :companion_messages, dependent: :destroy
   has_one_attached :photo
+
+  has_many :matches_as_profile_1,
+           class_name: "Match",
+           foreign_key: :profile_1_id,
+           dependent: :destroy
+
+  has_many :matches_as_profile_2,
+           class_name: "Match",
+           foreign_key: :profile_2_id,
+           dependent: :destroy
+
   validate :photo_type
   validate :photo_size
   validate :photo_alt_text_present

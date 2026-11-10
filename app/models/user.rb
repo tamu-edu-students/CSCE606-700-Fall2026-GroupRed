@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :blocks, foreign_key: :blocker_id, inverse_of: :blocker, dependent: :destroy
   has_many :blocked_users, through: :blocks, source: :blocked
   has_many :received_blocks, class_name: "Block", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :destroy
+  has_many :reports, foreign_key: :reporter_id, inverse_of: :reporter, dependent: :destroy
+  has_many :reports_against, class_name: "Report", as: :reportable, dependent: :destroy
 
   after_create :create_default_companion
 
