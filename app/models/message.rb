@@ -19,4 +19,3 @@ class Message < ApplicationRecord
     errors.add(:sender, "isn't part of this match") unless match.includes?(sender)
   end
 end
-

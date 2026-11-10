@@ -11,4 +11,3 @@ class CreateMessages < ActiveRecord::Migration[8.1]
     add_index :messages, [ :match_id, :created_at ]
   end
 end
-

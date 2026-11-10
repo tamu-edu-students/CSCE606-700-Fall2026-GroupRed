@@ -20,4 +20,3 @@ module MatchConversation
     end
   end
 end
-
