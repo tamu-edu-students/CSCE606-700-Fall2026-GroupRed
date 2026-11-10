@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[ show edit update ]
+  before_action :set_profile, only: %i[ show edit update destroy ]
   before_action :redirect_if_profile_exists, only: %i[ new create ]
 
   def show
@@ -29,6 +29,11 @@ class ProfilesController < ApplicationController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @profile.destroy
+    redirect_to new_profile_path, notice: "Profile deleted."
   end
 
   private

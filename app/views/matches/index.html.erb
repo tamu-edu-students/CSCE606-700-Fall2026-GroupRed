@@ -2,12 +2,13 @@
 <% if @matches.any? %>
   <ul>
     <% @matches.each do |match| %>
-      <% other_profile = match.profile_1 == current_user.profile ? match.profile_2 : match.profile_1 %>
+      <% other_profile = match.other_profile(@profile) %>
       <li>
         <h2><%= other_profile.display_name %></h2>
         <p>Bio: <%= other_profile.bio %></p>
         <p>Age: <%= other_profile.age %></p>
         <p>Gender: <%= other_profile.gender %></p>
+        <p><%= link_to "Message #{other_profile.display_name}", match_path(match) %></p>
       </li>
     <% end %>
   </ul>

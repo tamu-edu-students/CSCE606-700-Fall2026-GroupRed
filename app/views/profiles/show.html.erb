@@ -28,6 +28,12 @@
   <% end %>
 
   <p><%= link_to "Edit profile", edit_profile_path %></p>
+  <p>
+    <%= button_to "Delete profile",
+                  profile_path,
+                  method: :delete,
+                  data: { turbo_confirm: "Are you sure?" } %>
+  </p>
   <p><%= link_to "Blocked people", blocks_path %></p>
   <p><%= link_to "My reports", reports_path %></p>
 </section>

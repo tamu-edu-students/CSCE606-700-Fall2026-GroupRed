@@ -103,3 +103,7 @@ end
 Then("I should see a profile photo with alt text {string}") do |alt_text|
   expect(page).to have_css("img[alt='#{alt_text}']")
 end
+
+When("I delete my profile") do
+  page.driver.submit :delete, profile_path, {}
+end

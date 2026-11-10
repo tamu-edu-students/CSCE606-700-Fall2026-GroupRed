@@ -1,6 +1,9 @@
 class MatchesController < ApplicationController
+  include MatchConversation
+
   before_action :authenticate_user!
-  before_action :set_profile
+  before_action :require_profile
+  before_action :set_match, only: :show
 
   def index
     visible_profile_ids = Profile
@@ -8,14 +11,14 @@ class MatchesController < ApplicationController
       .select(:id)
 
     @matches = Match
-      .where("profile_1_id = :id OR profile_2_id = :id", id: @profile.id)
+      .involving(@profile)
       .where(profile_1_id: visible_profile_ids)
       .where(profile_2_id: visible_profile_ids)
+      .includes(:profile_1, :profile_2)
   end
 
-  private
-  def set_profile
-    @profile = current_user.profile
-    redirect_to new_profile_path unless @profile
+  # The conversation with one match. New messages show after sending or refreshing (ADR 0002).
+  def show
+    @messages = @match.messages.oldest_first.includes(:sender)
   end
 end
