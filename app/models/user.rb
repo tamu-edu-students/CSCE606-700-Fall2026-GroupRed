@@ -46,6 +46,19 @@ class User < ApplicationRecord
     role == "admin"
   end
 
+  def suspended?
+    suspended_at.present?
+  end
+
+  # Devise checks this on sign in and on every request, so a banned user is signed out too
+  def active_for_authentication?
+    super && !suspended?
+  end
+
+  def inactive_message
+    suspended? ? :suspended : super
+  end
+
   private
 
   def create_default_companion
