@@ -5,12 +5,14 @@ class Profile < ApplicationRecord
 
   belongs_to :user
   has_many :companion_messages, dependent: :destroy
-<<<<<<< HEAD
-  has_one_attached :photo
+has_one_attached :photo
 
-=======
-  has_many :sent_messages, class_name: "Message", foreign_key: :sender_id, inverse_of: :sender, dependent: :destroy
->>>>>>> origin/main
+  has_many :sent_messages,
+          class_name: "Message",
+          foreign_key: :sender_id,
+          inverse_of: :sender,
+          dependent: :destroy
+
   has_many :matches_as_profile_1,
            class_name: "Match",
            foreign_key: :profile_1_id,
