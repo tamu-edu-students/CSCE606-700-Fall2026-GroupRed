@@ -87,3 +87,19 @@ Then("I should see the bio error and my original bio should remain") do
   visit profile_path
   expect(page).to have_content("Short bio.")
 end
+
+When("I visit the edit profile page") do
+  visit edit_profile_path
+end
+
+When("I attach the JPG profile photo") do
+  attach_file "Photo", Rails.root.join("spec/fixtures/files/profile.jpg")
+end
+
+When("I attach the GIF profile photo") do
+  attach_file "Photo", Rails.root.join("spec/fixtures/files/profile.gif")
+end
+
+Then("I should see a profile photo with alt text {string}") do |alt_text|
+  expect(page).to have_css("img[alt='#{alt_text}']")
+end
