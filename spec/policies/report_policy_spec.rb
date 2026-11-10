@@ -23,4 +23,12 @@ RSpec.describe ReportPolicy do
     create_list(:report, 2)
     expect(described_class::Scope.new(admin, Report).resolve.count).to eq(2)
   end
+
+  it "lets admins moderate reports" do
+    expect(described_class.new(admin, build(:report)).moderate?).to be true
+  end
+
+  it "doesn't let regular users moderate reports" do
+    expect(described_class.new(user, build(:report)).moderate?).to be false
+  end
 end

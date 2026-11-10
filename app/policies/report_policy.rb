@@ -4,6 +4,11 @@ class ReportPolicy < ApplicationPolicy
     user.present? && record.reporter == user && record.reportable != user
   end
 
+  # Only admins can act on reports (ban, dismiss)
+  def moderate?
+    user&.admin?
+  end
+
   # Admins see every report (used by #11); everyone else sees their own
   class Scope < ApplicationPolicy::Scope
     def resolve

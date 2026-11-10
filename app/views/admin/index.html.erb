@@ -1,3 +1,56 @@
-<div>
-    <h1>Admin Dashboard</h1>
-</div>
+<% content_for :title, "Admin Dashboard" %>
+
+<h1>Admin Dashboard</h1>
+
+<section aria-labelledby="open-reports-heading">
+  <h2 id="open-reports-heading">Open reports</h2>
+
+  <% if @open_reports.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">About</th>
+          <th scope="col">Reported by</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Sent</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @open_reports.each do |report| %>
+          <tr>
+            <td><%= report.subject_name %></td>
+            <td><%= report.reporter.display_name %></td>
+            <td><%= report.reason %></td>
+            <td><%= l report.created_at.to_date, format: :long %></td>
+            <td>
+              <% if report.reportable.is_a?(User) && !report.reportable.suspended? %>
+                <%= button_to "Ban #{report.subject_name}", ban_admin_report_path(report), method: :patch %>
+              <% end %>
+              <%= button_to "Dismiss report about #{report.subject_name}", dismiss_admin_report_path(report), method: :patch %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No open reports.</p>
+  <% end %>
+</section>
+
+<section aria-labelledby="banned-users-heading">
+  <h2 id="banned-users-heading">Banned accounts</h2>
+
+  <% if @suspended_users.any? %>
+    <ul>
+      <% @suspended_users.each do |person| %>
+        <li>
+          <%= person.display_name %> (banned <%= l person.suspended_at.to_date, format: :long %>)
+          <%= button_to "Pardon #{person.display_name}", pardon_admin_user_path(person), method: :patch %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No banned accounts.</p>
+  <% end %>
+</section>
