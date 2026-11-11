@@ -1,17 +1,50 @@
 <h1> History of Swipes </h1>
 
-<% if @swipes.any? %>
-  <ul>
-    <% @swipes.each do |swipe| %>
-      <li>
-        <strong>Prospect:</strong> <%= swipe.prospect.display_name %> |
-        <strong>Action:</strong> <%= swipe.liked? ? "Liked" : "Disliked" %> |
-        <strong>Date:</strong> <%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %>
-      </li>
-    <% end %>
-  </ul>
+<% liked_swipes = @swipes.select(&:liked?) %>
+<% disliked_swipes = @swipes.reject(&:liked?) %>
+
+<h2>Liked</h2>
+<% if liked_swipes.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Prospect</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% liked_swipes.each do |swipe| %>
+        <tr>
+          <td><%= swipe.prospect.display_name %></td>
+          <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% else %>
-  <p>No swipes recorded yet.</p>
+  <p>No liked swipes recorded.</p>
+<% end %>
+
+<h2>Disliked</h2>
+<% if disliked_swipes.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Prospect</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% disliked_swipes.each do |swipe| %>
+        <tr>
+          <td><%= swipe.prospect.display_name %></td>
+          <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No disliked swipes recorded.</p>
 <% end %>
 
 <%= link_to "Back to Swipes", swipes_path %>
