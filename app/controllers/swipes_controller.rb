@@ -53,6 +53,11 @@ class SwipesController < ApplicationController
     if last_swipe
       last_swipe.destroy
       flash[:notice] = "Last swipe undone."
+      if last_swipe.liked
+        # If the last swipe was a like, check if there was a match and remove it
+        match = Match.find_by(profile_1_id: [last_swipe.swiper_id, last_swipe.prospect_id].min, profile_2_id: [last_swipe.swiper_id, last_swipe.prospect_id].max)
+        match.destroy if match
+      end
     else
       flash[:alert] = "No swipes to undo."
     end
@@ -66,6 +71,19 @@ class SwipesController < ApplicationController
     if swipe && %w[like dislike].include?(decision)
       if swipe.update(liked: decision == "like")
         flash[:notice] = "Swipe decision updated."
+        if swipe.liked
+          # Check if the prospect has also liked the swiper.
+          if Swipe.exists?(swiper_id: swipe.prospect_id, prospect_id: swipe.swiper_id, liked: true)
+            # Create a match if both have liked each other.
+            profile_ids = [ swipe.swiper_id, swipe.prospect_id ].sort
+            Match.find_or_create_by!(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+            flash[:notice] = "It's a match!"
+          end
+        else
+          # If the decision was changed to dislike, remove any existing match.
+          match = Match.find_by(profile_1_id: [swipe.swiper_id, swipe.prospect_id].min, profile_2_id: [swipe.swiper_id, swipe.prospect_id].max)
+          match.destroy if match
+        end
       else
         flash[:alert] = "Failed to update swipe decision."
       end
