@@ -32,7 +32,7 @@
   <p>No liked swipes recorded.</p>
 <% end %>
 
-<h2>Disliked</h2>
+<h2>Passed</h2>
 <% if disliked_swipes.any? %>
   <table>
     <thead>
@@ -58,7 +58,7 @@
     </tbody>
   </table>
 <% else %>
-  <p>No disliked swipes recorded.</p>
+  <p>No passed swipes recorded.</p>
 <% end %>
 
 <%= link_to "Back to Swipes", swipes_path %>

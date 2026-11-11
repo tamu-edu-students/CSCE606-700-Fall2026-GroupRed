@@ -9,7 +9,7 @@
   <%= render "companion_reaction", companion: @companion, reaction: @reaction, messages: @messages, profile: @prospect %>
 
   <%= button_to "Like", swipes_path(prospect_id: @prospect.id, action_type: "like"), method: :post %>
-  <%= button_to "Dislike", swipes_path(prospect_id: @prospect.id, action_type: "dislike"), method: :post %>
+  <%= button_to "Pass", swipes_path(prospect_id: @prospect.id, action_type: "dislike"), method: :post %>
 
 <% else %>
   <p>No more profiles available.</p>
