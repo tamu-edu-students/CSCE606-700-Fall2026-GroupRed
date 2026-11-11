@@ -21,6 +21,9 @@
             <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
             <%= render "prospect_profile", profile: swipe.prospect %>
           </td>
+          <td>
+            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"), method: :post %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -46,6 +49,9 @@
           <td>
             <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
             <%= render "prospect_profile", profile: swipe.prospect %>
+          </td>
+          <td>
+            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "like"), method: :post %>
           </td>
         </tr>
       <% end %>

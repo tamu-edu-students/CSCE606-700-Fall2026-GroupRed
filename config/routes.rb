@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :swipes, only: %i[index create] do
     collection do
       post :undo
+      post :change_decision
     end
   end
   resources :history, only: :index, controller: "swipes", action: "history"

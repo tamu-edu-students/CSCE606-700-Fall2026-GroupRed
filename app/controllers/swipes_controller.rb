@@ -1,6 +1,6 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index create history undo]
+  before_action :set_profile, only: %i[index create history undo change_decision]
 
   def index
     @prospect = find_potential_profiles.order(:id).first
@@ -57,6 +57,24 @@ class SwipesController < ApplicationController
       flash[:alert] = "No swipes to undo."
     end
     redirect_to swipes_path
+  end
+
+  def change_decision
+    swipe = Swipe.find_by(id: params[:swipe_id], swiper_id: @profile.id)
+    decision = params[:new_decision]
+
+    if swipe && %w[like dislike].include?(decision)
+      if swipe.update(liked: decision == "like")
+        flash[:notice] = "Swipe decision updated."
+      else
+        flash[:alert] = "Failed to update swipe decision."
+      end
+    elsif swipe
+      flash[:alert] = "Invalid swipe decision."
+    else
+      flash[:alert] = "Swipe not found."
+    end
+    redirect_to history_index_path
   end
 
   private
