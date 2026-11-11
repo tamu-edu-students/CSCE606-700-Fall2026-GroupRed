@@ -7,6 +7,9 @@
         <li class="companion-chat-<%= message.role %>">
           <strong><%= message.role == "user" ? "You" : companion.name %>:</strong>
           <%= message.body %>
+          <% if message.role == "companion" %>
+            <%= button_to "Report this reply", companion_message_reports_path(message) %>
+          <% end %>
         </li>
       <% end %>
     </ol>
