@@ -46,6 +46,8 @@ class SwipesController < ApplicationController
 
   def history
     @swipes = Swipe.where(swiper_id: @profile.id).order(created_at: :desc)
+    # Unsure no blocked users don't show up in history, but this is a good safety check.
+    @swipes = @swipes.joins(prospect: :user).merge(User.not_blocked_with(@profile.user))
   end
 
   def undo
