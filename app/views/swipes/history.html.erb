@@ -17,6 +17,10 @@
         <tr>
           <td><%= swipe.prospect.display_name %></td>
           <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+          <td>
+            <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
+            <%= render "prospect_profile", profile: swipe.prospect %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -39,6 +43,10 @@
         <tr>
           <td><%= swipe.prospect.display_name %></td>
           <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+          <td>
+            <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
+            <%= render "prospect_profile", profile: swipe.prospect %>
+          </td>
         </tr>
       <% end %>
     </tbody>

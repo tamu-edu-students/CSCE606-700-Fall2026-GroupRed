@@ -103,3 +103,37 @@ main {
   border-color: #b91c1c;
   background: #fef2f2;
 }
+
+.profile-dialog {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(0 0 0 / 50%);
+}
+
+.profile-dialog:target {
+  display: flex;
+}
+
+.profile-dialog .profile {
+  width: min(32rem, 100%);
+  padding: 1.5rem;
+  color: #1f2937;
+  background: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+}
+
+.profile-dialog-close {
+  display: inline-block;
+  padding: 0.5rem 0.8rem;
+  color: #172554;
+  background: #ffffff;
+  border: 1px solid #172554;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
