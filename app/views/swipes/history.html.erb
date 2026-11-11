@@ -1,1 +1,16 @@
 <h1> History of Swipes </h1>
+
+<% if @swipes.any? %>
+  <ul>
+    <% @swipes.each do |swipe| %>
+      <li>
+        <strong>Prospect:</strong> <%= swipe.prospect.display_name %> |
+        <strong>Action:</strong> <%= swipe.liked? ? "Liked" : "Disliked" %> |
+        <strong>Date:</strong> <%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No swipes recorded yet.</p>
+  <p><%= link_to "Back to Swipes", swipes_path %></p>
+<% end %>

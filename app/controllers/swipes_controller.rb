@@ -1,6 +1,6 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index create]
+  before_action :set_profile, only: %i[index create history]
 
   def index
     @prospect = find_potential_profiles.order(:id).first
@@ -42,6 +42,10 @@ class SwipesController < ApplicationController
     else
       redirect_to swipes_path, alert: "Failed to record swipe."
     end
+  end
+
+  def history
+    @swipes = Swipe.where(swiper_id: @profile.id).order(created_at: :desc)
   end
 
   private
