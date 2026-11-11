@@ -17,6 +17,12 @@ RSpec.describe "Swipes", type: :request do
 
   before { sign_in user }
 
+  it "shows swipe history" do
+    get history_index_path
+
+    expect(response).to have_http_status(:ok)
+  end
+
   it "filters prospects by their calculated age" do
     existing_profiles = Profile.where.not(id: profile.id).to_a
 
