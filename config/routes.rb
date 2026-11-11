@@ -9,7 +9,11 @@ Rails.application.routes.draw do
   end
   resources :blocks, only: :index
   resources :reports, only: :index
-  resources :swipes, only: %i[ index create ]
+  resources :swipes, only: %i[index create] do
+    collection do
+      post :undo
+    end
+  end
   resources :history, only: :index, controller: "swipes", action: "history"
   resources :matches, only: %i[ index show ] do
     resources :messages, only: :create

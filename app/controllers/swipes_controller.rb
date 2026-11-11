@@ -1,6 +1,6 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index create history]
+  before_action :set_profile, only: %i[index create history undo]
 
   def index
     @prospect = find_potential_profiles.order(:id).first
@@ -46,6 +46,17 @@ class SwipesController < ApplicationController
 
   def history
     @swipes = Swipe.where(swiper_id: @profile.id).order(created_at: :desc)
+  end
+
+  def undo
+    last_swipe = Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
+    if last_swipe
+      last_swipe.destroy
+      flash[:notice] = "Last swipe undone."
+    else
+      flash[:alert] = "No swipes to undo."
+    end
+    redirect_to swipes_path
   end
 
   private

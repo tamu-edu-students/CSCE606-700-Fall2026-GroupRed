@@ -15,4 +15,7 @@
   <p>No more profiles available.</p>
 <% end %>
 
+<%= button_to "Undo Last Swipe", undo_swipes_path, method: :post,
+      form: { onsubmit: "return confirm('Are you sure you want to undo your last swipe?');" } %>
+
 <%= link_to "View Swipe History", history_index_path %>
