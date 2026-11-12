@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :swipes, only: %i[ index create ]
   resources :matches, only: %i[ index show ] do
     resources :messages, only: :create
+    resource :openers, only: :create
   end
 
   get "admin", to: "admin#index", as: :admin
