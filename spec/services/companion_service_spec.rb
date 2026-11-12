@@ -126,6 +126,21 @@ RSpec.describe CompanionService do
       expect(described_class.ask(companion, turns)).to eq("Not much")
     end
 
+    {
+      "cannot connect" => Anthropic::Errors::APIConnectionError,
+      "times out" => Anthropic::Errors::APITimeoutError
+    }.each do |description, error_class|
+      it "returns nil when the API #{description}" do
+        allow(messages).to receive(:create).and_raise(error_class.new(url: URI("https://api.anthropic.com/v1/messages")))
+        expect(described_class.ask(companion, "Hi")).to be_nil
+      end
+    end
+
+    it "returns nil when the reply has no text" do
+      allow(messages).to receive(:create).and_return(double("response", content: []))
+      expect(described_class.ask(companion, "Hi")).to be_nil
+    end
+
     it "returns nil when the API raises an error" do
       allow(messages).to receive(:create).and_raise(Anthropic::Errors::Error, "boom")
       expect(described_class.ask(companion, "Hi")).to be_nil
