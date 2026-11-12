@@ -21,3 +21,7 @@ Then("I should see {string} before {string}") do |first, second|
   expect(text).to include(second)
   expect(text.index(first)).to be < text.index(second)
 end
+
+Then("the message box should say {string}") do |text|
+  expect(page).to have_field("body", with: text)
+end

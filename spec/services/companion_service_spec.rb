@@ -63,6 +63,45 @@ RSpec.describe CompanionService do
     end
   end
 
+  describe ".openers" do
+    let(:profile) do
+      create(:profile, display_name: "Taylor", bio: "I bake bread.",
+             user: create(:user, email: "taylor@example.com"))
+    end
+
+    it "only sends the match's profile fields" do
+      expect(described_class).to receive(:ask) do |_companion, prompt|
+        expect(prompt).to include("matched with", "Taylor", "I bake bread.")
+        expect(prompt).not_to include("taylor@example.com")
+        "Hi"
+      end
+      described_class.openers(companion, profile)
+    end
+
+    it "returns up to 3 openers without numbers, bullets or quotes" do
+      allow(described_class).to receive(:ask).and_return(
+        "1. \"What's your best loaf?\"\n- Sourdough or rye?\n\n* Where did you learn to bake?\nOne more"
+      )
+      expect(described_class.openers(companion, profile)).to eq(
+        [ "What's your best loaf?", "Sourdough or rye?", "Where did you learn to bake?" ]
+      )
+    end
+
+    it "saves the request so it counts toward the daily limit" do
+      allow(described_class).to receive(:ask).and_return("Hi\nHey")
+      described_class.openers(companion, profile)
+      expect(companion.companion_messages.about(profile).pluck(:role, :body)).to eq(
+        [ [ "user", CompanionService::OPENERS_REQUEST ], [ "companion", "Hi\nHey" ] ]
+      )
+    end
+
+    it "returns nothing and saves nothing when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+      expect(described_class.openers(companion, profile)).to eq([])
+      expect(companion.companion_messages).to be_empty
+    end
+  end
+
   describe ".reply" do
     let(:profile) { create(:profile, display_name: "Taylor") }
 
