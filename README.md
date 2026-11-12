@@ -236,9 +236,12 @@ Returning users click **Sign In** on the home page. When you're signed in, the h
 
 Click **Swipe through profiles** (`/swipes`). You'll see one profile at a time, chosen to fit both ways: they match your gender and age preferences, and you match theirs. Blocked people never appear.
 
-- Click **Like** or **Dislike** to move to the next profile.
+- Click **Like** or **Pass** to move to the next profile.
 - When you and someone both like each other, you'll see **"It's a match!"**
 - When there's no one left, the page says **No more profiles available.**
+- If you make a mistake, click undo
+- Navigate to history to view old swipes
+- Change decision if you change your mind
 
 ## Your AI companion
 
