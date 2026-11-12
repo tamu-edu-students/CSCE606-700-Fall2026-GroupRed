@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   resources :companion_messages, only: :create do
     resources :reports, only: :create, controller: "companion_message_reports"
   end
-  resource :profile, only: %i[ show new create edit update destroy ]
+  resource :profile, only: %i[ show new create edit update destroy ] do
+    resource :feedback, only: :create, controller: "profile_feedbacks"
+  end
   resources :people, only: :show do
     resource :block, only: %i[ create destroy ]
     resources :reports, only: %i[ new create ]
