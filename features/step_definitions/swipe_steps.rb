@@ -43,6 +43,12 @@ Given("a compatible profile exists") do
   )
 end
 
+Given("a second compatible profile exists") do
+  @second_prospect = create_test_profile(
+    display_name: "Jordan", gender: "Woman", interested_in: "Men", bio: "I enjoy hiking."
+  )
+end
+
 Given("two compatible profiles exist") do
   @first_profile = create_test_profile(
     display_name: "Sam", gender: "Man", interested_in: "Women",
@@ -58,9 +64,17 @@ Given("the other profile has already liked my profile") do
   Swipe.create!(swiper: @other_profile, prospect: @first_profile, liked: true)
 end
 
+Given("the second profile has already liked my profile") do
+  Swipe.create!(swiper: @second_prospect, prospect: @first_profile, liked: true)
+end
+
 When("I visit the swipe page") do
-  hide_other_profiles(swiper_profile, keep: [ @prospect ])
+  hide_other_profiles(swiper_profile, keep: [ @prospect, @second_prospect ])
   visit swipes_path
+end
+
+When("I undo my last swipe") do
+  click_button "Undo Last Swipe"
 end
 
 When("I like the available profile") do
@@ -68,7 +82,31 @@ When("I like the available profile") do
 end
 
 When("I pass on the available profile") do
-  click_button "Dislike"
+  click_button "Pass"
+end
+
+When("I return to the swipe page") do
+  visit swipes_path
+end
+
+When("I visit my swipe history") do
+  click_link "View Swipe History"
+end
+
+When("I view the profile for {string}") do |display_name|
+  within("tr", text: display_name) do
+    click_link "View"
+  end
+end
+
+When("I close the profile") do
+  first("a.profile-dialog-close").click
+end
+
+When("I change the decision for {string}") do |display_name|
+  within("tr", text: display_name) do
+    click_button "Change Decision"
+  end
 end
 
 Then("my like should be recorded") do
@@ -87,6 +125,21 @@ Then("a match should exist between the two profiles") do
   expect(
     Match.where(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1]).count
   ).to eq(1)
+end
+
+Then("exactly one match should exist") do
+  expect(Match.involving(swiper_profile).count).to eq(1)
+end
+
+Then("I should see that no swipe was available to undo") do
+  expect(page).to have_content("No swipes to undo.")
+end
+
+Then("I should see {string} as my only match") do |display_name|
+  expect(page).to have_content(display_name)
+  expect(page).not_to have_content("No matches yet.")
+  expect(page).not_to have_content("Taylor")
+  expect(page).to have_css("h2", count: 1, text: display_name)
 end
 
 Then("I should see that no profiles are available") do
