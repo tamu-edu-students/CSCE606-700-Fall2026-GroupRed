@@ -149,3 +149,15 @@ end
 Then("I should see that no profiles are available") do
   expect(page).to have_content("No more profiles available.")
 end
+
+Given('I have blocked the other user') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Given('the other user has blocked me') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Given('the other user is suspended') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
