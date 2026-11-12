@@ -136,6 +136,31 @@ RSpec.describe CompanionService do
     end
   end
 
+  describe ".profile_feedback" do
+    let(:profile) do
+      create(:profile, user: companion.user, display_name: "Sam", bio: "I like hiking and coffee.")
+    end
+
+    it "only sends my own profile fields and saves the request and tips" do
+      expect(described_class).to receive(:ask) do |_companion, prompt|
+        expect(prompt).to include("own dating profile", "Sam", "I like hiking and coffee.", "Photo: none yet")
+        expect(prompt).not_to include(companion.user.email)
+        "Add a photo and say where you like to hike."
+      end
+
+      expect(described_class.profile_feedback(companion, profile)).to eq("Add a photo and say where you like to hike.")
+      expect(companion.companion_messages.about(profile).pluck(:role, :body)).to eq(
+        [ [ "user", CompanionService::FEEDBACK_REQUEST ], [ "companion", "Add a photo and say where you like to hike." ] ]
+      )
+    end
+
+    it "saves nothing when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+      expect(described_class.profile_feedback(companion, profile)).to be_nil
+      expect(companion.companion_messages).to be_empty
+    end
+  end
+
   describe ".ask" do
     let(:messages) { double("messages") }
     let(:fake_client) { double("client", messages: messages) }
