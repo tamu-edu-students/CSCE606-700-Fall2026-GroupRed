@@ -27,3 +27,7 @@ When("I open a conversation between two other people") do
   riley = create_test_profile(display_name: "Riley", gender: "Woman", interested_in: "Men", bio: "Hey.")
   visit match_path(Match.create!(profile_1: jordan, profile_2: riley))
 end
+
+Then("the message box should say {string}") do |text|
+  expect(page).to have_field("body", with: text)
+end

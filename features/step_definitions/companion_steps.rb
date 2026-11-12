@@ -19,6 +19,14 @@ When("I ask my companion {string}") do |text|
   click_button "Send"
 end
 
+Given("the AI service is failing") do
+  ENV["ANTHROPIC_API_KEY"] = "test-key"
+  error = Anthropic::Errors::APIConnectionError.new(url: URI("https://api.anthropic.com/v1/messages"))
+  failing_client = double("client", messages: double("messages"))
+  allow(failing_client.messages).to receive(:create).and_raise(error)
+  allow(CompanionService).to receive(:client).and_return(failing_client)
+end
+
 Given("the companion service is down") do
   allow(CompanionService).to receive(:ask).and_return(nil)
 end
@@ -32,7 +40,12 @@ When("I visit the companion page") do
 end
 
 Then("{string} should have a companion named {string}") do |email, name|
-  expect(User.find_by!(email: email).companion.name).to eq(name)
+  @companion = User.find_by!(email: email).companion
+  expect(@companion.name).to eq(name)
+end
+
+Then("the companion should be {string}") do |personality|
+  expect(@companion.personality).to eq(personality)
 end
 
 Then("I should be on the login page") do
