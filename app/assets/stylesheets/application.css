@@ -136,4 +136,22 @@ main {
   border: 1px solid #172554;
   border-radius: 0.25rem;
   cursor: pointer;
+.companion-chat {
+  padding: 0;
+  list-style: none;
+}
+
+.companion-chat li {
+  margin-bottom: 0.75rem;
+}
+
+.companion-chat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 40rem;
+}
+
+.companion-chat-form input[type="submit"] {
+  align-self: flex-start;
 }

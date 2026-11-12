@@ -27,6 +27,16 @@
     <p>No bio yet.</p>
   <% end %>
 
+  <section class="companion-feedback" aria-labelledby="companion-feedback-heading">
+    <h2 id="companion-feedback-heading">What <%= @companion.name %> thinks</h2>
+    <% if @feedback %>
+      <p><%= @feedback.body %></p>
+    <% else %>
+      <p>Ask <%= @companion.name %> for tips on your profile.</p>
+    <% end %>
+    <%= button_to "What do you think?", profile_feedback_path %>
+  </section>
+
   <p><%= link_to "Edit profile", edit_profile_path %></p>
   <p>
     <%= button_to "Delete profile",

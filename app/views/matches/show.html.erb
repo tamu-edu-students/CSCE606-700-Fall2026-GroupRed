@@ -19,9 +19,24 @@
     <p>No messages yet. Say hi to <%= @other_profile.display_name %>!</p>
   <% end %>
 
+  <section class="opener-ideas" aria-labelledby="opener-ideas-heading">
+    <h2 id="opener-ideas-heading">Not sure what to say?</h2>
+    <% if @openers.any? %>
+      <ul>
+        <% @openers.each do |opener| %>
+          <li>
+            <%= opener %>
+            <%= link_to "Use this", match_path(@match, draft: opener) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+    <%= button_to "Help me start", match_openers_path(@match) %>
+  </section>
+
   <%= form_with url: match_messages_path(@match), local: true do |form| %>
     <%= form.label :body, "Message #{@other_profile.display_name}" %>
-    <%= form.text_area :body, maxlength: Message::MAX_LENGTH, required: true, rows: 3 %>
+    <%= form.text_area :body, value: @draft, maxlength: Message::MAX_LENGTH, required: true, rows: 3 %>
     <%= form.submit "Send" %>
   <% end %>
 </section>

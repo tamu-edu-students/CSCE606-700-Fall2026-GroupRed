@@ -42,19 +42,25 @@ RSpec.describe "Messages", type: :request do
         expect(response.body).to include("Messages with Sam")
       end
 
-      it "doesn't show a match the user isn't part of" do
+      it "sends someone outside the match to not authorized" do
         get match_path(create(:match))
 
-        expect(response).to redirect_to(matches_path)
-        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
+        expect(response).to redirect_to(not_authorized_path)
       end
 
-      it "doesn't show a conversation with someone the user was blocked by" do
+      it "sends a blocked user to not authorized" do
         other_profile.user.blocks.create!(blocked: user)
 
         get match_path(our_match)
 
+        expect(response).to redirect_to(not_authorized_path)
+      end
+
+      it "handles a match that doesn't exist" do
+        get match_path(id: 0)
+
         expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
 
       it "sends a user without a profile to create one" do
@@ -85,19 +91,19 @@ RSpec.describe "Messages", type: :request do
         user.blocks.create!(blocked: other_profile.user)
 
         expect { send_message("Hi") }.not_to change(Message, :count)
-        expect(response).to redirect_to(matches_path)
+        expect(response).to redirect_to(not_authorized_path)
       end
 
       it "doesn't let a user message someone who blocked them" do
         other_profile.user.blocks.create!(blocked: user)
 
         expect { send_message("Hi") }.not_to change(Message, :count)
-        expect(response).to redirect_to(matches_path)
+        expect(response).to redirect_to(not_authorized_path)
       end
 
       it "doesn't let a user post into someone else's match" do
         expect { send_message("Hi", to: create(:match)) }.not_to change(Message, :count)
-        expect(response).to redirect_to(matches_path)
+        expect(response).to redirect_to(not_authorized_path)
       end
     end
   end

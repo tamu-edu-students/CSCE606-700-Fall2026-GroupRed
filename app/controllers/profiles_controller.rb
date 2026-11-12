@@ -4,6 +4,8 @@ class ProfilesController < ApplicationController
   before_action :redirect_if_profile_exists, only: %i[ new create ]
 
   def show
+    @companion = current_user.companion || current_user.create_companion!
+    @feedback = @companion.companion_messages.about(@profile).where(role: "companion").last
   end
 
   def new
