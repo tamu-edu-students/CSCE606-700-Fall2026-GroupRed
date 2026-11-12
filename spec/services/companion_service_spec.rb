@@ -63,6 +63,45 @@ RSpec.describe CompanionService do
     end
   end
 
+  describe ".openers" do
+    let(:profile) do
+      create(:profile, display_name: "Taylor", bio: "I bake bread.",
+             user: create(:user, email: "taylor@example.com"))
+    end
+
+    it "only sends the match's profile fields" do
+      expect(described_class).to receive(:ask) do |_companion, prompt|
+        expect(prompt).to include("matched with", "Taylor", "I bake bread.")
+        expect(prompt).not_to include("taylor@example.com")
+        "Hi"
+      end
+      described_class.openers(companion, profile)
+    end
+
+    it "returns up to 3 openers without numbers, bullets or quotes" do
+      allow(described_class).to receive(:ask).and_return(
+        "1. \"What's your best loaf?\"\n- Sourdough or rye?\n\n* Where did you learn to bake?\nOne more"
+      )
+      expect(described_class.openers(companion, profile)).to eq(
+        [ "What's your best loaf?", "Sourdough or rye?", "Where did you learn to bake?" ]
+      )
+    end
+
+    it "saves the request so it counts toward the daily limit" do
+      allow(described_class).to receive(:ask).and_return("Hi\nHey")
+      described_class.openers(companion, profile)
+      expect(companion.companion_messages.about(profile).pluck(:role, :body)).to eq(
+        [ [ "user", CompanionService::OPENERS_REQUEST ], [ "companion", "Hi\nHey" ] ]
+      )
+    end
+
+    it "returns nothing and saves nothing when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+      expect(described_class.openers(companion, profile)).to eq([])
+      expect(companion.companion_messages).to be_empty
+    end
+  end
+
   describe ".reply" do
     let(:profile) { create(:profile, display_name: "Taylor") }
 
@@ -97,6 +136,31 @@ RSpec.describe CompanionService do
     end
   end
 
+  describe ".profile_feedback" do
+    let(:profile) do
+      create(:profile, user: companion.user, display_name: "Sam", bio: "I like hiking and coffee.")
+    end
+
+    it "only sends my own profile fields and saves the request and tips" do
+      expect(described_class).to receive(:ask) do |_companion, prompt|
+        expect(prompt).to include("own dating profile", "Sam", "I like hiking and coffee.", "Photo: none yet")
+        expect(prompt).not_to include(companion.user.email)
+        "Add a photo and say where you like to hike."
+      end
+
+      expect(described_class.profile_feedback(companion, profile)).to eq("Add a photo and say where you like to hike.")
+      expect(companion.companion_messages.about(profile).pluck(:role, :body)).to eq(
+        [ [ "user", CompanionService::FEEDBACK_REQUEST ], [ "companion", "Add a photo and say where you like to hike." ] ]
+      )
+    end
+
+    it "saves nothing when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+      expect(described_class.profile_feedback(companion, profile)).to be_nil
+      expect(companion.companion_messages).to be_empty
+    end
+  end
+
   describe ".ask" do
     let(:messages) { double("messages") }
     let(:fake_client) { double("client", messages: messages) }
@@ -124,6 +188,21 @@ RSpec.describe CompanionService do
       response = double("response", content: [ double("block", type: :text, text: "Not much") ])
       expect(messages).to receive(:create).with(hash_including(messages: turns)).and_return(response)
       expect(described_class.ask(companion, turns)).to eq("Not much")
+    end
+
+    {
+      "cannot connect" => Anthropic::Errors::APIConnectionError,
+      "times out" => Anthropic::Errors::APITimeoutError
+    }.each do |description, error_class|
+      it "returns nil when the API #{description}" do
+        allow(messages).to receive(:create).and_raise(error_class.new(url: URI("https://api.anthropic.com/v1/messages")))
+        expect(described_class.ask(companion, "Hi")).to be_nil
+      end
+    end
+
+    it "returns nil when the reply has no text" do
+      allow(messages).to receive(:create).and_return(double("response", content: []))
+      expect(described_class.ask(companion, "Hi")).to be_nil
     end
 
     it "returns nil when the API raises an error" do

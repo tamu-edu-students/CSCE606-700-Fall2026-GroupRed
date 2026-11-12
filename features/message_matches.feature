@@ -30,5 +30,8 @@ Feature: Message my matches
     Scenario: Can't message someone I blocked
         Given I have blocked my match
         When I open my conversation with my match
-        Then I should see "That conversation isn't available."
-        And I should not see "Message Taylor"
+        Then I should be redirected to the not authorized page
+
+    Scenario: Someone outside the match can't open the conversation
+        When I open a conversation between two other people
+        Then I should be redirected to the not authorized page
