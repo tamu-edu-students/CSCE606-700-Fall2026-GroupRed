@@ -75,7 +75,7 @@ RSpec.configure do |config|
     key = ENV.delete("ANTHROPIC_API_KEY")
     example.run
   ensure
-    ENV["ANTHROPIC_API_KEY"] = key if key
+    ENV["ANTHROPIC_API_KEY"] = key
   end
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
