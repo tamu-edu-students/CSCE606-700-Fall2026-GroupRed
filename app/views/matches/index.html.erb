@@ -9,6 +9,7 @@
         <p>Age: <%= other_profile.age %></p>
         <p>Gender: <%= other_profile.gender %></p>
         <p><%= link_to "Message #{other_profile.display_name}", match_path(match) %></p>
+        <p><%= link_to "View #{other_profile.display_name}'s profile", person_path(other_profile.user) %></p>
       </li>
     <% end %>
   </ul>

@@ -14,8 +14,19 @@ When("I press {string}") do |button|
   click_button button
 end
 
+Given("{string} and {string} have matched") do |email1, email2|
+  p1 = User.find_by!(email: email1).profile
+  p2 = User.find_by!(email: email2).profile
+  ids = [ p1.id, p2.id ].sort
+  Match.create!(profile_1_id: ids[0], profile_2_id: ids[1])
+end
+
+Given("{string} is an available prospect") do |email|
+  @prospect = User.find_by!(email: email).profile
+end
+
 When("I follow {string}") do |link|
-  click_link link
+  click_link link, match: :first
 end
 
 Then("I should be on the blocked people page") do
