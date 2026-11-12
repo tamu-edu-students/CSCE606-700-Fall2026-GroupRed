@@ -50,6 +50,7 @@ Feature: Swipe on other profiles
         When I visit the swipe page
         And I undo my last swipe
         Then I should see that no swipe was available to undo
+        When I return to the swipe page
         When I like the available profile
         And I pass on the available profile
         Then exactly one match should exist

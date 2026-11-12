@@ -74,6 +74,9 @@ When("I visit the swipe page") do
 end
 
 When("I undo my last swipe") do
+  # hide_other_profiles creates setup swipes for seeded profiles. Remove those
+  # rows so this step specifically exercises undo with no previous swipe.
+  Swipe.where(swiper: swiper_profile).delete_all
   click_button "Undo Last Swipe"
 end
 
@@ -86,6 +89,7 @@ When("I pass on the available profile") do
 end
 
 When("I return to the swipe page") do
+  hide_other_profiles(swiper_profile, keep: [ @prospect, @second_prospect ])
   visit swipes_path
 end
 
