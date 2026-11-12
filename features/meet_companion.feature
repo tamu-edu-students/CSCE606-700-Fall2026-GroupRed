@@ -7,6 +7,7 @@ Feature: Meet my companion
     Scenario: New user gets a companion
         Given a user with email "sam@example.com" exists
         Then "sam@example.com" should have a companion named "Wingman"
+        And the companion should be "playful and honest, like a close friend"
 
     Scenario: Companion greets the user
         Given a user with email "sam@example.com" exists
@@ -27,3 +28,4 @@ Feature: Meet my companion
     Scenario: Logged out user cannot see a companion
         When I visit the companion page
         Then I should be on the login page
+        And I should see "You need to sign in or sign up before continuing."

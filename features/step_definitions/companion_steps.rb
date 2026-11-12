@@ -40,7 +40,12 @@ When("I visit the companion page") do
 end
 
 Then("{string} should have a companion named {string}") do |email, name|
-  expect(User.find_by!(email: email).companion.name).to eq(name)
+  @companion = User.find_by!(email: email).companion
+  expect(@companion.name).to eq(name)
+end
+
+Then("the companion should be {string}") do |personality|
+  expect(@companion.personality).to eq(personality)
 end
 
 Then("I should be on the login page") do
