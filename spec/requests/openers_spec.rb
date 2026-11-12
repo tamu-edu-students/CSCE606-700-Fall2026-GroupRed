@@ -45,7 +45,7 @@ RSpec.describe "Openers", type: :request do
       stranger_match = create(:match, profile_1: create(:profile), profile_2: create(:profile))
       expect(CompanionService).not_to receive(:ask)
       post match_openers_path(stranger_match)
-      expect(response).to redirect_to(matches_path)
+      expect(response).to redirect_to(not_authorized_path)
     end
 
     it "stops at the daily limit" do
