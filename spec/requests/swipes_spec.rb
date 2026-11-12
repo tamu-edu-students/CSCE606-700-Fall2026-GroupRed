@@ -18,9 +18,126 @@ RSpec.describe "Swipes", type: :request do
   before { sign_in user }
 
   it "shows swipe history" do
+    prospect = create(
+      :profile,
+      display_name: "History Prospect",
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+
     get history_index_path
 
     expect(response).to have_http_status(:ok)
+    expect(response.body).to include("History Prospect")
+  end
+
+  it "reports when there is no previous swipe to undo" do
+    post undo_swipes_path
+
+    expect(response).to redirect_to(swipes_path)
+    expect(flash[:alert]).to eq("No swipes to undo.")
+  end
+
+  it "undoes a liked swipe and removes its match" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: prospect, prospect: profile, liked: true)
+    swipe = create(:swipe, swiper: profile, prospect: prospect, liked: true)
+    profile_ids = [ profile.id, prospect.id ].sort
+    match = create(:match, profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+
+    post undo_swipes_path
+
+    expect(response).to redirect_to(swipes_path)
+    expect(Swipe.exists?(swipe.id)).to be(false)
+    expect(Match.exists?(match.id)).to be(false)
+    expect(flash[:notice]).to eq("Last swipe undone.")
+  end
+
+  it "undoes a disliked swipe without creating a match" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: prospect, prospect: profile, liked: true)
+    swipe = create(:swipe, swiper: profile, prospect: prospect, liked: false)
+    profile_ids = [ profile.id, prospect.id ].sort
+
+    post undo_swipes_path
+
+    expect(response).to redirect_to(swipes_path)
+    expect(Swipe.exists?(swipe.id)).to be(false)
+    expect(
+      Match.where(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+    ).to be_empty
+  end
+
+  it "changes a liked decision to a dislike and removes its match" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: prospect, prospect: profile, liked: true)
+    swipe = create(:swipe, swiper: profile, prospect: prospect, liked: true)
+    profile_ids = [ profile.id, prospect.id ].sort
+    match = create(:match, profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+
+    post change_decision_swipes_path,
+         params: { swipe_id: swipe.id, new_decision: "dislike" }
+
+    expect(response).to redirect_to(history_index_path)
+    expect(swipe.reload.liked).to be(false)
+    expect(Match.exists?(match.id)).to be(false)
+    expect(flash[:notice]).to eq("Swipe decision updated.")
+  end
+
+  it "changes a disliked decision to a like and creates a match" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: prospect, prospect: profile, liked: true)
+    swipe = create(:swipe, swiper: profile, prospect: prospect, liked: false)
+    profile_ids = [ profile.id, prospect.id ].sort
+
+    post change_decision_swipes_path,
+         params: { swipe_id: swipe.id, new_decision: "like" }
+
+    expect(response).to redirect_to(history_index_path)
+    expect(swipe.reload.liked).to be(true)
+    expect(
+      Match.where(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1]).count
+    ).to eq(1)
+    expect(flash[:notice]).to eq("It's a match!")
+  end
+
+  it "rejects a change decision without a decision parameter" do
+    swipe = create(:swipe, swiper: profile, prospect: create(:profile), liked: true)
+
+    post change_decision_swipes_path, params: { swipe_id: swipe.id }
+
+    expect(response).to redirect_to(history_index_path)
+    expect(swipe.reload.liked).to be(true)
+    expect(flash[:alert]).to eq("Invalid swipe decision.")
+  end
+
+  it "reports when the swipe to change does not exist" do
+    post change_decision_swipes_path, params: { swipe_id: -1, new_decision: "like" }
+
+    expect(response).to redirect_to(history_index_path)
+    expect(flash[:alert]).to eq("Swipe not found.")
   end
 
   it "filters prospects by their calculated age" do
