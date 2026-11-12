@@ -38,14 +38,31 @@ class CompanionService
     answer
   end
 
+  FEEDBACK_REQUEST = "What do you think of my profile?".freeze
+
+  def self.profile_feedback(companion, profile)
+    details = profile_details(profile, "This is your friend's own dating profile:")
+    details += "\nPhoto: #{profile.photo.attached? ? 'yes' : 'none yet'}"
+    prompt = "#{details}\n\nGive your friend 2 or 3 short, specific tips to make this profile better. Keep it under 80 words."
+
+    tips = ask(companion, prompt)
+    return nil if tips.nil?
+
+    CompanionMessage.transaction do
+      companion.companion_messages.create!(profile: profile, role: "user", body: FEEDBACK_REQUEST)
+      companion.companion_messages.create!(profile: profile, role: "companion", body: tips.truncate(500))
+    end
+    tips
+  end
+
   def self.merge_turns(turns)
     turns.slice_when { |a, b| a[:role] != b[:role] }.map do |group|
       { role: group.first[:role], content: group.map { |turn| turn[:content] }.join("\n\n") }
     end
   end
 
-  def self.profile_details(profile)
-    details = [ "Your friend is looking at this dating profile:", "Name: #{profile.display_name}", "Age: #{profile.age}" ]
+  def self.profile_details(profile, intro = "Your friend is looking at this dating profile:")
+    details = [ intro, "Name: #{profile.display_name}", "Age: #{profile.age}" ]
     details << "Gender: #{profile.gender}" if profile.gender.present?
     details << "Bio: #{profile.bio.presence || 'No bio yet'}"
     details.join("\n")
