@@ -1,0 +1,64 @@
+<h1> History of Swipes </h1>
+
+<% liked_swipes = @swipes.select(&:liked?) %>
+<% disliked_swipes = @swipes.reject(&:liked?) %>
+
+<h2>Liked</h2>
+<% if liked_swipes.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Prospect</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% liked_swipes.each do |swipe| %>
+        <tr>
+          <td><%= swipe.prospect.display_name %></td>
+          <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+          <td>
+            <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
+            <%= render "prospect_profile", profile: swipe.prospect %>
+          </td>
+          <td>
+            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"), method: :post %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No liked swipes recorded.</p>
+<% end %>
+
+<h2>Passed</h2>
+<% if disliked_swipes.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Prospect</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% disliked_swipes.each do |swipe| %>
+        <tr>
+          <td><%= swipe.prospect.display_name %></td>
+          <td><%= swipe.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+          <td>
+            <%= link_to "View", "#prospect-profile-#{swipe.prospect.id}" %>
+            <%= render "prospect_profile", profile: swipe.prospect %>
+          </td>
+          <td>
+            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "like"), method: :post %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No passed swipes recorded.</p>
+<% end %>
+
+<%= link_to "Back to Swipes", swipes_path %>

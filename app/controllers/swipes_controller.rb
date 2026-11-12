@@ -1,6 +1,6 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index create]
+  before_action :set_profile, only: %i[index create history undo change_decision]
 
   def index
     @prospect = find_potential_profiles.order(:id).first
@@ -42,6 +42,59 @@ class SwipesController < ApplicationController
     else
       redirect_to swipes_path, alert: "Failed to record swipe."
     end
+  end
+
+  def history
+    @swipes = Swipe.where(swiper_id: @profile.id).order(created_at: :desc)
+    # Unsure no blocked users don't show up in history, but this is a good safety check.
+    @swipes = @swipes.joins(prospect: :user).merge(User.not_blocked_with(@profile.user))
+  end
+
+  def undo
+    last_swipe = Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
+    if last_swipe
+      last_swipe.destroy
+      flash[:notice] = "Last swipe undone."
+      if last_swipe.liked
+        # If the last swipe was a like, check if there was a match and remove it
+        match = Match.find_by(profile_1_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].min, profile_2_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].max)
+        match.destroy if match
+      end
+    else
+      flash[:alert] = "No swipes to undo."
+    end
+    redirect_to swipes_path
+  end
+
+  def change_decision
+    swipe = Swipe.find_by(id: params[:swipe_id], swiper_id: @profile.id)
+    decision = params[:new_decision]
+
+    if swipe && %w[like dislike].include?(decision)
+      if swipe.update(liked: decision == "like")
+        flash[:notice] = "Swipe decision updated."
+        if swipe.liked
+          # Check if the prospect has also liked the swiper.
+          if Swipe.exists?(swiper_id: swipe.prospect_id, prospect_id: swipe.swiper_id, liked: true)
+            # Create a match if both have liked each other.
+            profile_ids = [ swipe.swiper_id, swipe.prospect_id ].sort
+            Match.find_or_create_by!(profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+            flash[:notice] = "It's a match!"
+          end
+        else
+          # If the decision was changed to dislike, remove any existing match.
+          match = Match.find_by(profile_1_id: [ swipe.swiper_id, swipe.prospect_id ].min, profile_2_id: [ swipe.swiper_id, swipe.prospect_id ].max)
+          match.destroy if match
+        end
+      else
+        flash[:alert] = "Failed to update swipe decision."
+      end
+    elsif swipe
+      flash[:alert] = "Invalid swipe decision."
+    else
+      flash[:alert] = "Swipe not found."
+    end
+    redirect_to history_index_path
   end
 
   private

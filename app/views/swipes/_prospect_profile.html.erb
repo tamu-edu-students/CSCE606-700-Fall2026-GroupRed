@@ -1,0 +1,22 @@
+<% dialog_id = "prospect-profile-#{profile.id}" %>
+
+<section id="<%= dialog_id %>" class="profile-dialog" role="dialog" aria-modal="true"
+         aria-labelledby="<%= dialog_id %>-name">
+  <section class="profile">
+    <h2 id="<%= dialog_id %>-name"><%= profile.display_name %></h2>
+    <p><%= profile.age %> years old</p>
+
+    <% if profile.gender.present? %>
+      <p><%= profile.gender %></p>
+    <% end %>
+
+    <h3>About</h3>
+    <% if profile.bio.present? %>
+      <%= simple_format(profile.bio) %>
+    <% else %>
+      <p>No bio yet.</p>
+    <% end %>
+
+    <%= link_to "Close", "#", class: "profile-dialog-close" %>
+  </section>
+</section>
