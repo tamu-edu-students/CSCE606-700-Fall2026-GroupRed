@@ -2,7 +2,10 @@
 
 <section class="conversation" aria-labelledby="conversation-heading">
   <h1 id="conversation-heading">Messages with <%= @other_profile.display_name %></h1>
-  <p><%= link_to "Back to matches", matches_path %></p>
+  <p>
+    <%= link_to "Back to matches", matches_path %> |
+    <%= link_to "View #{@other_profile.display_name}'s profile", person_path(@other_profile.user) %>
+  </p>
 
   <% if @messages.any? %>
     <ol class="conversation-messages">
