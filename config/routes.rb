@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   devise_for :users
   resource :companion, only: %i[ show edit update ]
-  resources :companion_messages, only: :create
+  resources :companion_messages, only: :create do
+    resources :reports, only: :create, controller: "companion_message_reports"
+  end
   resource :profile, only: %i[ show new create edit update destroy ]
   resources :people, only: :show do
     resource :block, only: %i[ create destroy ]

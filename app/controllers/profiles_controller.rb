@@ -50,6 +50,17 @@ class ProfilesController < ApplicationController
   end
 
   def profile_params
-    params.expect(profile: [ :display_name, :bio, :gender, :interested_in, :age_min, :age_max ])
+    params.expect(
+      profile: [
+        :display_name,
+        :bio,
+        :gender,
+        :interested_in,
+        :age_min,
+        :age_max,
+        :photo,
+        :photo_alt_text
+      ]
+    )
   end
 end

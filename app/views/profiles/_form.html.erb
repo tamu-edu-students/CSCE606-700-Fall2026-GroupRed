@@ -40,5 +40,14 @@
     <%= form.number_field :age_max, min: Profile::MIN_AGE %>
   </div>
 
+  <div>
+    <%= form.label :photo %>
+    <%= form.file_field :photo, accept: "image/png,image/jpeg" %>
+  </div>
+
+  <div>
+    <%= form.label :photo_alt_text, "Photo alt text" %>
+    <%= form.text_field :photo_alt_text %>
+  </div>
   <%= form.submit "Save profile" %>
 <% end %>

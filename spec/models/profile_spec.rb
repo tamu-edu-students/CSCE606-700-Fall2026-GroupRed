@@ -61,6 +61,41 @@ RSpec.describe Profile, type: :model do
     expect(build(:profile, user: user).age).to eq(30)
   end
 
+  describe "profile photo" do
+    it "requires alt text when a photo is attached" do
+      profile = build(:profile, photo_alt_text: nil)
+      profile.photo.attach(
+        io: StringIO.new("fake image"),
+        filename: "photo.jpg",
+        content_type: "image/jpeg"
+      )
+
+      expect(profile).not_to be_valid
+    end
+
+    it "rejects unsupported photo types" do
+      profile = build(:profile, photo_alt_text: "Profile photo")
+      profile.photo.attach(
+        io: StringIO.new("fake image"),
+        filename: "photo.gif",
+        content_type: "image/gif"
+      )
+
+      expect(profile).not_to be_valid
+    end
+
+    it "rejects photos larger than 5 MB" do
+      profile = build(:profile, photo_alt_text: "Profile photo")
+      profile.photo.attach(
+        io: StringIO.new("a" * (5.megabytes + 1)),
+        filename: "large.jpg",
+        content_type: "image/jpeg"
+      )
+
+      expect(profile).not_to be_valid
+    end
+  end
+
   describe "matches" do
     it "destroys matches when the profile is deleted" do
       profile_1 = create(:profile)
@@ -71,25 +106,25 @@ RSpec.describe Profile, type: :model do
 
       expect(Match.exists?(match.id)).to be false
     end
-  end
 
-  it "destroys matches when profile 2 is deleted" do
-    profile_1 = create(:profile)
-    profile_2 = create(:profile)
-    match = Match.create!(profile_1: profile_1, profile_2: profile_2)
+    it "destroys matches when profile 2 is deleted" do
+      profile_1 = create(:profile)
+      profile_2 = create(:profile)
+      match = Match.create!(profile_1: profile_1, profile_2: profile_2)
 
-    profile_2.destroy
+      profile_2.destroy
 
-    expect(Match.exists?(match.id)).to be false
-  end
+      expect(Match.exists?(match.id)).to be false
+    end
 
-  it "deletes matches when the user account is deleted" do
-    profile_1 = create(:profile)
-    profile_2 = create(:profile)
-    match = Match.create!(profile_1: profile_1, profile_2: profile_2)
+    it "deletes matches when the user account is deleted" do
+      profile_1 = create(:profile)
+      profile_2 = create(:profile)
+      match = Match.create!(profile_1: profile_1, profile_2: profile_2)
 
-    profile_1.user.destroy
+      profile_1.user.destroy
 
-    expect(Match.exists?(match.id)).to be false
+      expect(Match.exists?(match.id)).to be false
+    end
   end
 end
