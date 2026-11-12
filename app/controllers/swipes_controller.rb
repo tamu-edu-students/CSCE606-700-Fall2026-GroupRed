@@ -57,7 +57,7 @@ class SwipesController < ApplicationController
       flash[:notice] = "Last swipe undone."
       if last_swipe.liked
         # If the last swipe was a like, check if there was a match and remove it
-        match = Match.find_by(profile_1_id: [last_swipe.swiper_id, last_swipe.prospect_id].min, profile_2_id: [last_swipe.swiper_id, last_swipe.prospect_id].max)
+        match = Match.find_by(profile_1_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].min, profile_2_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].max)
         match.destroy if match
       end
     else
@@ -83,7 +83,7 @@ class SwipesController < ApplicationController
           end
         else
           # If the decision was changed to dislike, remove any existing match.
-          match = Match.find_by(profile_1_id: [swipe.swiper_id, swipe.prospect_id].min, profile_2_id: [swipe.swiper_id, swipe.prospect_id].max)
+          match = Match.find_by(profile_1_id: [ swipe.swiper_id, swipe.prospect_id ].min, profile_2_id: [ swipe.swiper_id, swipe.prospect_id ].max)
           match.destroy if match
         end
       else
