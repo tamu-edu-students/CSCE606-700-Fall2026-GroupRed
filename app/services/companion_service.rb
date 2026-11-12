@@ -22,6 +22,27 @@ class CompanionService
     companion.companion_messages.create!(profile: profile, role: "companion", body: reaction.truncate(500)).body
   end
 
+  OPENERS_REQUEST = "Help me start a conversation.".freeze
+
+  def self.openers(companion, profile)
+    prompt = "#{profile_details(profile, "Your friend matched with this person:")}\n\n" \
+      "Write 3 short first messages your friend could send, each based on something in the profile. " \
+      "Reply with only the 3 messages, each on its own line, written exactly as your friend would send them. " \
+      "No intro, numbers, bullets or quotes."
+
+    answer = ask(companion, prompt)
+    return [] if answer.nil?
+
+    lines = answer.lines.map { |line| line.sub(/\A\s*(?:[-*•]|\d+[.)])\s*/, "").strip.delete_prefix('"').delete_suffix('"') }
+    openers = lines.reject(&:blank?).first(3).map { |line| line.truncate(Message::MAX_LENGTH) }
+
+    CompanionMessage.transaction do
+      companion.companion_messages.create!(profile: profile, role: "user", body: OPENERS_REQUEST)
+      companion.companion_messages.create!(profile: profile, role: "companion", body: openers.join("\n").truncate(500))
+    end
+    openers
+  end
+
   def self.reply(companion, profile, text)
     history = companion.companion_messages.about(profile).map do |message|
       { role: message.role == "user" ? "user" : "assistant", content: message.body }
@@ -44,8 +65,8 @@ class CompanionService
     end
   end
 
-  def self.profile_details(profile)
-    details = [ "Your friend is looking at this dating profile:", "Name: #{profile.display_name}", "Age: #{profile.age}" ]
+  def self.profile_details(profile, intro = "Your friend is looking at this dating profile:")
+    details = [ intro, "Name: #{profile.display_name}", "Age: #{profile.age}" ]
     details << "Gender: #{profile.gender}" if profile.gender.present?
     details << "Bio: #{profile.bio.presence || 'No bio yet'}"
     details.join("\n")
