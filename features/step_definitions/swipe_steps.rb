@@ -150,14 +150,6 @@ Then("I should see that no profiles are available") do
   expect(page).to have_content("No more profiles available.")
 end
 
-Given('I have blocked the other user') do
-  @first_profile.user.blocks.create!(blocked: @other_profile.user)
-end
-
-Given('the other user has blocked me') do
-  @other_profile.user.blocks.create!(blocked: @first_profile.user)
-end
-
 Given('the other user is suspended') do
   @other_profile.user.update!(suspended_at: Time.current)
 end

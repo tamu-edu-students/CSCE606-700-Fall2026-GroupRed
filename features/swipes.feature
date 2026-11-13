@@ -85,14 +85,14 @@ Feature: Swipe on other profiles
 
     Scenario: A blocked user does not appear in swipes
         Given two compatible profiles exist
-        And I have blocked the other user
+        And I have blocked my match
         And I am logged in as "sam@example.com"
         When I visit the swipe page
         Then I should see that no profiles are available
     
     Scenario: A user who has blocked me does not appear in swipes
         Given two compatible profiles exist
-        And the other user has blocked me
+        And my match has blocked me
         And I am logged in as "sam@example.com"
         When I visit the swipe page
         Then I should see that no profiles are available
