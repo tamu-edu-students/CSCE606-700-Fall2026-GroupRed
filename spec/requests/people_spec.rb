@@ -14,6 +14,30 @@ RSpec.describe "People", type: :request do
   context "when signed in" do
     before { sign_in user }
 
+    it "shows another person's uploaded photo with alt text" do
+      photo = fixture_file_upload(
+        Rails.root.join("spec/fixtures/files/profile.jpg"),
+        "image/jpeg"
+      )
+      alex.profile.update!(photo: photo, photo_alt_text: "Alex smiling")
+
+      get person_path(alex)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('alt="Alex smiling"')
+      expect(response.body).to include(
+        rails_blob_path(alex.profile.photo, only_path: true)
+      )
+      expect(response.body).not_to include("No photo yet.")
+    end
+
+    it "shows a default message when another person has no photo" do
+      get person_path(alex)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("No photo yet.")
+    end
+
     it "shows another person's profile with a block button" do
       get person_path(alex)
       expect(response).to have_http_status(:ok)

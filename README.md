@@ -231,6 +231,7 @@ Returning users click **Sign In** on the home page. When you're signed in, the h
 
 - **View it** with **View your profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
+- Profile photos appear on profile pages, Discover, My Matches, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
 
 ## Swiping through profiles
 
@@ -267,4 +268,4 @@ Click **Message &lt;name&gt;** to open your conversation with a match (`/matches
 
 ## Coming soon (in progress)
 
-Messaging your matches, profile photos, reporting users, and moderation are being built in Sprint 2.
+Messaging your matches, reporting users, and moderation are being built in Sprint 2.
