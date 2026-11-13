@@ -121,7 +121,6 @@ class SwipesController < ApplicationController
                       )
                       .where(users: { suspended_at: nil })
 
-
     # The prospect must match the current profile's gender preference.
     case @profile.interested_in
     when "Men"

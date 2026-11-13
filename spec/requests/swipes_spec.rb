@@ -294,4 +294,3 @@ end
     expect(response.body).not_to include("Suspended Prospect")
   end
 end
-

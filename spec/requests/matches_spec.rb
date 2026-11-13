@@ -22,7 +22,7 @@ RSpec.describe "Matches", type: :request do
         display_name: "Suspended Match"
       )
 
-      profile_ids = [profile.id, suspended_profile.id].sort
+      profile_ids = [ profile.id, suspended_profile.id ].sort
 
       create(
         :match,
