@@ -2,7 +2,7 @@
 
 **Sprint:** Iteration 2 (Nov 3 – Nov 12, 2026)
 **Format:** Members answered four questions in the team Discord group DM before the Sprint 2 Review, and we discussed them on the review call on Nov 12. The questions were: what went well, one thing to change for Sprint 3, anything you got stuck on or waited on, and feature ideas for Sprint 3.
-**Result:** 34 of 38 planned points done (16 of 18 stories); #32 and #13 move to Sprint 3.
+**Result:** 36 of 38 planned points done (17 of 18 stories); #32 moves to Sprint 3.
 
 ## Answers by member
 
@@ -30,27 +30,32 @@
 ## How the sprint went
 
 ### Individuals and interactions
-- Five of six members finished all of their Sprint 2 stories; Zachary finished one of three.
+- Five of six members finished all of their Sprint 2 stories; Zachary finished two of three.
 - Reviews were fast and specific; several PRs went through a "request changes, fix, approve" cycle within a day.
 - Sugam was traveling for much of the sprint and still finished all three of his stories, plus the S3 and IAM setup on Heroku.
 - Zachary couldn't submit reviews because he was signed into a second GitHub account; found and fixed on the last day.
+
 ### Processes
 - Work was back-loaded again: about half the PRs merged in the last two days, which caused merge conflicts in shared files (CSS, step definitions, request specs) and left little time to test on the live site.
 - Testing on the live site found a gap tests couldn't: the admin dashboard was only reachable by typing `/admin` (fixed by #82).
 - #17 (hide suspended users) was easy to lose track of because blocked users were already hidden; it was flagged on the last day and Colin finished it that evening (#92), after addressing review comments to cover Matches and conversations too.
+
 ### Tools
 - CI broke on every branch on Nov 8 when GitHub moved `ubuntu-latest` to Ubuntu 26.04, which doesn't have Ruby 3.4.5. We pinned CI to `ubuntu-24.04` in #74 and added a Sprint 4 chore to upgrade Ruby and unpin.
 - The Heroku config var for the S3 bucket was named `AWS_BUCKET` while the code reads `AWS_S3_BUCKET`; renamed on Heroku.
 - Dependabot kept dependencies current, including a Rails security patch (#91).
+
 ### Definition of Done
 - Every merged story had RSpec and Cucumber tests in the same PR, passed CI with 90%+ coverage, and was reviewed before merging.
 - Every Sprint 2 feature is reachable from the UI, which was a Sprint 1 miss (Block, #10).
+
 ## What went well
-- 34 of 38 points done, with the work spread evenly across the team.
+- 36 of 38 points done, with the work spread evenly across the team.
 - Grouping dependent stories under one owner meant almost nobody waited on another member.
 - Fast, thorough reviews caught real problems before they reached main.
 - Every feature is reachable from the UI and deployed on Heroku.
 - S3 photo storage and a live AI key are set up in production.
+
 ## Problems encountered
 - About half the PRs merged in the last two days of the sprint.
 - Merge conflicts in shared files when several PRs touched the same area.
@@ -58,6 +63,7 @@
 - A Heroku config var name didn't match the code.
 - #17 wasn't flagged until the last day of the sprint.
 - One member couldn't review because of a second GitHub account.
+
 ## Changes for Sprint 3
 
 | Change | Why | How we'll check |

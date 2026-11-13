@@ -10,11 +10,11 @@
 
 > Users can message their matches safely; blocking, reporting and moderation work from the UI; profiles have photos; and the AI companion gives real responses on the live site.
 
-**Result: Met.** Messaging, the Block button, reporting, moderation and profile photos are all done and deployed, the companion gives live AI responses on Heroku, and banned users are hidden from Discover, Matches and conversations (#17, merged on the last day). 34 of 38 planned points are done; the remaining two stories move to Sprint 3.
+**Result: Met.** Messaging, the Block button, reporting, moderation and profile photos are all done and deployed, the companion gives live AI responses on Heroku, and banned users are hidden from Discover, Matches and conversations (#17, merged on the last day). 36 of 38 planned points are done; only #32 moves to Sprint 3.
 
 ## Progress towards product goal
 
-### Done (34 points)
+### Done (36 points)
 
 | Issue | Story | Owner | Points | PR |
 |---|---|---|---|---|
@@ -27,6 +27,7 @@
 | #61 | Deleting an account with a match fails | Christopher | 1 | #75 |
 | #62 | Delete profile | Christopher | 2 | #79 |
 | #70 | Rename Dislike to Pass and view past likes/passes | Zachary | 3 | #86 |
+| #13 | Discover shows only people who match my preferences | Zachary | 2 | None (already met: Discover filters by both people's gender and age preferences) |
 | #15 | AI companion error handling | Can | 2 | #83 |
 | #25 | Opener ideas for a match | Can | 2 | #85 |
 | #26 | Companion feedback on my profile | Can | 2 | #84 |
@@ -35,24 +36,23 @@
 | #14 | Only my matches can message me | Sugam | 1 | #87 |
 | #69 | Add a Block button to the UI | Sugam | 2 | #88 |
 
-### Not finished (4 points, moving to Sprint 3)
+### Not finished (2 points, moving to Sprint 3)
 
 | Issue | Story | Owner | Points | Status |
 |---|---|---|---|---|
 | #32 | Like/pass error handling | Zachary | 2 | Not started |
-| #13 | Discover shows only people who match my preferences | Zachary | 2 | Discover already filters by both people's gender and age preferences (`SwipesController#find_potential_profiles`); check against the acceptance criteria and close it if it's already met. |
 
-**Velocity:** 34 points completed against 38 planned (Sprint 1: 43). See the Iteration 2 burnup on the project board.
+**Velocity:** 36 points completed against 38 planned (Sprint 1: 43). See the Iteration 2 burnup on the project board.
 
 | Member | Planned | Done |
 |---|---|---|
 | Colin | 3 | 3 |
 | Jason | 7 | 7 |
 | Christopher | 6 | 6 |
-| Zachary | 7 | 3 |
+| Zachary | 7 | 5 |
 | Can | 7 | 7 |
 | Sugam | 8 | 8 |
-| **Team** | **38** | **34** |
+| **Team** | **38** | **36** |
 
 Unpointed work also merged this sprint: the Admin link in the header (#82, found while testing the live site), pinning CI to `ubuntu-24.04` after `ubuntu-latest` moved to Ubuntu 26.04 (in #74), and Dependabot updates #72, #89, #90 and #91 (including the Rails 8.1.4.1 security patch).
 
@@ -61,6 +61,7 @@ Unpointed work also merged this sprint: the Admin link in the header (#82, found
 - Pundit authorization covers the admin area (#31), reports (#35, #36) and conversations (`MessagePolicy`, #14, which also refuses conversations with a suspended user after #17).
 - Profile photos are stored on Amazon S3 in production through Active Storage (#34), with JPG/PNG and 5 MB limits and required alt text.
 - `main` auto-deploys to Heroku after CI passes; the final Sprint 2 deploy includes every merged story and the dependency updates.
+
 ### Demo (live on Heroku)
 
 | Order | Feature (owner) | What we showed | Feedback / notes |
@@ -73,11 +74,12 @@ Unpointed work also merged this sprint: the Admin link in the header (#82, found
 | 6 | Reporting and moderation (Jason) | Report a user and an AI reply; admin bans a user (can't sign in), dismisses a report, pardons a user; Admin link in the header | My reports has no link; it's only reachable after reporting someone or by typing /reports. Needs a link. |
 
 ### What's not done yet (toward the product goal)
-- Like/pass error handling (#32) and confirming Discover preferences (#13)
+- Like/pass error handling (#32)
 - Site-wide styling (planned for early Sprint 3)
+
 ## Adjustments to product backlog
 
-- **Carryover to Sprint 3:** #32, #13 (see above).
+- **Carryover to Sprint 3:** #32 (see above).
 - **New from Sprint 2 reviews and the retro:**
   - Friendly "not authorized" handling: send people back to a normal page with a message instead of the bare `/not-authorized` 403 page (Sugam's retro idea; Zachary volunteered to own it).
   - Warn before an unmatch deletes a conversation: undo and "Change Decision" in swipe history delete the match and its messages for both people (from the #86 review).
