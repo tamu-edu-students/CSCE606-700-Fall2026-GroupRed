@@ -31,7 +31,3 @@ end
 Then("the message box should say {string}") do |text|
   expect(page).to have_field("body", with: text)
 end
-
-Given('my match has blocked me') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
