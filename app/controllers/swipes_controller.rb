@@ -119,7 +119,7 @@ class SwipesController < ApplicationController
                         id: Swipe.where(swiper_id: @profile.id)
                                   .select(:prospect_id)
                       )
-                      .where(users: { suspended_at: nil})
+                      .where(users: { suspended_at: nil })
 
 
     # The prospect must match the current profile's gender preference.
