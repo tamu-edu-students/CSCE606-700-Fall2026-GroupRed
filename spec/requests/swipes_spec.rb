@@ -262,4 +262,36 @@ end
       ).count
     }
   end
+
+  it "does not show suspended prospects" do
+    existing_profiles = Profile.where.not(id: profile.id).to_a
+
+    create(
+      :profile,
+      display_name: "Suspended Prospect",
+      user: create(
+        :user,
+        date_of_birth: 26.years.ago.to_date,
+        suspended_at: Time.current
+      ),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+
+    existing_profiles.each do |existing_profile|
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: existing_profile,
+        liked: false
+      )
+    end
+
+    get swipes_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("No more profiles available.")
+    expect(response.body).not_to include("Suspended Prospect")
+  end
 end
+
