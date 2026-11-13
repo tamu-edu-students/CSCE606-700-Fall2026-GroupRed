@@ -30,3 +30,11 @@ Feature: View my matches
         And I am logged in as "sam@example.com"
         When I visit my matches page
         Then I should be on the new profile page
+
+    Scenario: A suspended match is hidden
+        Given two compatible profiles exist
+        And the two profiles have matched
+        And my match is suspended
+        And I am logged in as "sam@example.com"
+        When I visit my matches page
+        Then I should not see "Taylor"

@@ -7,6 +7,14 @@ Given("I have blocked my match") do
   @first_profile.user.blocks.create!(blocked: @other_profile.user)
 end
 
+Given("my match has blocked me") do
+  @other_profile.user.blocks.create!(blocked: @first_profile.user)
+end
+
+Given('my match is suspended') do
+  @other_profile.user.update!(suspended_at: Time.current)
+end
+
 When("I visit my matches page") do
   visit matches_path
 end

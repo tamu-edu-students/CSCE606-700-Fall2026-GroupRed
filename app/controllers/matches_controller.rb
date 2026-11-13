@@ -7,7 +7,7 @@ class MatchesController < ApplicationController
 
   def index
     visible_profile_ids = Profile
-      .where(user_id: User.not_blocked_with(current_user).select(:id))
+      .where(user_id: User.not_blocked_with(current_user).where(suspended_at: nil).select(:id))
       .select(:id)
 
     @matches = Match

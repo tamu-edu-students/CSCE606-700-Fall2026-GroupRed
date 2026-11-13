@@ -149,3 +149,7 @@ end
 Then("I should see that no profiles are available") do
   expect(page).to have_content("No more profiles available.")
 end
+
+Given('the other user is suspended') do
+  @other_profile.user.update!(suspended_at: Time.current)
+end
