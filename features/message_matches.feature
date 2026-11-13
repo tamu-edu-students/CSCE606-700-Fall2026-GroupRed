@@ -40,3 +40,8 @@ Feature: Message my matches
         Given my match has blocked me
         When I open my conversation with my match
         Then I should be redirected to the not authorized page
+
+    Scenario: Can't message someone who is suspended
+        Given my match is suspended
+        When I open my conversation with my match
+        Then I should be redirected to the not authorized page
