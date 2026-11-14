@@ -49,3 +49,17 @@ Feature: Profile photo visibility
     Given "sam@example.com" and "alex@example.com" have matched
     When I visit my matches page
     Then I should see "No photo yet."
+
+  Scenario: See a match's photo in the conversation
+    Given "alex@example.com" has a JPG profile photo with alt text "Alex smiling"
+    And "sam@example.com" and "alex@example.com" have matched
+    When I visit my matches page
+    And I follow "Message Alex"
+    Then I should see a profile photo with alt text "Alex smiling"
+    And I should not see "No photo yet."
+
+  Scenario: See a default message in a conversation when a match has no photo
+    Given "sam@example.com" and "alex@example.com" have matched
+    When I visit my matches page
+    And I follow "Message Alex"
+    Then I should see "No photo yet."
