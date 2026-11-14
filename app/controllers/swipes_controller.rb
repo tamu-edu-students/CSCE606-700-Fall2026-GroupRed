@@ -21,6 +21,12 @@ class SwipesController < ApplicationController
       return
     end
 
+    # Check if prospect is suspended
+    if prospect.user.suspended_at.present?
+      redirect_to swipes_path, alert: "That profile is unavailable."
+      return
+    end
+
     @swipe = Swipe.new(
       swiper_id: @profile.id,
       prospect_id: prospect.id,
