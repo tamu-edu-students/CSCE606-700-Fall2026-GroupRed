@@ -59,13 +59,13 @@ When('I sign in with valid credentials') do
 end
 
 Then('I should be signed in') do
-  expect(page).to have_button("Sign Out")
+  expect(page).to have_button("Sign out")
 end
 
 Then('I should see authenticated navigation') do
-  expect(page).to have_link("View your profile", href: profile_path)
-  expect(page).to have_link("Account Settings", href: edit_user_registration_path)
-  expect(page).to have_button("Sign Out")
+  expect(page).to have_link("Profile", href: profile_path)
+  expect(page).to have_link("Account settings", href: edit_user_registration_path)
+  expect(page).to have_button("Sign out")
 end
 
 When('I sign in with an incorrect password') do
@@ -79,21 +79,21 @@ Then('I should see an authentication error') do
 end
 
 Then('I should remain signed out') do
-  expect(page).not_to have_button("Sign Out")
+  expect(page).not_to have_button("Sign out")
 end
 
 When('I sign out') do
-  click_button "Sign Out"
+  click_button "Sign out"
 end
 
 Then('I should be signed out') do
-  expect(page).not_to have_button("Sign Out")
+  expect(page).not_to have_button("Sign out")
 end
 
 Then('I should see public navigation') do
-  expect(page).to have_link("Sign In", href: new_user_session_path)
-  expect(page).to have_link("Sign Up", href: new_user_registration_path)
-  expect(page).not_to have_button("Sign Out")
+  expect(page).to have_link("Sign in", href: new_user_session_path)
+  expect(page).to have_link("Sign up", href: new_user_registration_path)
+  expect(page).not_to have_button("Sign out")
 end
 
 Then('I should see the companion page') do

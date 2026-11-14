@@ -1,6 +1,6 @@
 <h1>Matches</h1>
 <% if @matches.any? %>
-  <ul>
+  <ul class="match-list">
     <% @matches.each do |match| %>
       <% other_profile = match.other_profile(@profile) %>
       <li>

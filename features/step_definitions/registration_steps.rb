@@ -3,7 +3,7 @@ Given("I am on the home page") do
 end
 
 When("I click the sign up button") do
-  click_link "Sign Up"
+  click_link "Sign up"
 end
 
 When("I enter valid registration information") do

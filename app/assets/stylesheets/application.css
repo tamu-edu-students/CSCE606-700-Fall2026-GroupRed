@@ -1,28 +1,74 @@
 /*
- * This is a manifest file that'll be compiled into application.css.
+ * Sitewide styles for WingmAIn.
  *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Propshaft serves every file in app/assets/stylesheets, so this is plain CSS
+ * with no build step. Uses the original palette for WCAG AA contrast.
  */
 
 :root {
+  --bg: #ffffff;
+  --surface: #f9fafb;
+  --ink: #1f2937;
+  --muted: #4b5563;
+  --border: #d1d5db;
+  --navy: #172554;
+  --blue: #174ea6;
+  --blue-soft: #eff6ff;
+  --blue-border: #bfdbfe;
+  --focus: #b45309;
+  --notice-border: #166534;
+  --notice-bg: #f0fdf4;
+  --alert-border: #b91c1c;
+  --alert-bg: #fef2f2;
+
   color-scheme: light;
   font-family: system-ui, sans-serif;
   line-height: 1.5;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  color: #1f2937;
-  background: #ffffff;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+h1 {
+  margin: 0.5rem 0 1rem;
+  font-size: 1.9rem;
+}
+
+h2 {
+  margin-top: 1.75rem;
+  font-size: 1.3rem;
+}
+
+h3 {
+  font-size: 1.08rem;
 }
 
 a {
-  color: #174ea6;
+  color: var(--blue);
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--navy);
+  text-decoration-thickness: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 a:focus-visible,
@@ -30,7 +76,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid #b45309;
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -41,68 +87,511 @@ textarea:focus-visible {
   z-index: 1;
   padding: 0.75rem 1rem;
   color: #ffffff;
-  background: #174ea6;
+  background: var(--blue);
 }
 
 .skip-link:focus {
   top: 1rem;
 }
 
+/* Header */
+
 .site-header {
-  padding: 1rem;
+  padding: 0.9rem 1rem;
   color: #ffffff;
-  background: #172554;
+  background: var(--navy);
 }
 
 .site-header nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.5rem 1rem;
   align-items: center;
-  max-width: 70rem;
+  max-width: 64rem;
   margin: 0 auto;
 }
 
 .site-header a {
   color: #ffffff;
+  text-decoration: none;
+}
+
+.site-header a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 .site-brand {
   margin-right: auto;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
-.site-header button {
-  padding: 0.4rem 0.7rem;
-  color: #172554;
+.site-header button,
+.site-header .nav-button {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--navy);
   background: #ffffff;
   border: 0;
-  border-radius: 0.25rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
   cursor: pointer;
 }
 
+.site-header button:hover,
+.site-header .nav-button:hover {
+  color: var(--navy);
+  background: #f3f4f6;
+  text-decoration: none;
+}
+
+/* Page layout */
+
 .flash-messages,
 main {
-  max-width: 70rem;
+  max-width: 64rem;
   margin: 0 auto;
   padding: 1rem;
 }
 
+.flash-messages {
+  padding-bottom: 0;
+}
+
+.flash-messages:empty {
+  display: none;
+}
+
+main {
+  padding-bottom: 3.5rem;
+}
+
+main:focus {
+  outline: none;
+}
+
 .notice,
 .alert {
+  margin: 0.5rem 0 0;
   padding: 0.75rem 1rem;
   border-left: 0.3rem solid;
+  border-radius: 0.25rem;
 }
 
 .notice {
-  border-color: #166534;
-  background: #f0fdf4;
+  border-color: var(--notice-border);
+  background: var(--notice-bg);
 }
 
 .alert {
-  border-color: #b91c1c;
-  background: #fef2f2;
+  border-color: var(--alert-border);
+  background: var(--alert-bg);
 }
+
+/* Buttons */
+
+button,
+input[type="submit"] {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--blue);
+  border: 0;
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background: var(--navy);
+}
+
+/* button_to wraps each button in its own form */
+form.button_to {
+  display: inline-block;
+  margin: 0.25rem 0.4rem 0.25rem 0;
+}
+
+/* Smaller outlined buttons inside tables and lists */
+td .button_to button,
+li .button_to button {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.9rem;
+  color: var(--navy);
+  background: var(--bg);
+  border: 1px solid var(--navy);
+}
+
+td .button_to button:hover,
+li .button_to button:hover {
+  color: var(--navy);
+  background: var(--surface);
+}
+
+/* Forms */
+
+form > div,
+.field {
+  margin-bottom: 1rem;
+}
+
+.field p {
+  margin: 0.2rem 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+input[type="checkbox"] + label,
+label:has(+ input[type="checkbox"]) {
+  display: inline;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+select,
+textarea {
+  width: 100%;
+  max-width: 30rem;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+}
+
+textarea {
+  max-width: 40rem;
+  resize: vertical;
+}
+
+input[type="number"] {
+  max-width: 8rem;
+}
+
+input[type="file"] {
+  font: inherit;
+}
+
+#error_explanation,
+.form-errors,
+form > div[role="alert"] {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--alert-bg);
+  border-left: 0.3rem solid var(--alert-border);
+  border-radius: 0.25rem;
+}
+
+#error_explanation h2,
+.form-errors h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+#error_explanation ul,
+.form-errors ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+/* Tables */
+
+table {
+  width: 100%;
+  margin: 0.5rem 0 1.5rem;
+  border-collapse: collapse;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+th,
+td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--surface);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+@media (max-width: 40rem) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* Asides & boxes */
+
+blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border-left: 0.3rem solid var(--blue);
+  border-radius: 0.25rem;
+}
+
+blockquote p {
+  margin: 0;
+}
+
+.companion-feedback,
+.companion-reaction,
+.opener-ideas {
+  margin: 1.5rem 0;
+  padding: 0.25rem 1.1rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.companion-feedback h2,
+.companion-reaction h3,
+.opener-ideas h2 {
+  margin-top: 0.9rem;
+}
+
+.opener-ideas ul {
+  padding-left: 1.1rem;
+}
+
+.opener-ideas li {
+  margin-bottom: 0.4rem;
+}
+
+/* Home */
+
+.home {
+  padding: 0.75rem 0 2rem;
+}
+
+.home h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2.1rem;
+}
+
+.home-lead {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 38rem) {
+  .home-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-card {
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.home-card h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.home-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Profiles */
+
+.profile > img {
+  display: block;
+  max-width: 18rem;
+  margin: 0.5rem 0 1rem;
+  border-radius: 0.5rem;
+}
+
+.profile dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.profile dt {
+  color: var(--muted);
+}
+
+.profile dd {
+  margin: 0;
+}
+
+/* Swiping */
+
+.prospect-card {
+  max-width: 34rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem 1.25rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+}
+
+.prospect-card .companion-reaction {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-top: 1px dashed var(--border);
+  border-radius: 0;
+}
+
+.swipe-actions .button_to:last-child button {
+  color: var(--navy);
+  background: var(--bg);
+  border: 1px solid var(--navy);
+}
+
+.swipe-actions .button_to:last-child button:hover {
+  background: var(--surface);
+}
+
+/* Matches list */
+
+.match-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.match-list > li {
+  padding: 0.25rem 1rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.match-list h2 {
+  margin-top: 0.75rem;
+}
+
+.match-list p {
+  margin: 0.3rem 0;
+}
+
+/* Plain people lists (blocked, banned) */
+
+.blocks ul,
+section[aria-labelledby="banned-users-heading"] ul {
+  padding: 0;
+  list-style: none;
+}
+
+.blocks li,
+section[aria-labelledby="banned-users-heading"] li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Chat: messages with matches and the companion */
+
+.conversation-messages,
+.companion-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.conversation-messages li,
+.companion-chat li {
+  max-width: 75%;
+  padding: 0.5rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.8rem 0.8rem 0.8rem 0.2rem;
+}
+
+.conversation-messages .message-mine,
+.companion-chat .companion-chat-user {
+  align-self: flex-end;
+  background: var(--blue-soft);
+  border-color: var(--blue-border);
+  border-radius: 0.8rem 0.8rem 0.2rem;
+}
+
+.conversation-messages time {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.companion-chat .button_to button {
+  padding: 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+}
+
+.companion-chat .button_to button:hover {
+  color: var(--alert-border);
+  background: none;
+}
+
+.companion-chat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 40rem;
+}
+
+.companion-chat-form label {
+  margin: 0;
+}
+
+.companion-chat-form input[type="submit"] {
+  align-self: flex-start;
+}
+
+/* Profile pop-up on swipe history (CSS-only, works without JS) */
 
 .profile-dialog {
   display: none;
@@ -122,38 +611,28 @@ main {
 .profile-dialog .profile {
   width: min(32rem, 100%);
   padding: 1.5rem;
-  color: #1f2937;
-  background: #ffffff;
+  color: var(--ink);
+  background: var(--bg);
   border-radius: 0.5rem;
   box-shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+}
+
+.profile-dialog .profile h2 {
+  margin-top: 0;
 }
 
 .profile-dialog-close {
   display: inline-block;
   padding: 0.5rem 0.8rem;
-  color: #172554;
-  background: #ffffff;
-  border: 1px solid #172554;
+  color: var(--navy);
+  text-decoration: none;
+  background: var(--bg);
+  border: 1px solid var(--navy);
   border-radius: 0.25rem;
   cursor: pointer;
 }
 
-.companion-chat {
-  padding: 0;
-  list-style: none;
-}
-
-.companion-chat li {
-  margin-bottom: 0.75rem;
-}
-
-.companion-chat-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 40rem;
-}
-
-.companion-chat-form input[type="submit"] {
-  align-self: flex-start;
+.profile-dialog-close:hover {
+  color: var(--navy);
+  background: var(--surface);
 }
