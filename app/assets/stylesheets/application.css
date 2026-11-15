@@ -148,6 +148,54 @@ textarea:focus-visible {
   text-decoration: none;
 }
 
+/* The default amber outline is too faint on navy; yellow passes 3:1 */
+.site-header :focus-visible {
+  outline-color: #fbbf24;
+}
+
+/* Account dropdown: a plain <details>, so it works without JavaScript */
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  cursor: pointer;
+}
+
+.account-menu summary:hover {
+  text-decoration: underline;
+}
+
+.account-menu ul {
+  position: absolute;
+  right: 0;
+  z-index: 3;
+  min-width: 12rem;
+  margin: 0.6rem 0 0;
+  padding: 0.4rem 0;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 15%);
+}
+
+.site-header .account-menu a {
+  display: block;
+  padding: 0.4rem 1rem;
+  color: var(--ink);
+}
+
+.site-header .account-menu a:hover {
+  color: var(--navy);
+  background: var(--surface);
+}
+
+.site-header .account-menu a:focus-visible {
+  outline-color: var(--focus);
+  outline-offset: -3px;
+}
+
 /* Page layout */
 
 .flash-messages,

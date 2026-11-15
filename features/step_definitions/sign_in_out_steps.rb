@@ -63,9 +63,19 @@ Then('I should be signed in') do
 end
 
 Then('I should see authenticated navigation') do
+  expect(page).to have_link("Discover", href: swipes_path)
+  step "I open the Account menu"
   expect(page).to have_link("Profile", href: profile_path)
   expect(page).to have_link("Account settings", href: edit_user_registration_path)
   expect(page).to have_button("Sign out")
+end
+
+When('I open the Account menu') do
+  find(".account-menu summary").click
+end
+
+Then('I should not see a {string} link') do |text|
+  expect(page).not_to have_link(text)
 end
 
 When('I sign in with an incorrect password') do
