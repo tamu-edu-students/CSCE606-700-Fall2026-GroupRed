@@ -113,5 +113,11 @@ RSpec.describe "Admin moderation", type: :request do
       expect(response).to redirect_to(not_authorized_path)
       expect(alex.reload).to be_suspended
     end
+
+    it "can't view the admin dashboard or users list" do
+      get admin_path
+
+      expect(response).to redirect_to(not_authorized_path)
+    end
   end
 end
