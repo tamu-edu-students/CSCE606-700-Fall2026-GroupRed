@@ -21,6 +21,21 @@
   </div>
 
   <div>
+    <%= form.label :ideal_first_date, "Ideal first date (optional)" %>
+    <%= form.text_area :ideal_first_date, rows: 3, maxlength: 500 %>
+  </div>
+
+  <div>
+    <%= form.label :perfect_weekend, "A perfect weekend (optional)" %>
+    <%= form.text_area :perfect_weekend, rows: 3, maxlength: 500 %>
+  </div>
+
+  <div>
+    <%= form.label :interests, "Interests (optional)" %>
+    <%= form.text_area :interests, rows: 3, maxlength: 500 %>
+  </div>
+
+  <div>
     <%= form.label :gender %>
     <%= form.select :gender, Profile::GENDERS, include_blank: true %>
   </div>
