@@ -53,6 +53,12 @@ RSpec.describe "Admin moderation", type: :request do
       expect(alex.reload).not_to be_suspended
     end
 
+    it "bans a person" do
+      patch suspend_admin_user_path(alex)
+
+      expect(alex.reload).to be_suspended
+    end
+
     it "pardons a banned person" do
       alex.update!(suspended_at: Time.current)
       patch pardon_admin_user_path(alex)

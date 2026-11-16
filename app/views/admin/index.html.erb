@@ -9,13 +9,14 @@
     <%= form.text_field :search, value: params[:search] %>
     <%= form.submit "Search" %>
   <% end %>
-  <table>
+  <table id="users-table">
     <thead>
       <tr>
         <th scope="col">Display Name</th>
         <th scope="col">Email</th>
         <th scope="col">Joined Date</th>
         <th scope="col">Status</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -37,6 +38,13 @@
               Active
             <% end %>
           </td>
+          <td>
+            <% if user.suspended? %>
+              <%= button_to "Pardon #{user.profile&.display_name}", pardon_admin_user_path(user), method: :patch %>
+            <% else %>
+              <%= button_to "Ban #{user.profile&.display_name}", suspend_admin_user_path(user), method: :patch %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -47,7 +55,7 @@
   <h2 id="open-reports-heading">Open reports</h2>
 
   <% if @open_reports.any? %>
-    <table>
+    <table id="reported-user-table">
       <thead>
         <tr>
           <th scope="col">About</th>
@@ -83,7 +91,7 @@
   <h2 id="banned-users-heading">Banned accounts</h2>
 
   <% if @suspended_users.any? %>
-    <ul>
+    <ul id="banned-user-list">
       <% @suspended_users.each do |person| %>
         <li>
           <%= person.display_name %> (banned <%= l person.suspended_at.to_date, format: :long %>)
