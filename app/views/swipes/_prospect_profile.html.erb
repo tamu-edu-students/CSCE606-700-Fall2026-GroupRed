@@ -4,6 +4,7 @@
          aria-labelledby="<%= dialog_id %>-name">
   <section class="profile">
     <h2 id="<%= dialog_id %>-name"><%= profile.display_name %></h2>
+    <%= render "profiles/photo", profile: profile %>
     <p><%= profile.age %> years old</p>
 
     <% if profile.gender.present? %>
@@ -16,6 +17,8 @@
     <% else %>
       <p>No bio yet.</p>
     <% end %>
+
+    <%= render "profiles/prompts", profile: profile %>
 
     <%= link_to "Close", "#", class: "profile-dialog-close" %>
   </section>

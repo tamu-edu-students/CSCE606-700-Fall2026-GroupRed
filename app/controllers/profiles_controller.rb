@@ -56,6 +56,9 @@ class ProfilesController < ApplicationController
       profile: [
         :display_name,
         :bio,
+        :ideal_first_date,
+        :perfect_weekend,
+        :interests,
         :gender,
         :interested_in,
         :age_min,

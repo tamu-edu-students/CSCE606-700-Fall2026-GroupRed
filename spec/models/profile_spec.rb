@@ -25,6 +25,31 @@ RSpec.describe Profile, type: :model do
     end
   end
 
+  describe "prompts and interests" do
+    %i[ ideal_first_date perfect_weekend interests ].each do |attribute|
+      it "allows #{attribute} to be blank" do
+        [ nil, "" ].each do |value|
+          profile = build(:profile, attribute => value)
+          expect(profile).to be_valid
+        end
+      end
+
+      it "allows #{attribute} to contain 500 characters" do
+        profile = build(:profile, attribute => "a" * 500)
+        expect(profile).to be_valid
+      end
+
+      it "rejects #{attribute} over 500 characters with a clear error" do
+        profile = build(:profile, attribute => "a" * 501)
+
+        expect(profile).not_to be_valid
+        expect(profile.errors[attribute]).to include(
+          "is too long (maximum is 500 characters)"
+        )
+      end
+    end
+  end
+
   describe "age range" do
     it "allows the youngest and oldest age to be the same" do
       expect(build(:profile, age_min: 25, age_max: 25)).to be_valid

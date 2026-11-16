@@ -157,6 +157,9 @@ erDiagram
     bigint user_id FK "unique"
     string display_name
     text bio
+    text ideal_first_date
+    text perfect_weekend
+    text interests
     string gender
     string interested_in
     integer age_min
@@ -231,6 +234,9 @@ Returning users click **Sign In** on the home page. When you're signed in, the h
 
 - **View it** with **View your profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
+- Profile photos appear on profile pages, Discover, My Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
+- **Prompts and interests:** optionally answer “Ideal first date” and “A perfect weekend,” and list your interests. Each field allows up to 500 characters.
+- Filled-in answers appear on your profile, other people's view of your profile, and swipe-history profile popups. Your companion also receives them for reactions, conversation starters, chat, and profile feedback.
 
 ## Swiping through profiles
 
@@ -267,4 +273,4 @@ Click **Message &lt;name&gt;** to open your conversation with a match (`/matches
 
 ## Coming soon (in progress)
 
-Messaging your matches, profile photos, reporting users, and moderation are being built in Sprint 2.
+Messaging your matches, reporting users, and moderation are being built in Sprint 2.

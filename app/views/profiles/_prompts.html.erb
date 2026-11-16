@@ -1,0 +1,18 @@
+<% if [profile.ideal_first_date, profile.perfect_weekend, profile.interests].any?(&:present?) %>
+  <dl>
+    <% if profile.ideal_first_date.present? %>
+      <dt>Ideal first date</dt>
+      <dd><%= simple_format(profile.ideal_first_date) %></dd>
+    <% end %>
+
+    <% if profile.perfect_weekend.present? %>
+      <dt>A perfect weekend</dt>
+      <dd><%= simple_format(profile.perfect_weekend) %></dd>
+    <% end %>
+
+    <% if profile.interests.present? %>
+      <dt>Interests</dt>
+      <dd><%= simple_format(profile.interests) %></dd>
+    <% end %>
+  </dl>
+<% end %>

@@ -2,6 +2,7 @@
 
 <section class="profile" aria-labelledby="person-name">
   <h1 id="person-name"><%= @person.display_name %></h1>
+  <%= render "profiles/photo", profile: @person.profile %>
   <p><%= @person.age %> years old</p>
 
   <% if @person.profile.gender.present? %>
@@ -14,6 +15,8 @@
   <% else %>
     <p>No bio yet.</p>
   <% end %>
+
+  <%= render "profiles/prompts", profile: @person.profile %>
 
   <%= button_to "Block #{@person.display_name}", person_block_path(@person),
         form: { data: { turbo_confirm: "Block #{@person.display_name}? They won't be able to see or contact you." } } %>

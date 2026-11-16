@@ -30,6 +30,8 @@ has_one_attached :photo
 
   validates :display_name, presence: true, length: { maximum: 40 }
   validates :bio, length: { maximum: 500 }
+  validates :ideal_first_date, :perfect_weekend, :interests,
+            length: { maximum: 500 }, allow_blank: true
   validates :gender, inclusion: { in: GENDERS }, allow_blank: true
   validates :interested_in, inclusion: { in: INTERESTED_IN }, allow_blank: true
   validates :age_min, :age_max, allow_nil: true,
