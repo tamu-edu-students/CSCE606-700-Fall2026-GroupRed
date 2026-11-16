@@ -3,6 +3,7 @@
 <% if @prospect %>
   <div class="prospect-card">
     <h2><%= @prospect.display_name %></h2>
+    <%= render "profiles/photo", profile: @prospect %>
     <p><%= link_to "View #{@prospect.display_name}'s profile", person_path(@prospect.user) %></p>
     <p>Bio: <%= @prospect.bio %></p>
     <p>Age: <%= @prospect.age %></p>

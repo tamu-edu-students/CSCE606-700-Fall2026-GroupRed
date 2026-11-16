@@ -1,0 +1,8 @@
+<% if profile.photo.attached? %>
+  <%= image_tag profile.photo,
+                alt: profile.photo_alt_text,
+                class: "profile-photo",
+                width: 160 %>
+<% else %>
+  <p class="profile-photo-placeholder">No photo yet.</p>
+<% end %>

@@ -5,6 +5,7 @@
       <% other_profile = match.other_profile(@profile) %>
       <li>
         <h2><%= other_profile.display_name %></h2>
+        <%= render "profiles/photo", profile: other_profile %>
         <p>Bio: <%= other_profile.bio %></p>
         <p>Age: <%= other_profile.age %></p>
         <p>Gender: <%= other_profile.gender %></p>
