@@ -57,8 +57,23 @@ Feature: Moderate users
   Scenario: Admin dashboard shows a list of all users
     Given I am signed in as an administrator
     When I visit "/admin"
-    Then I should see "Alex"
+    Then I should see "All Users"
+    And I should see "Display Name"
+    And I should see "Email"
+    And I should see "Joined Date"
+    And I should see "Status"
+    And I should see "Actions"
+    And I should see "Alex"
     And I should see "alex@example.com"
+    And I should see "Active"
+    And I should see "Colin"
+    And I should see "colin@example.com"
+    And I should see "Active"
+    And I should see "Bob"
+    And I should see "robert@example.com"
+    And I should see "Active"
+    And I should see "Francis"
+    And I should see "francis@example.com"
     And I should see "Active"
 
   Scenario: Admin dashboard is searchable
