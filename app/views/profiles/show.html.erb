@@ -3,9 +3,7 @@
 <section class="profile" aria-labelledby="profile-name">
   <h1 id="profile-name"><%= @profile.display_name %></h1>
 
-  <% if @profile.photo.attached? %>
-    <%= image_tag @profile.photo, alt: @profile.photo_alt_text %>
-  <% end %>
+  <%= render "profiles/photo", profile: @profile %>
   
   <p><%= @profile.age %> years old</p>
 
