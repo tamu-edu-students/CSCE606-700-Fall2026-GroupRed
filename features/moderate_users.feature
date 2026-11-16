@@ -51,3 +51,22 @@ Feature: Moderate users
     Then I should see "Alex"
     And I should see "alex@example.com"
     And I should see "Active"
+
+  Scenario: Admin dashboard is searchable
+    Given I am signed in as an administrator
+    And a user with email "colin@example.com" exists
+    And "colin@example.com" has a profile with:
+      | display_name | Colin |
+    And a user with email "robert@example.com" exists
+    And "robert@example.com" has a profile with:
+      | display_name | Bob |
+    And a user with email "francis@example.com" exists
+    And "francis@example.com" has a profile with:
+      | display_name | Francis |
+    When I visit "/admin"
+    And I fill in "Search users by name" with "Colin"
+    And I press "Search"
+    Then I should see "Colin"
+    And I should not see "Francis"
+    And I should not see "Bob"
+    

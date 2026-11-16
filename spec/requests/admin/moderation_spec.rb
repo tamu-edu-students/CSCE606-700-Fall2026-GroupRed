@@ -4,7 +4,14 @@ RSpec.describe "Admin moderation", type: :request do
   let(:admin) { create(:user, role: "admin") }
   let(:sam) { create(:user) }
   let(:alex) { create(:user) }
+  let(:colin) { create(:user) }
   let!(:report) { create(:report, reporter: sam, reportable: alex) }
+
+  before do
+    create(:profile, user: sam, display_name: "Sam")
+    create(:profile, user: alex, display_name: "Alex")
+    create(:profile, user: colin, display_name: "Colin")
+  end
 
   context "as an admin" do
     before { sign_in admin }
@@ -61,6 +68,25 @@ RSpec.describe "Admin moderation", type: :request do
     it "handles an account that no longer exists" do
       patch pardon_admin_user_path(id: 0)
       expect(flash[:alert]).to eq("That account isn't available.")
+    end
+
+    it "lists all users" do
+      get admin_path
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(sam.email)
+      expect(response.body).to include(alex.email)
+    end
+
+    it "filters users by name" do
+      get admin_path, params: { search: "Alex" }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Alex")
+      expect(response.body).to include(alex.email)
+      
+      expect(response.body).not_to include("Colin")
+      expect(response.body).not_to include(colin.email)
     end
   end
 
