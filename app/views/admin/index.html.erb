@@ -2,6 +2,42 @@
 
 <h1>Admin Dashboard</h1>
 
+<section aria-labelledby="users-list-heading">
+  <h2 id="all-users-heading">All Users</h2>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Display Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Joined Date</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td>
+            <%= user.profile&.display_name %>
+          </td>
+          <td>
+            <%= user.email %>
+          </td>
+          <td>
+            <%= user.created_at.strftime("%B %-d, %Y") %>
+          </td>
+          <td>
+            <% if user.suspended? %>
+              Suspended
+            <% else %>
+              Active
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
+
 <section aria-labelledby="open-reports-heading">
   <h2 id="open-reports-heading">Open reports</h2>
 

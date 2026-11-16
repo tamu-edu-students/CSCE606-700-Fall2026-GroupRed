@@ -44,3 +44,10 @@ Feature: Moderate users
     Given I am logged in as "sam@example.com"
     When I visit "/admin"
     Then I should be redirected to the not authorized page
+
+  Scenario: Admin dashboard shows a list of all users
+    Given I am signed in as an administrator
+    When I visit "/admin"
+    Then I should see "Alex"
+    And I should see "alex@example.com"
+    And I should see "Active"
