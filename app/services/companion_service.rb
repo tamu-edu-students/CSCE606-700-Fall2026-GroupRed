@@ -125,6 +125,9 @@ class CompanionService
     details = [ intro, "Name: #{profile.display_name}", "Age: #{profile.age}" ]
     details << "Gender: #{profile.gender}" if profile.gender.present?
     details << "Bio: #{profile.bio.presence || 'No bio yet'}"
+    details << "Ideal first date: #{profile.ideal_first_date}" if profile.ideal_first_date.present?
+    details << "A perfect weekend: #{profile.perfect_weekend}" if profile.perfect_weekend.present?
+    details << "Interests: #{profile.interests}" if profile.interests.present?
     details.join("\n")
   end
 
