@@ -4,7 +4,7 @@
   <h1 id="profile-name"><%= @profile.display_name %></h1>
 
   <%= render "profiles/photo", profile: @profile %>
-  
+
   <p><%= @profile.age %> years old</p>
 
   <dl>
@@ -24,6 +24,8 @@
   <% else %>
     <p>No bio yet.</p>
   <% end %>
+
+  <%= render "profiles/prompts", profile: @profile %>
 
   <section class="companion-feedback" aria-labelledby="companion-feedback-heading">
     <h2 id="companion-feedback-heading">What <%= @companion.name %> thinks</h2>
