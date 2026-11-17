@@ -1,14 +1,25 @@
-<div>
-    <h1>Welcome to WingmAIn</h1>
+<div class="home">
+  <h1>Welcome to WingmAIn</h1>
+  <p class="home-lead">A dating app with an AI wingman to help you browse profiles and break the ice.</p>
 
-    <% unless user_signed_in? %>
-        <%= link_to "Sign Up", new_user_registration_path%>
-        <%= link_to "Sign In", new_user_session_path%>
-    <% else %>
-        <%= link_to "View your profile", profile_path %>
-        <%= link_to "View your matches", matches_path %>
-        <%= link_to "Swipe through profiles", swipes_path %>
-        <%= link_to "Account Settings", edit_user_registration_path %>
-        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
-    <% end %>
+  <% if user_signed_in? %>
+    <div class="home-cards">
+      <div class="home-card">
+        <h2><%= link_to "Discover", swipes_path %></h2>
+        <p>Swipe through profiles and see what your companion thinks.</p>
+      </div>
+      <div class="home-card">
+        <h2><%= link_to "Matches", matches_path %></h2>
+        <p>Check your mutual likes and start a conversation.</p>
+      </div>
+      <div class="home-card">
+        <h2><%= link_to "Your companion", companion_path %></h2>
+        <p>Chat with your wingman or tweak their personality.</p>
+      </div>
+      <div class="home-card">
+        <h2><%= link_to "Your profile", profile_path %></h2>
+        <p>Update your bio, photo, and dating preferences.</p>
+      </div>
+    </div>
+  <% end %>
 </div>

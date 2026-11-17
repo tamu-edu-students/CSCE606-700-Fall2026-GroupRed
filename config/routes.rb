@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :matches, only: %i[ index show ] do
     resources :messages, only: :create
     resource :openers, only: :create
+    resource :reply_suggestion, only: :create
   end
 
   get "admin", to: "admin#index", as: :admin

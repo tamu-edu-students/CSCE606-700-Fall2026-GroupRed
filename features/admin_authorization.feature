@@ -22,6 +22,7 @@ Scenario: A visitor cannot access the admin dashboard
   Scenario: An administrator can reach the dashboard from the header
     Given I am signed in as an administrator
     When I visit the home page
+    And I open the Account menu
     And I follow "Admin"
     Then I should see "Admin Dashboard"
 

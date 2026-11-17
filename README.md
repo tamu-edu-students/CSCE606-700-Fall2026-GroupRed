@@ -157,6 +157,9 @@ erDiagram
     bigint user_id FK "unique"
     string display_name
     text bio
+    text ideal_first_date
+    text perfect_weekend
+    text interests
     string gender
     string interested_in
     integer age_min
@@ -212,7 +215,7 @@ erDiagram
 | `Message` | A message between the two people in a match (1–1000 characters); only someone in the match can send one |
 | `Companion` | The user's AI companion; created at sign-up; name and personality are customizable; 20 chat messages per day |
 | `CompanionMessage` | The companion's reaction to a profile and the chat about it |
-| `CompanionService` | Only place that calls the AI API: greetings, profile reactions (`react`), and chat replies (`reply`); sends only profile fields, never email or birth date; 10-second timeout and a fallback message on errors |
+| `CompanionService` | Calls the AI for greetings, profile reactions, feedback, openers, and chats. Conversation reply suggestions also use the latest 10 match messages. Account email and birth-date fields are excluded; requests have a 10-second timeout, and callers show a fallback on API errors. |
 | `Block` | One user blocking another; blocks apply both ways |
 
 ---
@@ -231,6 +234,9 @@ Returning users click **Sign In** on the home page. When you're signed in, the h
 
 - **View it** with **View your profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
+- Profile photos appear on profile pages, Discover, My Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
+- **Prompts and interests:** optionally answer “Ideal first date” and “A perfect weekend,” and list your interests. Each field allows up to 500 characters.
+- Filled-in answers appear on your profile, other people's view of your profile, and swipe-history profile popups. Your companion also receives them for reactions, conversation starters, chat, and profile feedback.
 
 ## Swiping through profiles
 
@@ -259,6 +265,8 @@ Click **View your matches** (`/matches`) to see everyone you've matched with. Pe
 
 Click **Message &lt;name&gt;** to open your conversation with a match (`/matches/<id>`). Messages from both of you are listed oldest to newest, with who sent each one. Type in the box and click **Send**; a blank message isn't sent. There are no live updates (the app works without JavaScript), so refresh the page to see new replies. If either of you blocks the other, the conversation closes.
 
+Click **Suggest a reply** to get a draft based on your match's profile and the 10 most recent messages. If the conversation is empty, it suggests an opening message. You can edit the draft before clicking **Send**; suggestions are never sent automatically. Each successful suggestion counts toward your companion's daily limit of 20 requests.
+
 ## Viewing and blocking people
 
 - Each person has a profile page at `/people/<id>`.
@@ -267,4 +275,4 @@ Click **Message &lt;name&gt;** to open your conversation with a match (`/matches
 
 ## Coming soon (in progress)
 
-Messaging your matches, profile photos, reporting users, and moderation are being built in Sprint 2.
+Messaging your matches, reporting users, and moderation are being built in Sprint 2.

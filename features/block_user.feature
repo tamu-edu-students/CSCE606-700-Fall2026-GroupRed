@@ -52,6 +52,7 @@ Feature: Block users
     Scenario: Reach blocked people list from the header
         Given I am logged in as "sam@example.com"
         When I visit the home page
+        And I open the Account menu
         And I follow "Blocked people"
         Then I should be on the blocked people page
 
