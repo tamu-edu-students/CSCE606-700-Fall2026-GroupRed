@@ -265,6 +265,8 @@ Click **View your matches** (`/matches`) to see everyone you've matched with. Pe
 
 Click **Message &lt;name&gt;** to open your conversation with a match (`/matches/<id>`). Messages from both of you are listed oldest to newest, with who sent each one. Type in the box and click **Send**; a blank message isn't sent. There are no live updates (the app works without JavaScript), so refresh the page to see new replies. If either of you blocks the other, the conversation closes.
 
+Each message from your match has a Report button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can Delete any message you sent, which removes it for both of you.
+
 ## Viewing and blocking people
 
 - Each person has a profile page at `/people/<id>`.

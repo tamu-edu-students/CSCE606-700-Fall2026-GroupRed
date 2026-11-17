@@ -106,5 +106,28 @@ RSpec.describe "Messages", type: :request do
         expect(response).to redirect_to(not_authorized_path)
       end
     end
+    describe "DELETE /matches/:match_id/messages/:id" do
+      it "deletes my own message" do
+        message = create(:message, match: our_match, sender: profile, body: "Oops")
+
+        expect { delete match_message_path(our_match, message) }.to change(Message, :count).by(-1)
+        expect(flash[:notice]).to eq("Message deleted.")
+      end
+
+      it "won't delete the other person's message" do
+        message = create(:message, match: our_match, sender: other_profile)
+
+        expect { delete match_message_path(our_match, message) }.not_to change(Message, :count)
+        expect(flash[:alert]).to eq("You can only delete your own messages.")
+      end
+
+      it "won't delete in someone else's conversation" do
+        stranger_match = create(:match, profile_1: create(:profile), profile_2: create(:profile))
+        message = create(:message, match: stranger_match)
+
+        expect { delete match_message_path(stranger_match, message) }.not_to change(Message, :count)
+        expect(response).to redirect_to(not_authorized_path)
+      end
+    end
   end
 end
