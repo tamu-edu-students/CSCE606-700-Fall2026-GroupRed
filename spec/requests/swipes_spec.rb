@@ -240,6 +240,29 @@ end
     expect(match.profile_2_id).to eq(profile_ids[1])
   end
 
+  it "does not create duplicate matches" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+
+    create(:swipe, swiper: prospect, prospect: profile, liked: true)
+
+    profile_ids = [ profile.id, prospect.id ].sort
+    create(:match, profile_1_id: profile_ids[0], profile_2_id: profile_ids[1])
+
+    expect {
+      post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
+    }.not_to change(Match, :count) {
+      Match.where(
+        profile_1_id: profile_ids[0],
+        profile_2_id: profile_ids[1]
+      ).count
+    }
+  end
+
   it "does not allow a user to swipe on a profile that has already been swiped on" do
     prospect = create(
       :profile,
