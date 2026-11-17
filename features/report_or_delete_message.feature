@@ -36,3 +36,4 @@ Feature: Report or delete a message
         And I send the message "Hey Taylor!"
         Then the message "Hey Sam!" should not have a "Delete" button
         And the message "Hey Taylor!" should not have a "Report" button
+        
