@@ -307,7 +307,7 @@ end
     }.not_to change(Swipe, :count)
 
     expect(response).to redirect_to(swipes_path)
-    expect(flash[:alert]).to eq("Profile is suspended and cannot be swiped.")
+    expect(flash[:alert]).to eq("That profile isn't available.")
   end
 
   it "does not show suspended prospects" do

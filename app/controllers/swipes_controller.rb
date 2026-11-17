@@ -23,7 +23,7 @@ class SwipesController < ApplicationController
 
     # Check if prospect is suspended
     if prospect.user.suspended?
-      redirect_to swipes_path, alert: "Profile is suspended and cannot be swiped."
+      redirect_to swipes_path, alert: "That profile isn't available."
       return
     end
 
