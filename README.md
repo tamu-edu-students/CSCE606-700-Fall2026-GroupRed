@@ -215,7 +215,7 @@ erDiagram
 | `Message` | A message between the two people in a match (1–1000 characters); only someone in the match can send one |
 | `Companion` | The user's AI companion; created at sign-up; name and personality are customizable; 20 chat messages per day |
 | `CompanionMessage` | The companion's reaction to a profile and the chat about it |
-| `CompanionService` | Only place that calls the AI API: greetings, profile reactions (`react`), and chat replies (`reply`); sends only profile fields, never email or birth date; 10-second timeout and a fallback message on errors |
+| `CompanionService` | Calls the AI for greetings, profile reactions, feedback, openers, and chats. Conversation reply suggestions also use the latest 10 match messages. Account email and birth-date fields are excluded; requests have a 10-second timeout, and callers show a fallback on API errors. |
 | `Block` | One user blocking another; blocks apply both ways |
 
 ---
@@ -265,7 +265,9 @@ Click **View your matches** (`/matches`) to see everyone you've matched with. Pe
 
 Click **Message &lt;name&gt;** to open your conversation with a match (`/matches/<id>`). Messages from both of you are listed oldest to newest, with who sent each one. Type in the box and click **Send**; a blank message isn't sent. There are no live updates (the app works without JavaScript), so refresh the page to see new replies. If either of you blocks the other, the conversation closes.
 
-Each message from your match has a Report button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can Delete any message you sent, which removes it for both of you.
+Click **Suggest a reply** to get a draft based on your match's profile and the 10 most recent messages. If the conversation is empty, it suggests an opening message. You can edit the draft before clicking **Send**; suggestions are never sent automatically. Each successful suggestion counts toward your companion's daily limit of 20 requests.
+
+Each message from your match has a **Report** button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can **Delete** any message you sent, which removes it for both of you.
 
 ## Viewing and blocking people
 

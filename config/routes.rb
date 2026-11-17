@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       resource :report, only: :create, controller: "message_reports"
     end
     resource :openers, only: :create
+    resource :reply_suggestion, only: :create
   end
 
   get "admin", to: "admin#index", as: :admin
