@@ -16,6 +16,12 @@
           <strong><%= mine ? "You" : message.sender.display_name %>:</strong>
           <%= message.body %>
           <time datetime="<%= message.created_at.iso8601 %>"><%= l(message.created_at, format: :short) %></time>
+          <% if mine %>
+            <%= button_to "Delete", match_message_path(@match, message), method: :delete,
+                  form: { data: { turbo_confirm: "Delete this message for both of you?" } } %>
+          <% else %>
+            <%= button_to "Report", match_message_report_path(@match, message) %>
+          <% end %>
         </li>
       <% end %>
     </ol>

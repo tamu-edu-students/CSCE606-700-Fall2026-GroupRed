@@ -15,4 +15,8 @@ class MessagePolicy < ApplicationPolicy
   def create?
     show?
   end
+
+  def destroy?
+    show?
+  end
 end

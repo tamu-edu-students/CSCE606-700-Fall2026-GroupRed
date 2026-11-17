@@ -267,6 +267,8 @@ Click **Message &lt;name&gt;** to open your conversation with a match (`/matches
 
 Click **Suggest a reply** to get a draft based on your match's profile and the 10 most recent messages. If the conversation is empty, it suggests an opening message. You can edit the draft before clicking **Send**; suggestions are never sent automatically. Each successful suggestion counts toward your companion's daily limit of 20 requests.
 
+Each message from your match has a **Report** button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can **Delete** any message you sent, which removes it for both of you.
+
 ## Viewing and blocking people
 
 - Each person has a profile page at `/people/<id>`.
