@@ -21,8 +21,8 @@ RSpec.describe CompanionService do
       create(:message, body: "Message from a different match")
 
       conversation = [
-        { speaker: "Taylor", text: "Coffee on Saturday?" },
-        { speaker: "Your friend", text: "Saturday works!" }
+        { speaker: "Match", text: "Coffee on Saturday?" },
+        { speaker: "Sender", text: "Saturday works!" }
       ]
 
       expect(described_class).to receive(:ask) do |sent_companion, prompt|
@@ -50,7 +50,7 @@ RSpec.describe CompanionService do
       end
 
       conversation = (2..11).map do |index|
-        { speaker: "Your friend", text: "History entry #{index}." }
+        { speaker: "Sender", text: "History entry #{index}." }
       end
 
       expect(described_class).to receive(:ask) do |_companion, prompt|
@@ -69,8 +69,8 @@ RSpec.describe CompanionService do
              body: "Yes!", created_at: 1.minute.ago)
 
       conversation = [
-        { speaker: "Sam", text: "Want to get coffee?" },
-        { speaker: "Your friend", text: "Yes!" }
+        { speaker: "Match", text: "Want to get coffee?" },
+        { speaker: "Sender", text: "Yes!" }
       ]
 
       expect(described_class).to receive(:ask) do |sent_companion, prompt|
