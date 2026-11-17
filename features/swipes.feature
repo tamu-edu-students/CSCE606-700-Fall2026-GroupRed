@@ -117,7 +117,7 @@ Feature: Swipe on other profiles
         And the other user is suspended
         And I am logged in as "sam@example.com"
         When I attempt to swipe on the other profile
-        Then I should see "Profile is suspended and cannot be swiped."
+        Then I should see "That profile isn't available."
         And no swipe should be added
 
     Scenario: A user cannot swipe on their own profile
