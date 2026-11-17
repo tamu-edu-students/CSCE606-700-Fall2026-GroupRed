@@ -263,6 +263,53 @@ end
     }
   end
 
+  it "does not allow a user to swipe on a profile that has already been swiped on" do
+    prospect = create(
+      :profile,
+      user: create(:user, date_of_birth: 26.years.ago.to_date),
+      gender: "Woman",
+      interested_in: "Men"
+    )
+    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+
+    expect {
+      post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
+    }.not_to change(Swipe, :count)
+
+    expect(response).to redirect_to(swipes_path)
+    expect(flash[:alert]).to eq("You have already swiped on this profile.")
+  end
+
+  it "does not allow a user to swipe on themselves" do
+    expect {
+      post swipes_path, params: { prospect_id: profile.id, action_type: "like" }
+    }.not_to change(Swipe, :count)
+
+    expect(response).to redirect_to(swipes_path)
+    expect(flash[:alert]).to eq("You cannot swipe on your own profile.")
+  end
+
+  it "does not allow a user to swipe on a suspended profile" do
+    suspended_user = create(
+      :user,
+      date_of_birth: 26.years.ago.to_date,
+      suspended_at: Time.current
+    )
+    prospect = create(
+      :profile,
+      user: suspended_user,
+      gender: "Woman",
+      interested_in: "Men"
+    )
+
+    expect {
+      post swipes_path, params: { prospect_id: prospect.id, action_type: "like" }
+    }.not_to change(Swipe, :count)
+
+    expect(response).to redirect_to(swipes_path)
+    expect(flash[:alert]).to eq("That profile isn't available.")
+  end
+
   it "does not show suspended prospects" do
     existing_profiles = Profile.where.not(id: profile.id).to_a
 

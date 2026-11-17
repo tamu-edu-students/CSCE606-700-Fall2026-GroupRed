@@ -153,3 +153,29 @@ end
 Given('the other user is suspended') do
   @other_profile.user.update!(suspended_at: Time.current)
 end
+
+Given("I have already swiped on the other profile") do
+  Swipe.create!(swiper: @first_profile, prospect: @other_profile, liked: true)
+end
+
+When("I attempt to swipe on the other profile") do
+  @swipe_count_before_attempt = Swipe.count
+  page.driver.submit(
+    :post,
+    swipes_path(prospect_id: @other_profile.id, action_type: "like"),
+    {}
+  )
+end
+
+When("I attempt to swipe on my own profile") do
+  @swipe_count_before_attempt = Swipe.count
+  page.driver.submit(
+    :post,
+    swipes_path(prospect_id: @first_profile.id, action_type: "like"),
+    {}
+  )
+end
+
+Then("no swipe should be added") do
+  expect(Swipe.count).to eq(@swipe_count_before_attempt)
+end
