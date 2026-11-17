@@ -22,8 +22,20 @@ class SwipesController < ApplicationController
     end
 
     # Check if prospect is suspended
-    if prospect.user.suspended_at.present?
-      redirect_to swipes_path, alert: "That profile is unavailable."
+    if prospect.user.suspended?
+      redirect_to swipes_path, alert: "Profile is suspended and cannot be swiped."
+      return
+    end
+
+    # Check if the prospect has already been swiped on by the current profile
+    if Swipe.exists?(swiper_id: @profile.id, prospect_id: prospect.id)
+      redirect_to swipes_path, alert: "You have already swiped on this profile."
+      return
+    end
+
+    # Check if prospect is the user's own profile
+    if prospect.id == @profile.id
+      redirect_to swipes_path, alert: "You cannot swipe on your own profile."
       return
     end
 
