@@ -2,7 +2,7 @@
 
 <h1>Admin Dashboard</h1>
 
-<section aria-labelledby="users-list-heading">
+<section aria-labelledby="all-users-heading">
   <h2 id="all-users-heading">All Users</h2>
   <%= form_with url: admin_path, method: :get, local: true do |form| %>
     <%= form.label :search, "Search users by name" %>
@@ -42,9 +42,9 @@
             <% if user.admin? %>
               Admin
             <% elsif user.suspended? %>
-              <%= button_to "Pardon #{user.profile&.display_name}", pardon_admin_user_path(user), method: :patch %>
+              <%= button_to "Pardon #{user.display_name}", pardon_admin_user_path(user), method: :patch %>
             <% else %>
-              <%= button_to "Ban #{user.profile&.display_name}", suspend_admin_user_path(user), method: :patch %>
+              <%= button_to "Ban #{user.display_name}", suspend_admin_user_path(user), method: :patch %>
             <% end %>
           </td>
         </tr>
