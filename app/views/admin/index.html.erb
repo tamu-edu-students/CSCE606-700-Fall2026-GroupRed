@@ -39,7 +39,9 @@
             <% end %>
           </td>
           <td>
-            <% if user.suspended? %>
+            <% if user.admin? %>
+              Admin
+            <% elsif user.suspended? %>
               <%= button_to "Pardon #{user.profile&.display_name}", pardon_admin_user_path(user), method: :patch %>
             <% else %>
               <%= button_to "Ban #{user.profile&.display_name}", suspend_admin_user_path(user), method: :patch %>

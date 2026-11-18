@@ -99,4 +99,12 @@ Feature: Moderate users
     And I press "Pardon Colin" in the users table
     Then I should see "Colin is pardoned"
     And "colin@example.com" should not be suspended
-    
+
+  Scenario: Admin cant suspend another admin
+    Given a user with email "otheradmin@example.com" exists
+    And "otheradmin@example.com" has a profile with:
+      | display_name | Other Admin |
+    And "otheradmin@example.com" is an administrator
+    And I am signed in as an administrator
+    When I visit "/admin"
+    Then I should not see "Ban Other Admin" in the users table    

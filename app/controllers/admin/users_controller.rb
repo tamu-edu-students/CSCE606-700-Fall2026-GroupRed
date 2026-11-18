@@ -6,6 +6,7 @@ module Admin
       authorize :admin, :show?
       person = User.find_by(id: params[:id])
       return redirect_to(admin_path, alert: "That account isn't available.") unless person
+      return redirect_to(admin_path, alert: "Admins can't be suspended.") if person.admin?
 
       person.update!(suspended_at: Time.current)
       redirect_to admin_path, notice: "#{person.display_name} is suspended."

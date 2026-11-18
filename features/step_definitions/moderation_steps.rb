@@ -34,3 +34,12 @@ When('I press {string} in the banned user list') do |string|
     click_button string
   end
 end
+
+Given('{string} is an administrator') do |string|
+  user = User.find_by!(email: string)
+  user.update!(role: "admin")
+end
+
+Then('I should not see {string} in the users table') do |string|
+  expect(page).not_to have_button(string)
+end
