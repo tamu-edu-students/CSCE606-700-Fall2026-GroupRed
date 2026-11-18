@@ -43,3 +43,13 @@ end
 Then('I should not see {string} in the users table') do |string|
   expect(page).not_to have_button(string)
 end
+
+Then('I should see these users:') do |table|
+  within("#users-table") do
+    table.hashes.each do |user|
+      row = find("tr", text: user["Email"])
+      expect(row).to have_text(user["Display Name"])
+      expect(row).to have_text(user["Status"])
+    end
+  end
+end
