@@ -32,9 +32,9 @@ describe "User sessions and authentication", type: :request do
     it "shows public navigation to signed-out visitors" do
       get root_path
 
-      expect(response.body).to include("Sign In")
-      expect(response.body).to include("Sign Up")
-      expect(response.body).not_to include("Sign Out")
+      expect(response.body).to include("Sign in")
+      expect(response.body).to include("Sign up")
+      expect(response.body).not_to include("Sign out")
     end
   end
 
@@ -63,9 +63,9 @@ describe "User sessions and authentication", type: :request do
 
       get root_path
 
-      expect(response.body).to include("Sign Out")
-      expect(response.body).to include("View your profile")
-      expect(response.body).not_to include("Sign In")
+      expect(response.body).to include("Sign out")
+      expect(response.body).to include("Profile")
+      expect(response.body).not_to include("Sign in")
     end
   end
 
@@ -92,9 +92,9 @@ describe "User sessions and authentication", type: :request do
       delete destroy_user_session_path
       get root_path
 
-      expect(response.body).to include("Sign In")
-      expect(response.body).to include("Sign Up")
-      expect(response.body).not_to include("Sign Out")
+      expect(response.body).to include("Sign in")
+      expect(response.body).to include("Sign up")
+      expect(response.body).not_to include("Sign out")
     end
   end
 end
