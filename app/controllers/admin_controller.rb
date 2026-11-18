@@ -6,7 +6,8 @@ class AdminController < ApplicationController
     @users = User.includes(:profile)
 
     if params[:search].present?
-      @users = @users.joins(:profile).where("profiles.display_name ILIKE ?", "%#{params[:search]}%")
+      q = "%#{User.sanitize_sql_like(params[:search])}%"
+      @users = @users.joins(:profile).where("profiles.display_name ILIKE :q OR users.email ILIKE :q", q: q)
     end
 
     @users = @users.order(:created_at)

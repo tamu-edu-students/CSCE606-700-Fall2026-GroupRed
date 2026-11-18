@@ -76,10 +76,19 @@ Feature: Moderate users
     And I should see "francis@example.com"
     And I should see "Active"
 
-  Scenario: Admin dashboard is searchable
+  Scenario: Admin dashboard is searchable by name
     Given I am signed in as an administrator
     When I visit "/admin"
     And I fill in "Search users by name" with "Colin"
+    And I press "Search"
+    Then I should see "Colin"
+    And I should not see "Francis"
+    And I should not see "Bob"
+
+  Scenario: Admin dashboard is searchable by email
+    Given I am signed in as an administrator
+    When I visit "/admin"
+    And I fill in "Search users by name" with "colin@example.com"
     And I press "Search"
     Then I should see "Colin"
     And I should not see "Francis"

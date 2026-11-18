@@ -102,6 +102,17 @@ RSpec.describe "Admin moderation", type: :request do
       expect(response.body).not_to include("Colin")
       expect(response.body).not_to include(colin.email)
     end
+
+    it "filters users by email" do
+      get admin_path, params: { search: alex.email }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Alex")
+      expect(response.body).to include(alex.email)
+
+      expect(response.body).not_to include("Colin")
+      expect(response.body).not_to include(colin.email)
+    end
   end
 
   context "as a regular user" do
