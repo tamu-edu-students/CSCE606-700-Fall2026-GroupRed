@@ -1,3 +1,14 @@
 <% content_for :title, "Conversations" %>
 
 <h1>Conversations</h1>
+
+<ul>
+  <% @conversations.each do |conversation| %>
+    <% other_profile = conversation.other_profile(@profile) %>
+    <li>
+      <%= other_profile.display_name %>
+      (<%= conversation.messages_count %> messages)
+      <%= link_to "Open conversation", match_path(conversation) %>
+    </li>
+  <% end %>
+</ul>
