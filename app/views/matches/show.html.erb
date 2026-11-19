@@ -5,7 +5,8 @@
   <%= render "profiles/photo", profile: @other_profile %>
   <p>
     <%= link_to "Back to matches", matches_path %> |
-    <%= link_to "View #{@other_profile.display_name}'s profile", person_path(@other_profile.user) %>
+    <%= link_to "View #{@other_profile.display_name}'s profile", person_path(@other_profile.user) %> |
+    <%= link_to "Unmatch", unmatch_match_path(@match) %>
   </p>
 
   <% if @messages.any? %>

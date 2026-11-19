@@ -20,7 +20,8 @@ Rails.application.routes.draw do
     end
   end
   resources :history, only: :index, controller: "swipes", action: "history"
-  resources :matches, only: %i[ index show ] do
+  resources :matches, only: %i[ index show destroy ] do
+    get :unmatch, on: :member
     resources :messages, only: %i[ create destroy ] do
       resource :report, only: :create, controller: "message_reports"
     end
