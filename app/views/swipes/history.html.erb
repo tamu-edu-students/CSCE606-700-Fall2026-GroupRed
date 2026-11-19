@@ -22,7 +22,14 @@
             <%= render "prospect_profile", profile: swipe.prospect %>
           </td>
           <td>
-            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"), method: :post %>
+            <% change_form = if @matched_prospect_ids.include?(swipe.prospect_id)
+                 warning = "Change decision to Pass? This will unmatch you with #{swipe.prospect.display_name} and delete your conversation for both of you."
+                 { onsubmit: "return confirm(#{warning.to_json});" }
+               else
+                 {}
+               end %>
+            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"),
+                  method: :post, form: change_form %>
           </td>
         </tr>
       <% end %>

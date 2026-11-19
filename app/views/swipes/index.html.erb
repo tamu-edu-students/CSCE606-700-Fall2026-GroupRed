@@ -21,7 +21,12 @@
   <p>No more profiles available.</p>
 <% end %>
 
+<% undo_confirm = if @undo_would_unmatch
+     "Undo your last swipe? This will unmatch you and delete your conversation for both of you."
+   else
+     "Are you sure you want to undo your last swipe?"
+   end %>
 <%= button_to "Undo Last Swipe", undo_swipes_path, method: :post,
-      form: { onsubmit: "return confirm('Are you sure you want to undo your last swipe?');" } %>
+      form: { onsubmit: "return confirm(#{undo_confirm.to_json});" } %>
 
 <%= link_to "View Swipe History", history_index_path %>
