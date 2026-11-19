@@ -33,4 +33,13 @@ RSpec.describe MessagePolicy do
     expect(policy_for(sam.user).show?).to be false
     expect(policy_for(taylor.user).create?).to be false
   end
+
+  it "lets only the people in the match unmatch" do
+    expect(policy_for(sam.user).unmatch?).to be true
+    expect(policy_for(taylor.user).destroy?).to be true
+
+    stranger = create(:profile).user
+    expect(policy_for(stranger).unmatch?).to be false
+    expect(policy_for(stranger).destroy?).to be false
+  end
 end

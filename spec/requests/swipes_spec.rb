@@ -340,4 +340,39 @@ end
     expect(response.body).to include("No more profiles available.")
     expect(response.body).not_to include("Suspended Prospect")
   end
+
+  it "warns on Undo when the last swipe has a match" do
+    prospect = create(:profile, display_name: "Taylor")
+    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+    ids = [ profile.id, prospect.id ].sort
+    create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+
+    get swipes_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("This will unmatch you and delete your conversation for both of you.")
+  end
+
+  it "uses the regular Undo prompt when the last swipe has no match" do
+    prospect = create(:profile, display_name: "Taylor")
+    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+
+    get swipes_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Are you sure you want to undo your last swipe?")
+    expect(response.body).not_to include("delete your conversation for both of you")
+  end
+
+  it "warns on Change Decision in history only for matched likes" do
+    prospect = create(:profile, display_name: "Taylor")
+    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+    ids = [ profile.id, prospect.id ].sort
+    create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+
+    get history_index_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("This will unmatch you with #{prospect.display_name} and delete your conversation for both of you.")
+  end
 end
