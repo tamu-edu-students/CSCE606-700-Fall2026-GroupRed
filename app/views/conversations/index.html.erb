@@ -3,6 +3,9 @@
 <h1>Conversations</h1>
 
 <ul>
+  <% if @conversations.empty? %>
+    <li>No conversations yet.</li>
+  <% end %>
   <% @conversations.each do |conversation| %>
     <% other_profile = conversation.other_profile(@profile) %>
     <li>
