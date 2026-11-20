@@ -38,7 +38,10 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: [] do
-      patch :pardon, on: :member
+      member do
+        patch :pardon
+        patch :suspend
+      end
     end
   end
 
