@@ -11,12 +11,14 @@ When("I visit the Discover page") do
 end
 
 When("I unmatch with them") do
+  @unmatched_match_id = current_match.id
   click_button "Unmatch"
 end
 
 Then("neither person should see the match or its messages") do
-  expect(Match.involving(@first_profile)).to be_empty
-  expect(Message.count).to eq(0)
+  expect(page).to have_content("No matches yet.")
+  expect(Match.between(@first_profile, @other_profile)).not_to exist
+  expect(Message.where(match_id: @unmatched_match_id)).to be_empty
 
   click_button "Sign out"
   step %(I am logged in as "#{@other_profile.user.email}")
@@ -36,5 +38,5 @@ When("I try to unmatch that match directly") do
 end
 
 Then("the match should still exist") do
-  expect(Match.count).to eq(1)
+  expect(Match.between(@first_profile, @other_profile)).to exist
 end
