@@ -10,7 +10,8 @@
     <% other_profile = conversation.other_profile(@profile) %>
     <li>
       <%= other_profile.display_name %>
-      (<%= conversation.messages_count %> messages)
+      (<%= conversation.messages_count %> messages,
+      <%= conversation.unread_messages_count.to_i %> unread)
       <%= link_to "Open conversation", match_path(conversation) %>
     </li>
   <% end %>

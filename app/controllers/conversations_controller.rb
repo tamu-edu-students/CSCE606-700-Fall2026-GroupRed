@@ -10,6 +10,7 @@ class ConversationsController < ApplicationController
                      .select(
                        "matches.*",
                        "COUNT(messages.id) AS messages_count",
+                       "SUM(CASE WHEN NOT messages.seen AND messages.sender_id != #{@profile.id} THEN 1 ELSE 0 END) AS unread_messages_count",
                        "MAX(messages.created_at) AS last_message_at"
                      )
                      .group("matches.id")
