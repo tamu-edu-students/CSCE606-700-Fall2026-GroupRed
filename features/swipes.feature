@@ -104,7 +104,7 @@ Feature: Swipe on other profiles
         When I visit the swipe page
         Then I should see that no profiles are available
 
-    Scenario: A paused user does no appear in swipes
+    Scenario: A paused user does not appear in swipes
         Given two compatible profiles exist
         And the other user is paused
         And I am logged in as "sam@example.com"

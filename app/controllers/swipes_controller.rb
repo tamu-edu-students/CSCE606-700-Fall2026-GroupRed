@@ -25,7 +25,7 @@ class SwipesController < ApplicationController
     end
 
     # Check if prospect is suspended or paused
-    if prospect.user.suspended? || prospect.user.profile.paused?
+    if prospect.user.suspended? || prospect.paused?
       redirect_to swipes_path, alert: "That profile isn't available."
       return
     end
