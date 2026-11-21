@@ -154,6 +154,10 @@ Given('the other user is suspended') do
   @other_profile.user.update!(suspended_at: Time.current)
 end
 
+Given('the other user is paused') do
+  @other_profile.update!(paused: true)
+end
+
 Given("I have already swiped on the other profile") do
   Swipe.create!(swiper: @first_profile, prospect: @other_profile, liked: true)
 end
