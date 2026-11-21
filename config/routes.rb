@@ -11,9 +11,7 @@ Rails.application.routes.draw do
     resource :block, only: %i[ create destroy ]
     resources :reports, only: %i[ new create ]
   end
-  resources :conversations, only: %i[ index show ] do
-    resources :messages, only: :create
-  end
+  resources :conversations, only: :index
   resources :blocks, only: :index
   resources :reports, only: :index
   resources :swipes, only: %i[index create] do
