@@ -22,5 +22,14 @@ class MatchesController < ApplicationController
     @messages = @match.messages.oldest_first.includes(:sender)
     @openers = Array(flash[:openers])
     @draft = params[:draft].to_s.truncate(Message::MAX_LENGTH)
+    mark_messages_as_seen
+  end
+
+  private
+
+  def mark_messages_as_seen
+    @match.messages
+      .where(seen: false, sender_id: @other_profile.id)
+      .update_all(seen: true)
   end
 end
