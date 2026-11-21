@@ -23,11 +23,16 @@ class ApplicationController < ActionController::Base
   def set_unread_message_count
     profile = current_user.profile
     @unread_message_count = if profile
-      Message.joins(:match)
+      visible_match_ids = Match
+        .involving(profile)
+        .not_blocked_with(profile)
+        .not_suspended_with(profile)
+        .select(:id)
+
+      Message
+        .where(match_id: visible_match_ids)
         .where(seen: false)
         .where.not(sender_id: profile.id)
-        .where("matches.profile_1_id = :profile_id OR matches.profile_2_id = :profile_id",
-               profile_id: profile.id)
         .count
     else
       0
