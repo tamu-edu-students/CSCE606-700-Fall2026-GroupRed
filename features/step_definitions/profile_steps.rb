@@ -107,3 +107,21 @@ end
 When("I delete my profile") do
   page.driver.submit :delete, profile_path, {}
 end
+
+When('I pause my profile') do
+  click_button "Pause profile"
+end
+
+Then('my profile should be paused') do
+  profile = User.find_by!(email: "sam@example.com").profile
+  expect(profile).to be_paused
+end
+
+When('I unpause my profile') do
+  click_button "Unpause profile"
+end
+
+Then('my profile should not be paused') do
+  profile = User.find_by!(email: "sam@example.com").profile
+  expect(profile).not_to be_paused
+end

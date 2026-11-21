@@ -3,7 +3,7 @@ class MatchesController < ApplicationController
 
   before_action :authenticate_user!
   before_action :require_profile
-  before_action :set_match, only: :show
+  before_action :set_match, only: %i[ show unmatch destroy ]
 
   def index
     visible_profile_ids = Profile
@@ -19,8 +19,30 @@ class MatchesController < ApplicationController
 
   # The conversation with one match. New messages show after sending or refreshing (ADR 0002).
   def show
+    response.headers["Cache-Control"] = "no-store"
+
     @messages = @match.messages.oldest_first.includes(:sender)
     @openers = Array(flash[:openers])
     @draft = params[:draft].to_s.truncate(Message::MAX_LENGTH)
+    mark_messages_as_seen
+    set_unread_message_count
+  end
+
+  # Confirmation page, so the warning shows even without JavaScript (ADR 0002).
+  def unmatch
+  end
+
+  def destroy
+    Swipe.find_by(swiper: @profile, prospect: @other_profile)&.update!(liked: false)
+    @match.destroy!
+    redirect_to matches_path, notice: "You unmatched with #{@other_profile.display_name}."
+  end
+
+  private
+
+  def mark_messages_as_seen
+    @match.messages
+      .where(seen: false, sender_id: @other_profile.id)
+      .update_all(seen: true)
   end
 end

@@ -1,0 +1,18 @@
+<% content_for :title, "Conversations" %>
+
+<h1>Conversations</h1>
+
+<ul>
+  <% if @conversations.empty? %>
+    <li>No conversations yet.</li>
+  <% end %>
+  <% @conversations.each do |conversation| %>
+    <% other_profile = conversation.other_profile(@profile) %>
+    <li>
+      <%= other_profile.display_name %>
+      (<%= conversation.messages_count %> messages,
+      <%= conversation.unread_messages_count.to_i %> unread)
+      <%= link_to "Open conversation", match_path(conversation) %>
+    </li>
+  <% end %>
+</ul>

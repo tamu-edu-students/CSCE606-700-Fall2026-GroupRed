@@ -3,6 +3,9 @@ class SwipesController < ApplicationController
   before_action :set_profile, only: %i[index create history undo change_decision]
 
   def index
+    last_swipe = Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
+    @undo_would_unmatch = last_swipe&.liked? && Match.between(last_swipe.swiper_id, last_swipe.prospect_id).exists?
+
     @prospect = find_potential_profiles.order(:id).first
     return unless @prospect
 
@@ -21,8 +24,8 @@ class SwipesController < ApplicationController
       return
     end
 
-    # Check if prospect is suspended
-    if prospect.user.suspended?
+    # Check if prospect is suspended or paused
+    if prospect.user.suspended? || prospect.paused?
       redirect_to swipes_path, alert: "That profile isn't available."
       return
     end
@@ -66,6 +69,8 @@ class SwipesController < ApplicationController
     @swipes = Swipe.where(swiper_id: @profile.id).order(created_at: :desc)
     # Unsure no blocked users don't show up in history, but this is a good safety check.
     @swipes = @swipes.joins(prospect: :user).merge(User.not_blocked_with(@profile.user))
+    @matched_prospect_ids = Match.involving(@profile).pluck(:profile_1_id, :profile_2_id)
+                                 .flatten.uniq - [ @profile.id ]
   end
 
   def undo
@@ -75,8 +80,7 @@ class SwipesController < ApplicationController
       flash[:notice] = "Last swipe undone."
       if last_swipe.liked
         # If the last swipe was a like, check if there was a match and remove it
-        match = Match.find_by(profile_1_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].min, profile_2_id: [ last_swipe.swiper_id, last_swipe.prospect_id ].max)
-        match.destroy if match
+        Match.between(last_swipe.swiper_id, last_swipe.prospect_id).first&.destroy
       end
     else
       flash[:alert] = "No swipes to undo."
@@ -101,8 +105,7 @@ class SwipesController < ApplicationController
           end
         else
           # If the decision was changed to dislike, remove any existing match.
-          match = Match.find_by(profile_1_id: [ swipe.swiper_id, swipe.prospect_id ].min, profile_2_id: [ swipe.swiper_id, swipe.prospect_id ].max)
-          match.destroy if match
+          Match.between(swipe.swiper_id, swipe.prospect_id).first&.destroy
         end
       else
         flash[:alert] = "Failed to update swipe decision."
@@ -138,6 +141,7 @@ class SwipesController < ApplicationController
                                   .select(:prospect_id)
                       )
                       .where(users: { suspended_at: nil })
+                      .where(paused: false)
 
     # The prospect must match the current profile's gender preference.
     case @profile.interested_in

@@ -104,6 +104,13 @@ Feature: Swipe on other profiles
         When I visit the swipe page
         Then I should see that no profiles are available
 
+    Scenario: A paused user does not appear in swipes
+        Given two compatible profiles exist
+        And the other user is paused
+        And I am logged in as "sam@example.com"
+        When I visit the swipe page
+        Then I should see that no profiles are available
+
     Scenario: A user cannot swipe on a profile they already swiped on
         Given two compatible profiles exist
         And I have already swiped on the other profile
@@ -125,4 +132,12 @@ Feature: Swipe on other profiles
         And I am logged in as "sam@example.com"
         When I attempt to swipe on my own profile
         Then I should see "You cannot swipe on your own profile."
+        And no swipe should be added
+    
+    Scenario: A user cannot swipe on a paused profile
+        Given two compatible profiles exist
+        And the other user is paused
+        And I am logged in as "sam@example.com"
+        When I attempt to swipe on the other profile
+        Then I should see "That profile isn't available."
         And no swipe should be added

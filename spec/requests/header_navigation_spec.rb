@@ -3,8 +3,25 @@
 require "rails_helper"
 
 RSpec.describe "Header navigation", type: :request do
+  include Devise::Test::IntegrationHelpers
+
   let(:user) do
     User.create!(email: "nav@example.com", date_of_birth: Date.new(2000, 1, 1), password: "password123")
+  end
+
+  it "shows the Conversations link to signed-in users" do
+    sign_in user
+
+    get root_path
+
+    expect(response.body).to include(%(href="#{conversations_path}">))
+    expect(response.body).to include("Conversations")
+  end
+
+  it "does not show the Conversations link to visitors" do
+    get root_path
+
+    expect(response.body).not_to include(conversations_path)
   end
 
   it "groups account links in a details menu for signed-in users" do

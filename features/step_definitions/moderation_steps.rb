@@ -16,3 +16,40 @@ When("I sign in as {string} with password {string}") do |email, password|
   fill_in "Password", with: password
   click_button "Log in"
 end
+
+When('I press {string} in the users table') do |string|
+  within("#users-table") do
+    click_button string
+  end
+end
+
+When('I press {string} in the reported user table') do |string|
+  within("#reported-user-table") do
+    click_button string
+  end
+end
+
+When('I press {string} in the banned user list') do |string|
+  within("#banned-user-list") do
+    click_button string
+  end
+end
+
+Given('{string} is an administrator') do |string|
+  user = User.find_by!(email: string)
+  user.update!(role: "admin")
+end
+
+Then('I should not see {string} in the users table') do |string|
+  expect(page).not_to have_button(string)
+end
+
+Then('I should see these users:') do |table|
+  within("#users-table") do
+    table.hashes.each do |user|
+      row = find("tr", text: user["Email"])
+      expect(row).to have_text(user["Display Name"])
+      expect(row).to have_text(user["Status"])
+    end
+  end
+end

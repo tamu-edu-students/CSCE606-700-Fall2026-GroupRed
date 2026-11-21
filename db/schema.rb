@@ -93,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_220157) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "seen", default: false, null: false
     t.index ["match_id", "created_at"], name: "index_messages_on_match_id_and_created_at"
     t.index ["match_id"], name: "index_messages_on_match_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"

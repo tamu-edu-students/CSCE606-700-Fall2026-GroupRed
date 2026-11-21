@@ -4,7 +4,14 @@ RSpec.describe "Admin moderation", type: :request do
   let(:admin) { create(:user, role: "admin") }
   let(:sam) { create(:user) }
   let(:alex) { create(:user) }
+  let(:colin) { create(:user) }
   let!(:report) { create(:report, reporter: sam, reportable: alex) }
+
+  before do
+    create(:profile, user: sam, display_name: "Sam")
+    create(:profile, user: alex, display_name: "Alex")
+    create(:profile, user: colin, display_name: "Colin")
+  end
 
   context "as an admin" do
     before { sign_in admin }
@@ -46,6 +53,20 @@ RSpec.describe "Admin moderation", type: :request do
       expect(alex.reload).not_to be_suspended
     end
 
+    it "bans a person" do
+      patch suspend_admin_user_path(alex)
+
+      expect(alex.reload).to be_suspended
+    end
+
+    it "cant ban an admin" do
+      admin = create(:user, role: "admin")
+      patch suspend_admin_user_path(admin)
+
+      expect(flash[:alert]).to eq("Admins can't be suspended.")
+      expect(admin.reload).not_to be_suspended
+    end
+
     it "pardons a banned person" do
       alex.update!(suspended_at: Time.current)
       patch pardon_admin_user_path(alex)
@@ -61,6 +82,36 @@ RSpec.describe "Admin moderation", type: :request do
     it "handles an account that no longer exists" do
       patch pardon_admin_user_path(id: 0)
       expect(flash[:alert]).to eq("That account isn't available.")
+    end
+
+    it "lists all users" do
+      get admin_path
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(sam.email)
+      expect(response.body).to include(alex.email)
+    end
+
+    it "filters users by name" do
+      get admin_path, params: { search: "Alex" }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Alex")
+      expect(response.body).to include(alex.email)
+
+      expect(response.body).not_to include("Colin")
+      expect(response.body).not_to include(colin.email)
+    end
+
+    it "filters users by email" do
+      get admin_path, params: { search: alex.email }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Alex")
+      expect(response.body).to include(alex.email)
+
+      expect(response.body).not_to include("Colin")
+      expect(response.body).not_to include(colin.email)
     end
   end
 
@@ -80,6 +131,12 @@ RSpec.describe "Admin moderation", type: :request do
 
       expect(response).to redirect_to(not_authorized_path)
       expect(alex.reload).to be_suspended
+    end
+
+    it "can't view the admin dashboard or users list" do
+      get admin_path
+
+      expect(response).to redirect_to(not_authorized_path)
     end
   end
 end

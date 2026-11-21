@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resource :block, only: %i[ create destroy ]
     resources :reports, only: %i[ new create ]
   end
+  resources :conversations, only: :index
   resources :blocks, only: :index
   resources :reports, only: :index
   resources :swipes, only: %i[index create] do
@@ -20,7 +21,8 @@ Rails.application.routes.draw do
     end
   end
   resources :history, only: :index, controller: "swipes", action: "history"
-  resources :matches, only: %i[ index show ] do
+  resources :matches, only: %i[ index show destroy ] do
+    get :unmatch, on: :member
     resources :messages, only: %i[ create destroy ] do
       resource :report, only: :create, controller: "message_reports"
     end
@@ -38,7 +40,10 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: [] do
-      patch :pardon, on: :member
+      member do
+        patch :pardon
+        patch :suspend
+      end
     end
   end
 

@@ -34,6 +34,29 @@ RSpec.describe "Messages", type: :request do
         expect(response.body).to match(/Taylor:.*Hey Sam!.*You:.*Hey Taylor!/m)
       end
 
+      it "marks incoming unread messages as seen" do
+        incoming = create(:message, match: our_match, sender: other_profile, seen: false)
+        outgoing = create(:message, match: our_match, sender: profile, seen: false)
+
+        get match_path(our_match)
+
+        expect(incoming.reload).to be_seen
+        expect(outgoing.reload).not_to be_seen
+        expect(response.headers["Cache-Control"]).to include("no-store")
+        expect(response.body).not_to include('class="notification-count">')
+      end
+
+      it "marks incoming unread messages as seen for the person stored as profile_2" do
+        incoming = create(:message, match: our_match, sender: profile, seen: false)
+        outgoing = create(:message, match: our_match, sender: other_profile, seen: false)
+        sign_in other_profile.user
+
+        get match_path(our_match)
+
+        expect(incoming.reload).to be_seen
+        expect(outgoing.reload).not_to be_seen
+      end
+
       it "works for the person stored as profile_2" do
         sign_in other_profile.user
 
