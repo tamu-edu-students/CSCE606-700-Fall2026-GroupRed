@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_140301) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_015832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -110,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_140301) do
     t.text "ideal_first_date"
     t.text "perfect_weekend"
     t.text "interests"
+    t.boolean "paused", default: false, null: false
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 

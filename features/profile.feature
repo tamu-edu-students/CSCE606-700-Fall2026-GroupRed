@@ -66,3 +66,22 @@ Feature: Create, view and edit my profile
     Scenario: Logged out visitor cannot see a profile
         When I visit my profile page
         Then I should be on the login page
+
+    Scenario: Pause my profile
+        Given a user with email "sam@example.com" exists
+        And "sam@example.com" has a profile with:
+            | display_name | Sam |
+        And I am logged in as "sam@example.com"
+        When I visit my profile page
+        And I pause my profile
+        And my profile should be paused
+    
+    Scenario: Unpause my profile
+        Given a user with email "sam@example.com" exists
+        And "sam@example.com" has a profile with:
+            | display_name | Sam |
+            | paused       | true |
+        And I am logged in as "sam@example.com"
+        When I visit my profile page
+        And I unpause my profile
+        And my profile should not be paused
