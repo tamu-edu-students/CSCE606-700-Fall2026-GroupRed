@@ -316,5 +316,48 @@ RSpec.describe CompanionService do
         expect(prompt).to include("Conversations needing a response")
       end
     end
+
+    it "does not include conversations where I sent the latest message" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      match = create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: other_profile,
+        body: "Hey Sam!",
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: profile,
+        body: "Hey Alex!",
+        created_at: 1.day.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("Looking good.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).not_to include("Conversations needing a response:\nAlex")
+      end
+    end
+
+    it "returns the fallback when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+
+      result = described_class.weekly_recap(companion, profile)
+
+      expect(result).to eq(CompanionService::FALLBACK)
+    end
   end
 end
