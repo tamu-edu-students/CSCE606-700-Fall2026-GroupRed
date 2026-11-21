@@ -1,0 +1,12 @@
+<% content_for :title, "Unmatch #{@other_profile.display_name}?" %>
+
+<section class="unmatch" aria-labelledby="unmatch-heading">
+  <h1 id="unmatch-heading">Unmatch <%= @other_profile.display_name %>?</h1>
+  <p class="alert" role="alert">
+    This will delete your conversation with <%= @other_profile.display_name %> for both of you.
+    It can't be undone.
+  </p>
+
+  <%= button_to "Unmatch", match_path(@match), method: :delete %>
+  <p><%= link_to "Cancel", match_path(@match) %></p>
+</section>

@@ -19,4 +19,9 @@ class MessagePolicy < ApplicationPolicy
   def destroy?
     show?
   end
+
+  # Unmatching: only the two people in the match
+  def unmatch?
+    show?
+  end
 end
