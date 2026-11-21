@@ -152,4 +152,14 @@ RSpec.describe Profile, type: :model do
       expect(Match.exists?(match.id)).to be false
     end
   end
+
+  describe "paused" do
+    it "is not paused by default" do
+      expect(build(:profile)).not_to be_paused
+    end
+
+    it "can be paused" do
+      expect(build(:profile, paused: true)).to be_paused
+    end
+  end
 end
