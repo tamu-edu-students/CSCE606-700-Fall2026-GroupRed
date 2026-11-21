@@ -261,6 +261,60 @@ RSpec.describe CompanionService do
       end
     end
 
-    
+    it "does not include activity older than 7 days" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: other_profile,
+        liked: true,
+        created_at: 8.days.ago
+      )
+
+      create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 8.days.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("Quiet week.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).not_to include("Alex")
+        expect(prompt).to include("Likes given this week:\n0")
+      end
+    end
+
+    it "includes conversations where the other person sent the latest message" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      match = create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: other_profile,
+        body: "Hey Sam!",
+        created_at: 1.day.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("You should reply to Alex.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).to include("Alex")
+        expect(prompt).to include("Conversations needing a response")
+      end
+    end
   end
 end

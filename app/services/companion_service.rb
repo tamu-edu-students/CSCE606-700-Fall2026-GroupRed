@@ -182,6 +182,19 @@ class CompanionService
         liked: true,
         created_at: week_ago..Time.current
       )
+    
+      conversations_needing_attention = Match
+        .involving(profile)
+        .includes(:profile_1, :profile_2, :messages)
+        .filter_map do |match|
+          last_message = match.messages
+            .order(created_at: :desc, id: :desc)
+            .first
+          next unless last_message
+          next unless last_message.sender_id != profile.id
+
+          match.other_profile(profile).display_name
+        end
 
     prompt = <<~PROMPT
       Give your friend a short weekly dating recap.
@@ -191,7 +204,10 @@ class CompanionService
 
       Likes given this week:
       #{likes_given.count}
-
+      
+      Conversations needing a response:
+      #{conversations_needing_attention.join(", ")}
+      
       Tell your friend what happened this week and what they should do next.
       Keep it to 3-5 sentences.
     PROMPT
