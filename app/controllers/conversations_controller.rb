@@ -3,6 +3,8 @@ class ConversationsController < ApplicationController
   before_action :set_profile, only: %i[index]
 
   def index
+    response.headers["Cache-Control"] = "no-store"
+
     @conversations = Match
                      .involving(@profile)
                      .joins(:messages)

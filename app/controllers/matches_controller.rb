@@ -19,6 +19,8 @@ class MatchesController < ApplicationController
 
   # The conversation with one match. New messages show after sending or refreshing (ADR 0002).
   def show
+    response.headers["Cache-Control"] = "no-store"
+
     @messages = @match.messages.oldest_first.includes(:sender)
     @openers = Array(flash[:openers])
     @draft = params[:draft].to_s.truncate(Message::MAX_LENGTH)
