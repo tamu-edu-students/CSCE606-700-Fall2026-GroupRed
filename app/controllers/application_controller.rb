@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_unread_message_count, if: :user_signed_in?
 
   protected
 
@@ -18,6 +19,26 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_unread_message_count
+    profile = current_user.profile
+    @unread_message_count = if profile
+      visible_match_ids = Match
+        .involving(profile)
+        .not_blocked_with(profile)
+        .not_suspended_with(profile)
+        .select(:id)
+
+      Message
+        .where(match_id: visible_match_ids)
+        .where(seen: false)
+        .where.not(sender_id: profile.id)
+        .count
+    else
+      0
+    end
+  end
+
   def user_not_authorized
     redirect_to not_authorized_path
   end
