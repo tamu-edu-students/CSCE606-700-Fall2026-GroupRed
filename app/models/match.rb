@@ -5,6 +5,10 @@ class Match < ApplicationRecord
   has_many :messages, dependent: :destroy
 
   scope :involving, ->(profile) { where(profile_1: profile).or(where(profile_2: profile)) }
+  scope :between, ->(profile_a, profile_b) {
+    ids = [ profile_a, profile_b ].map { |p| p.respond_to?(:id) ? p.id : p }.sort
+    where(profile_1_id: ids[0], profile_2_id: ids[1])
+  }
   scope :not_blocked_with, ->(profile) {
     blocked_by_profile = Profile.where(
       user_id: Block.where(blocker_id: profile.user_id).select(:blocked_id)

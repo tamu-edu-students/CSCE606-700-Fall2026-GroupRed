@@ -23,8 +23,11 @@ Rails.application.routes.draw do
     end
   end
   resources :history, only: :index, controller: "swipes", action: "history"
-  resources :matches, only: %i[ index show ] do
-    resources :messages, only: :create
+  resources :matches, only: %i[ index show destroy ] do
+    get :unmatch, on: :member
+    resources :messages, only: %i[ create destroy ] do
+      resource :report, only: :create, controller: "message_reports"
+    end
     resource :openers, only: :create
     resource :reply_suggestion, only: :create
   end
@@ -39,7 +42,10 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: [] do
-      patch :pardon, on: :member
+      member do
+        patch :pardon
+        patch :suspend
+      end
     end
   end
 

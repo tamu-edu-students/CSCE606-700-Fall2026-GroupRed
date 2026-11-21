@@ -14,4 +14,12 @@ class MessagesController < ApplicationController
       redirect_to match_path(@match), alert: message.errors.full_messages.to_sentence
     end
   end
+
+  def destroy
+    message = @match.messages.find_by(id: params[:id], sender: @profile)
+    return redirect_to(match_path(@match), alert: "You can only delete your own messages.") unless message
+
+    message.destroy!
+    redirect_to match_path(@match), notice: "Message deleted."
+  end
 end
