@@ -24,8 +24,8 @@ class SwipesController < ApplicationController
       return
     end
 
-    # Check if prospect is suspended
-    if prospect.user.suspended?
+    # Check if prospect is suspended or paused
+    if prospect.user.suspended? || prospect.user.profile.paused?
       redirect_to swipes_path, alert: "That profile isn't available."
       return
     end
@@ -141,6 +141,7 @@ class SwipesController < ApplicationController
                                   .select(:prospect_id)
                       )
                       .where(users: { suspended_at: nil })
+                      .where(paused: false)
 
     # The prospect must match the current profile's gender preference.
     case @profile.interested_in
