@@ -17,6 +17,8 @@ class ConversationsController < ApplicationController
                      )
                      .group("matches.id")
                      .order(Arel.sql("MAX(messages.created_at) DESC"))
+                     .not_blocked_with(@profile)
+                     .not_suspended_with(@profile)
   end
 
   private
