@@ -359,5 +359,46 @@ RSpec.describe CompanionService do
 
       expect(result).to eq(CompanionService::FALLBACK)
     end
+
+    it "counts a generated recap toward the daily message limit" do
+      19.times do
+        companion.companion_messages.create!(
+          profile: profile,
+          role: "user",
+          body: "Previous request"
+        )
+      end
+
+      allow(described_class).to receive(:ask).and_return("your weekly recap.")
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.to change {
+        companion.companion_messages.where(
+          role: "user",
+          created_at: Time.current.all_day
+        ).count
+      }.by(1)
+
+      expect(companion.reload).to be_out_of_messages_today
+    end
+
+    it "does not generate a recap when the daily message limit is reached" do
+      Companion::DAILY_MESSAGE_LIMIT.times do
+        companion.companion_messages.create!(
+          profile: profile,
+          role: "user",
+          body: "Previous request"
+        )
+      end
+
+      expect(described_class).not_to receive(:ask)
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.not_to change {
+        companion.companion_messages.count
+      }
+    end
   end
 end
