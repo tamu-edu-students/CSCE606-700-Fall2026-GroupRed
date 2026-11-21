@@ -361,7 +361,7 @@ RSpec.describe CompanionService do
     end
 
     it "counts a generated recap toward the daily message limit" do
-      19.times do
+      (Companion::DAILY_MESSAGE_LIMIT - 1).times do
         companion.companion_messages.create!(
           profile: profile,
           role: "user",
@@ -369,7 +369,7 @@ RSpec.describe CompanionService do
         )
       end
 
-      allow(described_class).to receive(:ask).and_return("your weekly recap.")
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
 
       expect {
         described_class.weekly_recap(companion, profile)
@@ -396,9 +396,31 @@ RSpec.describe CompanionService do
 
       expect {
         described_class.weekly_recap(companion, profile)
-      }.not_to change {
-        companion.companion_messages.count
-      }
+      }.not_to change(CompanionMessage, :count)
+    end
+
+    it "records the recap request and response" do
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.to change(CompanionMessage, :count).by(2)
+      
+      messages = companion.companion_messages.about(profile)
+
+      expect(messages.map(&:role)).to eq(%w[user companion])
+      expect(messages.first.body).to eq("Give me my weekly recap.")
+      expect(messages.last.body).to eq("Your weekly recap.")
+    end
+
+    it "reuses the recap generated earlier today" do
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
+
+      first_recap = described_class.weekly_recap(companion, profile)
+      second_recap = described_class.weekly_recap(companion, profile)
+
+      expect(first_recap).to eq(second_recap)
+      expect(described_class).to have_received(:ask).once
     end
   end
 end

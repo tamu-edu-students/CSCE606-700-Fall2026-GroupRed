@@ -2,6 +2,7 @@ class CompanionService
   MODEL = "claude-haiku-5-5".freeze
   FALLBACK = "Your companion is taking a quick break right now. Try again in a bit!".freeze
   DAILY_LIMIT_MESSAGE = "Your companion has reached today's message limit. Come back tomorrow!".freeze
+  WEEKLY_RECAP_REQUEST = "Give me my weekly recap.".freeze
 
   def self.greet(companion)
     return companion.greeting if companion.greeting.present?
@@ -172,6 +173,9 @@ class CompanionService
   
 
   def self.weekly_recap(companion, profile)
+    if companion.weekly_recap_generated_at&.today?
+      return companion.weekly_recap
+    end
     return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
     week_ago = 7.days.ago
 
@@ -223,13 +227,18 @@ class CompanionService
       companion.companion_messages.create!(
         profile: profile,
         role: "user",
-        body: "Give weekly recap."
+        body: WEEKLY_RECAP_REQUEST
       )
 
       companion.companion_messages.create!(
         profile: profile,
         role: "companion",
         body: answer.truncate(500)
+      )
+
+      companion.update!(
+        weekly_recap: answer,
+        weekly_recap_generated_at: Time.current
       )
     end
 

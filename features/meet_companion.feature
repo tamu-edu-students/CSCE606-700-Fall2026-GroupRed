@@ -11,6 +11,8 @@ Feature: Meet my companion
 
     Scenario: Companion greets the user
         Given a user with email "sam@example.com" exists
+        And "sam@example.com" has a profile with:
+            | display_name | Sam |
         And the companion says "Hey Sam, ready to find someone great?"
         And I am logged in as "sam@example.com"
         When I visit the companion page

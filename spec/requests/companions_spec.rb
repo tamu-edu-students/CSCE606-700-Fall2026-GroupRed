@@ -23,6 +23,7 @@ RSpec.describe "Companions", type: :request do
     before do
       sign_in user
       allow(CompanionService).to receive(:ask).and_return("Hey, it's me!")
+      allow(CompanionService).to receive(:weekly_recap).and_return("Your weekly recap.")
     end
 
     it "shows a link to customize the companion" do
