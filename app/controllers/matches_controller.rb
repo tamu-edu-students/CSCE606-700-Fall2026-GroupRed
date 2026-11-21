@@ -23,6 +23,7 @@ class MatchesController < ApplicationController
     @openers = Array(flash[:openers])
     @draft = params[:draft].to_s.truncate(Message::MAX_LENGTH)
     mark_messages_as_seen
+    set_unread_message_count
   end
 
   private

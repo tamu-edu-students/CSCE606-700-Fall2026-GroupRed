@@ -4,7 +4,6 @@ class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :require_profile
   before_action :set_match
-  before_action :set_unread_message_count, if :user_signed_in?
 
   def create
     message = @match.messages.new(sender: @profile, body: params[:body].to_s)
