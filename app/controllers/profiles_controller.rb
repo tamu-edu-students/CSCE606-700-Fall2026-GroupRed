@@ -64,7 +64,8 @@ class ProfilesController < ApplicationController
         :age_min,
         :age_max,
         :photo,
-        :photo_alt_text
+        :photo_alt_text,
+        :paused
       ]
     )
   end

@@ -39,6 +39,20 @@
 
   <p><%= link_to "Edit profile", edit_profile_path %></p>
   <p>
+    <% if @profile.paused? %>
+      <%= button_to "Unpause profile", 
+                    profile_path, 
+                    method: :patch,
+                    params: { profile: { paused: false } } %>
+    <% else %>
+      <%= button_to "Pause profile", 
+                    profile_path, 
+                    method: :patch,
+                    params: { profile: { paused: true } } %>
+    <% end %>
+  </p>
+  
+  <p>
     <%= button_to "Delete profile",
                   profile_path,
                   method: :delete,
