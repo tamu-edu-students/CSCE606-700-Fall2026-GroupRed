@@ -168,5 +168,39 @@ class CompanionService
       "Keep every reply to a few sentences."
   end
 
+  def self.weekly_recap(companion, profile)
+    week_ago = 7.days.ago
+
+    matches = Match
+      .involving(profile)
+      .where(created_at: week_ago..Time.current)
+      .includes(:profile_1, :profile_2)
+
+    likes_given = Swipe
+      .where(
+        swiper: profile,
+        liked: true,
+        created_at: week_ago..Time.current
+      )
+
+    prompt = <<~PROMPT
+      Give your friend a short weekly dating recap.
+
+      New matches this week:
+      #{matches.map { |match| match.other_profile(profile).display_name }.join(", ")}
+
+      Likes given this week:
+      #{likes_given.count}
+
+      Tell your friend what happened this week and what they should do next.
+      Keep it to 3-5 sentences.
+    PROMPT
+
+    answer = ask(companion, prompt)
+    return FALLBACK if answer.nil?
+
+    answer
+  end
+
   private_class_method :client, :system_prompt, :profile_details, :merge_turns
 end

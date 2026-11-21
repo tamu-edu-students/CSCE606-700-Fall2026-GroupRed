@@ -222,4 +222,45 @@ RSpec.describe CompanionService do
       expect(described_class.send(:client)).to be_a(Anthropic::Client)
     end
   end
+
+  describe ".weekly_recap" do
+    let(:user) { create(:user) }
+    let(:profile) { create(:profile, user: user) }
+
+    it "generates a recap from this week's activity" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: other_profile,
+        liked: true,
+        created_at: 3.days.ago
+      )
+
+      create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return(
+        "You matched with Alex this week. You should check in with them."
+      )
+
+      result = described_class.weekly_recap(companion, profile)
+
+      expect(result).to eq(
+        "You matched with Alex this week. You should check in with them."
+      )
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).to include("Alex")
+        expect(prompt).to include("Likes given this week:\n1")
+      end
+    end
+
+    
+  end
 end
