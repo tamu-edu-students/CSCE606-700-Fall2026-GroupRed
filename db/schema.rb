@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_140301) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_032930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -91,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_140301) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "seen", default: false, null: false
     t.index ["match_id", "created_at"], name: "index_messages_on_match_id_and_created_at"
     t.index ["match_id"], name: "index_messages_on_match_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
