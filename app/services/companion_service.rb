@@ -170,8 +170,6 @@ class CompanionService
       "Keep every reply to a few sentences."
   end
 
-  
-
   def self.weekly_recap(companion, profile)
     if companion.weekly_recap_generated_at&.today?
       return companion.weekly_recap
@@ -190,7 +188,7 @@ class CompanionService
         liked: true,
         created_at: week_ago..Time.current
       )
-    
+
       conversations_needing_attention = Match
         .involving(profile)
         .includes(:profile_1, :profile_2, :messages)
@@ -212,10 +210,10 @@ class CompanionService
 
       Likes given this week:
       #{likes_given.count}
-      
+
       Conversations needing a response:
       #{conversations_needing_attention.join(", ")}
-      
+
       Tell your friend what happened this week and what they should do next.
       Keep it to 3-5 sentences.
     PROMPT

@@ -76,7 +76,7 @@ RSpec.describe "Companions", type: :request do
     it "shows the weekly recap" do
       allow(CompanionService).to receive(:weekly_recap)
         .and_return("You matched with Alex this week. Check in with them!")
-      
+
         get companion_path
 
         expect(response).to have_http_status(:ok)

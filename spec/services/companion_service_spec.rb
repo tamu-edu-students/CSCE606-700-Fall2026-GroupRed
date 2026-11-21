@@ -405,7 +405,7 @@ RSpec.describe CompanionService do
       expect {
         described_class.weekly_recap(companion, profile)
       }.to change(CompanionMessage, :count).by(2)
-      
+
       messages = companion.companion_messages.about(profile)
 
       expect(messages.map(&:role)).to eq(%w[user companion])
