@@ -194,6 +194,8 @@ class CompanionService
 
       conversations_needing_attention = Match
         .involving(profile)
+        .not_blocked_with(profile)
+        .not_suspended_with(profile)
         .includes(:profile_1, :profile_2, :messages)
         .filter_map do |match|
           last_message = match.messages
