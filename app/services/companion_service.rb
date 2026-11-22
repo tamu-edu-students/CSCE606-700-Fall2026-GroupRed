@@ -171,6 +171,7 @@ class CompanionService
   end
 
   def self.weekly_recap(companion, profile)
+    return "Create your profile to get a weekly recap." if profile.nil?
     if companion.weekly_recap_generated_at&.today?
       return companion.weekly_recap
     end
@@ -179,6 +180,8 @@ class CompanionService
 
     matches = Match
       .involving(profile)
+      .not_blocked_with(profile)
+      .not_suspended_with(profile)
       .where(created_at: week_ago..Time.current)
       .includes(:profile_1, :profile_2)
 
