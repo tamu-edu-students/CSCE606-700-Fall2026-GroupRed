@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  UNAUTHORIZED_ALERT = "You are not authorized to perform this action.".freeze
+
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -40,6 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_not_authorized
-    redirect_to not_authorized_path
+    fallback_location = current_user&.profile ? matches_path : root_path
+    redirect_back fallback_location: fallback_location, alert: UNAUTHORIZED_ALERT
   end
 end
