@@ -23,3 +23,4 @@ Feature: Companion feedback on my profile
         When I visit my profile page
         And I press "What do you think?"
         Then I should see "Your companion is taking a quick break right now"
+

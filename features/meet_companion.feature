@@ -11,6 +11,8 @@ Feature: Meet my companion
 
     Scenario: Companion greets the user
         Given a user with email "sam@example.com" exists
+        And "sam@example.com" has a profile with:
+            | display_name | Sam |
         And the companion says "Hey Sam, ready to find someone great?"
         And I am logged in as "sam@example.com"
         When I visit the companion page
@@ -29,3 +31,17 @@ Feature: Meet my companion
         When I visit the companion page
         Then I should be on the login page
         And I should see "You need to sign in or sign up before continuing."
+
+    Scenario: See my weekly recap
+        Given a user with email "sam@example.com" exists
+        And "sam@example.com" has a profile with:
+            | display_name | Sam |
+        And a user with email "alex@example.com" exists
+        And "alex@example.com" has a profile with:
+            | display_name | Alex |
+        And I am logged in as "sam@example.com"
+        And Sam matched with "alex@example.com" this week
+        And the companion says "You matched with Alex this week. Check in with them!"
+        When I visit the companion page
+        Then I should see "My week"
+        And I should see "You matched with Alex this week. Check in with them!"

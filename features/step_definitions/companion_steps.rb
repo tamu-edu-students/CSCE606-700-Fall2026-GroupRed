@@ -51,3 +51,14 @@ end
 Then("I should be on the login page") do
   expect(page).to have_current_path(new_user_session_path)
 end
+
+Given('Sam matched with {string} this week') do |string|
+  sam = User.find_by!(email: "sam@example.com")
+  other = User.find_by!(email: string)
+
+  Match.create!(
+    profile_1: sam.profile,
+    profile_2: other.profile,
+    created_at: 2.days.ago
+  )
+end

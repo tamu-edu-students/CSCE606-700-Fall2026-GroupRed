@@ -4,6 +4,10 @@ class CompanionsController < ApplicationController
 
   def show
     @greeting = CompanionService.greet(@companion)
+    @weekly_recap = CompanionService.weekly_recap(
+      @companion,
+      current_user.profile
+    )
   end
 
   def edit

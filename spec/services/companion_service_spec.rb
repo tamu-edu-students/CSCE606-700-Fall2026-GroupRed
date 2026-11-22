@@ -222,4 +222,205 @@ RSpec.describe CompanionService do
       expect(described_class.send(:client)).to be_a(Anthropic::Client)
     end
   end
+
+  describe ".weekly_recap" do
+    let(:user) { create(:user) }
+    let(:profile) { create(:profile, user: user) }
+
+    it "generates a recap from this week's activity" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: other_profile,
+        liked: true,
+        created_at: 3.days.ago
+      )
+
+      create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return(
+        "You matched with Alex this week. You should check in with them."
+      )
+
+      result = described_class.weekly_recap(companion, profile)
+
+      expect(result).to eq(
+        "You matched with Alex this week. You should check in with them."
+      )
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).to include("Alex")
+        expect(prompt).to include("Likes given this week:\n1")
+      end
+    end
+
+    it "does not include activity older than 7 days" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      create(
+        :swipe,
+        swiper: profile,
+        prospect: other_profile,
+        liked: true,
+        created_at: 8.days.ago
+      )
+
+      create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 8.days.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("Quiet week.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).not_to include("Alex")
+        expect(prompt).to include("Likes given this week:\n0")
+      end
+    end
+
+    it "includes conversations where the other person sent the latest message" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      match = create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: other_profile,
+        body: "Hey Sam!",
+        created_at: 1.day.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("You should reply to Alex.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).to include("Alex")
+        expect(prompt).to include("Conversations needing a response")
+      end
+    end
+
+    it "does not include conversations where I sent the latest message" do
+      other_profile = create(:profile, display_name: "Alex")
+
+      match = create(
+        :match,
+        profile_1: profile,
+        profile_2: other_profile,
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: other_profile,
+        body: "Hey Sam!",
+        created_at: 2.days.ago
+      )
+
+      create(
+        :message,
+        match: match,
+        sender: profile,
+        body: "Hey Alex!",
+        created_at: 1.day.ago
+      )
+
+      allow(described_class).to receive(:ask).and_return("Looking good.")
+
+      described_class.weekly_recap(companion, profile)
+
+      expect(described_class).to have_received(:ask) do |_companion, prompt|
+        expect(prompt).not_to include("Conversations needing a response:\nAlex")
+      end
+    end
+
+    it "returns the fallback when the AI is unavailable" do
+      allow(described_class).to receive(:ask).and_return(nil)
+
+      result = described_class.weekly_recap(companion, profile)
+
+      expect(result).to eq(CompanionService::FALLBACK)
+    end
+
+    it "counts a generated recap toward the daily message limit" do
+      (Companion::DAILY_MESSAGE_LIMIT - 1).times do
+        companion.companion_messages.create!(
+          profile: profile,
+          role: "user",
+          body: "Previous request"
+        )
+      end
+
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.to change {
+        companion.companion_messages.where(
+          role: "user",
+          created_at: Time.current.all_day
+        ).count
+      }.by(1)
+
+      expect(companion.reload).to be_out_of_messages_today
+    end
+
+    it "does not generate a recap when the daily message limit is reached" do
+      Companion::DAILY_MESSAGE_LIMIT.times do
+        companion.companion_messages.create!(
+          profile: profile,
+          role: "user",
+          body: "Previous request"
+        )
+      end
+
+      expect(described_class).not_to receive(:ask)
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.not_to change(CompanionMessage, :count)
+    end
+
+    it "records the recap request and response" do
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
+
+      expect {
+        described_class.weekly_recap(companion, profile)
+      }.to change(CompanionMessage, :count).by(2)
+
+      messages = companion.companion_messages.about(profile)
+
+      expect(messages.map(&:role)).to eq(%w[user companion])
+      expect(messages.first.body).to eq("Give me my weekly recap.")
+      expect(messages.last.body).to eq("Your weekly recap.")
+    end
+
+    it "reuses the recap generated earlier today" do
+      allow(described_class).to receive(:ask).and_return("Your weekly recap.")
+
+      first_recap = described_class.weekly_recap(companion, profile)
+      second_recap = described_class.weekly_recap(companion, profile)
+
+      expect(first_recap).to eq(second_recap)
+      expect(described_class).to have_received(:ask).once
+    end
+  end
 end

@@ -23,6 +23,7 @@ RSpec.describe "Companions", type: :request do
     before do
       sign_in user
       allow(CompanionService).to receive(:ask).and_return("Hey, it's me!")
+      allow(CompanionService).to receive(:weekly_recap).and_return("Your weekly recap.")
     end
 
     it "shows a link to customize the companion" do
@@ -70,6 +71,26 @@ RSpec.describe "Companions", type: :request do
       patch companion_path, params: { companion: { name: "Rex", greeting: "injected", user_id: other.user_id } }
       expect(companion.reload).to have_attributes(name: "Rex", greeting: nil, user_id: user.id)
       expect(other.reload.name).to eq("Wingman")
+    end
+
+    it "shows the weekly recap" do
+      allow(CompanionService).to receive(:weekly_recap)
+        .and_return("You matched with Alex this week. Check in with them!")
+
+        get companion_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("My week")
+        expect(response.body).to include("You matched with Alex this week. Check in with them!")
+    end
+
+    it "gets the weekly recap from the companion service" do
+      allow(CompanionService).to receive(:weekly_recap).and_return("A recap")
+
+      get companion_path
+
+      expect(CompanionService).to have_received(:weekly_recap)
+        .with(companion, user.profile)
     end
   end
 end

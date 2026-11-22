@@ -1,6 +1,8 @@
 class CompanionService
   MODEL = "claude-haiku-5-5".freeze
   FALLBACK = "Your companion is taking a quick break right now. Try again in a bit!".freeze
+  DAILY_LIMIT_MESSAGE = "Your companion has reached today's message limit. Come back tomorrow!".freeze
+  WEEKLY_RECAP_REQUEST = "Give me my weekly recap.".freeze
 
   def self.greet(companion)
     return companion.greeting if companion.greeting.present?
@@ -166,6 +168,82 @@ class CompanionService
       "Your personality is #{companion.personality}. Keep jokes playful and kind, never make fun of " \
       "anyone's looks or identity, and talk like a real friend texting, not an assistant. " \
       "Keep every reply to a few sentences."
+  end
+
+  def self.weekly_recap(companion, profile)
+    return "Create your profile to get a weekly recap." if profile.nil?
+    if companion.weekly_recap_generated_at&.today?
+      return companion.weekly_recap
+    end
+    return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
+    week_ago = 7.days.ago
+
+    matches = Match
+      .involving(profile)
+      .not_blocked_with(profile)
+      .not_suspended_with(profile)
+      .where(created_at: week_ago..Time.current)
+      .includes(:profile_1, :profile_2)
+
+    likes_given = Swipe
+      .where(
+        swiper: profile,
+        liked: true,
+        created_at: week_ago..Time.current
+      )
+
+      conversations_needing_attention = Match
+        .involving(profile)
+        .includes(:profile_1, :profile_2, :messages)
+        .filter_map do |match|
+          last_message = match.messages
+            .order(created_at: :desc, id: :desc)
+            .first
+          next unless last_message
+          next unless last_message.sender_id != profile.id
+
+          match.other_profile(profile).display_name
+        end
+
+    prompt = <<~PROMPT
+      Give your friend a short weekly dating recap.
+
+      New matches this week:
+      #{matches.map { |match| match.other_profile(profile).display_name }.join(", ")}
+
+      Likes given this week:
+      #{likes_given.count}
+
+      Conversations needing a response:
+      #{conversations_needing_attention.join(", ")}
+
+      Tell your friend what happened this week and what they should do next.
+      Keep it to 3-5 sentences.
+    PROMPT
+
+    answer = ask(companion, prompt)
+    return FALLBACK if answer.nil?
+
+    CompanionMessage.transaction do
+      companion.companion_messages.create!(
+        profile: profile,
+        role: "user",
+        body: WEEKLY_RECAP_REQUEST
+      )
+
+      companion.companion_messages.create!(
+        profile: profile,
+        role: "companion",
+        body: answer.truncate(500)
+      )
+
+      companion.update!(
+        weekly_recap: answer,
+        weekly_recap_generated_at: Time.current
+      )
+    end
+
+    answer
   end
 
   private_class_method :client, :system_prompt, :profile_details, :merge_turns
