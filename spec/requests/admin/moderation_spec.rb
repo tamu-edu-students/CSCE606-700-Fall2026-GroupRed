@@ -121,7 +121,8 @@ RSpec.describe "Admin moderation", type: :request do
     it "can't ban anyone" do
       patch ban_admin_report_path(report)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(ApplicationController::UNAUTHORIZED_ALERT)
       expect(alex.reload).not_to be_suspended
     end
 
@@ -129,14 +130,23 @@ RSpec.describe "Admin moderation", type: :request do
       alex.update!(suspended_at: Time.current)
       patch pardon_admin_user_path(alex)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(ApplicationController::UNAUTHORIZED_ALERT)
       expect(alex.reload).to be_suspended
     end
 
     it "can't view the admin dashboard or users list" do
       get admin_path
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(ApplicationController::UNAUTHORIZED_ALERT)
+    end
+
+    it "redirects an unauthorized request back to the referring page" do
+      get admin_path, headers: { "HTTP_REFERER" => root_path }
+
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq(ApplicationController::UNAUTHORIZED_ALERT)
     end
   end
 end

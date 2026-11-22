@@ -68,7 +68,8 @@ RSpec.describe "Messages", type: :request do
       it "sends someone outside the match to not authorized" do
         get match_path(create(:match))
 
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
 
       it "sends a blocked user to not authorized" do
@@ -76,7 +77,26 @@ RSpec.describe "Messages", type: :request do
 
         get match_path(our_match)
 
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
+      end
+
+      it "hides a conversation when this user blocked the other user" do
+        user.blocks.create!(blocked: other_profile.user)
+
+        get match_path(our_match)
+
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
+      end
+
+      it "hides a conversation with a suspended match" do
+        other_profile.user.update!(suspended_at: Time.current)
+
+        get match_path(our_match)
+
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
 
       it "handles a match that doesn't exist" do
@@ -114,19 +134,22 @@ RSpec.describe "Messages", type: :request do
         user.blocks.create!(blocked: other_profile.user)
 
         expect { send_message("Hi") }.not_to change(Message, :count)
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
 
       it "doesn't let a user message someone who blocked them" do
         other_profile.user.blocks.create!(blocked: user)
 
         expect { send_message("Hi") }.not_to change(Message, :count)
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
 
       it "doesn't let a user post into someone else's match" do
         expect { send_message("Hi", to: create(:match)) }.not_to change(Message, :count)
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
     end
     describe "DELETE /matches/:match_id/messages/:id" do
@@ -149,7 +172,8 @@ RSpec.describe "Messages", type: :request do
         message = create(:message, match: stranger_match)
 
         expect { delete match_message_path(stranger_match, message) }.not_to change(Message, :count)
-        expect(response).to redirect_to(not_authorized_path)
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
     end
   end

@@ -8,7 +8,17 @@ RSpec.describe "Page accessibility", type: :system do
   include Axe::DSL
 
   before do
-    driven_by :selenium, using: :headless_chrome, screen_size: [ 1_200, 900 ]
+    if ENV["CHROMEDRIVER"]
+      Selenium::WebDriver::Chrome::Service.driver_path = ENV["CHROMEDRIVER"]
+    end
+
+    driven_by :selenium, using: :headless_chrome, screen_size: [ 1_200, 900 ] do |options|
+      if ENV["CHROME_BIN"]
+        options.binary = ENV["CHROME_BIN"]
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+      end
+    end
   end
 
   it "has no axe violations on the landing page" do

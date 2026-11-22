@@ -47,7 +47,8 @@ RSpec.describe "Message reports", type: :request do
       stranger_message = create(:message, match: stranger_match)
 
       expect { report(stranger_message, match: stranger_match) }.not_to change(Report, :count)
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
   end
 end

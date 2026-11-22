@@ -58,7 +58,8 @@ RSpec.describe "Matches", type: :request do
 
       get unmatch_match_path(match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
 
     it "deletes the match and its messages for a participant" do
@@ -79,7 +80,8 @@ RSpec.describe "Matches", type: :request do
 
       delete match_path(match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       expect(Match.exists?(match.id)).to be true
       expect(Message.exists?(message.id)).to be true
     end
