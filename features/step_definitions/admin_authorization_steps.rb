@@ -6,6 +6,7 @@ Given('I am signed in as a regular user') do
     date_of_birth: Date.new(2000, 1, 1),
     role: "user"
   )
+  Profile.create!(user: user, display_name: "Regular User")
 
   visit new_user_session_path
 
@@ -14,8 +15,14 @@ Given('I am signed in as a regular user') do
   click_button "Log in"
 end
 
-Then('I should be redirected to the not authorized page') do
-  expect(page).to have_current_path(not_authorized_path)
+Then('I should be redirected to My Matches with an authorization message') do
+  expect(page).to have_current_path(matches_path)
+  expect(page).to have_text(ApplicationController::UNAUTHORIZED_ALERT)
+end
+
+Then('I should be redirected to My Matches with a conversation unavailable message') do
+  expect(page).to have_current_path(matches_path)
+  expect(page).to have_text(MatchConversation::NOT_AVAILABLE)
 end
 
 Given('I am signed in as an administrator') do

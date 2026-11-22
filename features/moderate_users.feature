@@ -52,7 +52,7 @@ Feature: Moderate users
   Scenario: A regular user can't open moderation
     Given I am logged in as "sam@example.com"
     When I visit "/admin"
-    Then I should be redirected to the not authorized page
+    Then I should be redirected to My Matches with an authorization message
 
   Scenario: Admin dashboard shows a list of all users
     Given I am signed in as an administrator

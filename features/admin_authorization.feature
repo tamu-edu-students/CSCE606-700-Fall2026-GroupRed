@@ -7,7 +7,7 @@ so that I can perform administrative tasks
 Scenario: A regular user cannot access the admin dashboard
     Given I am signed in as a regular user
     When I visit "/admin"
-    Then I should be redirected to the not authorized page
+    Then I should be redirected to My Matches with an authorization message
 
 Scenario: An administrator can access the admin dashboard
     Given I am signed in as an administrator

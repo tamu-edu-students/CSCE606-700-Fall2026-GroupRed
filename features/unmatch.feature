@@ -43,5 +43,5 @@ Feature: Unmatch someone
     Given a third user "jordan@example.com" with a profile exists
     And I am logged in as "jordan@example.com"
     When I try to unmatch that match directly
-    Then I should be redirected to the not authorized page
+    Then I should be redirected to My Matches with a conversation unavailable message
     And the match should still exist

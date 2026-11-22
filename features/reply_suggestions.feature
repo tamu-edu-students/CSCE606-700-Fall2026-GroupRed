@@ -43,4 +43,4 @@ Feature: Companion conversation coach
 
   Scenario: Cannot request suggestions for someone else's conversation
     When I request a reply suggestion for a conversation between two other people
-    Then I should be redirected to the not authorized page
+    Then I should be redirected to My Matches with a conversation unavailable message
