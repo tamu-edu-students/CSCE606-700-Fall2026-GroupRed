@@ -15,7 +15,8 @@ module MatchConversation
     @match = Match.includes(profile_1: :user, profile_2: :user).find_by(id: params[:match_id] || params[:id])
     return redirect_to(matches_path, alert: NOT_AVAILABLE) unless @match
 
-    authorize @match, policy_class: MessagePolicy
+    return redirect_to(matches_path, alert: NOT_AVAILABLE) unless MessagePolicy.new(current_user, @match).show?
+
     @other_profile = @match.other_profile(@profile)
   end
 end
