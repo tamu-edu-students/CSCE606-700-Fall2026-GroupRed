@@ -94,7 +94,8 @@ RSpec.describe "Reply suggestions", type: :request do
 
       post match_reply_suggestion_path(stranger_match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
 
     it "rejects a person I have blocked" do
@@ -103,7 +104,8 @@ RSpec.describe "Reply suggestions", type: :request do
 
       post match_reply_suggestion_path(our_match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
 
     it "rejects a person who has blocked me" do
@@ -112,7 +114,8 @@ RSpec.describe "Reply suggestions", type: :request do
 
       post match_reply_suggestion_path(our_match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
 
     it "rejects a suspended match" do
@@ -121,7 +124,8 @@ RSpec.describe "Reply suggestions", type: :request do
 
       post match_reply_suggestion_path(our_match)
 
-      expect(response).to redirect_to(not_authorized_path)
+      expect(response).to redirect_to(matches_path)
+      expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
     end
 
     it "handles a missing match" do

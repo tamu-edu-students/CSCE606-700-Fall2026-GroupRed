@@ -30,18 +30,18 @@ Feature: Message my matches
     Scenario: Can't message someone I blocked
         Given I have blocked my match
         When I open my conversation with my match
-        Then I should be redirected to the not authorized page
+        Then I should be redirected to My Matches with a conversation unavailable message
 
     Scenario: Someone outside the match can't open the conversation
         When I open a conversation between two other people
-        Then I should be redirected to the not authorized page
+        Then I should be redirected to My Matches with a conversation unavailable message
 
     Scenario: Can't message someone who blocked me
         Given my match has blocked me
         When I open my conversation with my match
-        Then I should be redirected to the not authorized page
+        Then I should be redirected to My Matches with a conversation unavailable message
 
     Scenario: Can't message someone who is suspended
         Given my match is suspended
         When I open my conversation with my match
-        Then I should be redirected to the not authorized page
+        Then I should be redirected to My Matches with a conversation unavailable message
