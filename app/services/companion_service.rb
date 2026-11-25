@@ -6,6 +6,7 @@ class CompanionService
 
   def self.greet(companion)
     return companion.greeting if companion.greeting.present?
+    return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
 
     greeting = ask(companion, "Say hi to your new friend who just joined the app. Keep it to two or three sentences.")
     return FALLBACK if greeting.nil?
@@ -17,6 +18,7 @@ class CompanionService
   def self.react(companion, profile)
     saved = companion.companion_messages.about(profile).find_by(role: "companion")
     return saved.body if saved
+    return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
 
     reaction = ask(companion, "#{profile_details(profile)}\n\nGive your friend a quick, honest reaction to this profile in one or two sentences.")
     return FALLBACK if reaction.nil?
