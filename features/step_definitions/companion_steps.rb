@@ -62,3 +62,7 @@ Given('Sam matched with {string} this week') do |string|
     created_at: 2.days.ago
   )
 end
+
+Given("the companion gives long feedback ending with {string}") do |ending|
+  allow(CompanionService).to receive(:ask).and_return("Tell people what you love about hiking. " * 20 + ending)
+end
