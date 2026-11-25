@@ -201,6 +201,8 @@ Not sure what to say? Click **Help me start** for three opener ideas based on th
 
 Click **Suggest a reply** to get a draft based on your match's profile and the 10 most recent messages. If the conversation is empty, it suggests an opening message. You can edit the draft before clicking **Send**; suggestions are never sent automatically. Each successful suggestion counts toward your companion's daily limit of 20 requests.
 
+After **Send**, **Suggest a reply**, **Help me start**, or **Use this**, the page returns to the message box. Feedback also appears beside the box. This works with JavaScript disabled.
+
 Each message from your match has a **Report** button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can **Delete** any message you sent, which removes it for both of you.
 
 ## Viewing, blocking and reporting people

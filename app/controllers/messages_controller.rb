@@ -10,9 +10,10 @@ class MessagesController < ApplicationController
 
     if message.save
       session.delete(:opener_ideas) if session.dig(:opener_ideas, "match_id") == @match.id
-      redirect_to match_path(@match)
+      redirect_to match_path(@match, anchor: "message-form")
     else
-      redirect_to match_path(@match), alert: message.errors.full_messages.to_sentence
+      redirect_to match_path(@match, anchor: "message-form"),
+                  alert: message.errors.full_messages.to_sentence
     end
   end
 

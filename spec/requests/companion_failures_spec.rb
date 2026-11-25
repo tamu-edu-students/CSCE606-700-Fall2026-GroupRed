@@ -15,8 +15,8 @@ RSpec.describe "Companion failures", type: :request do
   def self.alert_features
     {
       "Discover chat" => [ -> { post companion_messages_path, params: { profile_id: prospect.id, body: "Thoughts?" } }, -> { swipes_path } ],
-      "opener ideas" => [ -> { post match_openers_path(our_match) }, -> { match_path(our_match) } ],
-      "conversation coach" => [ -> { post match_reply_suggestion_path(our_match) }, -> { match_path(our_match) } ],
+      "opener ideas" => [ -> { post match_openers_path(our_match) }, -> { match_path(our_match, anchor: "message-form") } ],
+      "conversation coach" => [ -> { post match_reply_suggestion_path(our_match) }, -> { match_path(our_match, anchor: "message-form") } ],
       "profile feedback" => [ -> { post profile_feedback_path }, -> { profile_path } ]
     }
   end
