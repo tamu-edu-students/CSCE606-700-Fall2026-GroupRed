@@ -25,6 +25,8 @@ class CompanionService
   end
 
   OPENERS_REQUEST = "Help me start a conversation.".freeze
+  # Openers are kept in the session cookie, so each one stays short enough that 3 can't overflow it
+  OPENER_MAX_LENGTH = 200
 
   def self.openers(companion, profile)
     prompt = "#{profile_details(profile, "Your friend matched with this person:")}\n\n" \
@@ -36,7 +38,7 @@ class CompanionService
     return [] if answer.nil?
 
     lines = answer.lines.map { |line| line.sub(/\A\s*(?:[-*•]|\d+[.)])\s*/, "").strip.delete_prefix('"').delete_suffix('"') }
-    openers = lines.reject(&:blank?).first(3).map { |line| line.truncate(Message::MAX_LENGTH) }
+    openers = lines.reject(&:blank?).first(3).map { |line| line.truncate(OPENER_MAX_LENGTH, separator: " ") }
 
     CompanionMessage.transaction do
       companion.companion_messages.create!(profile: profile, role: "user", body: OPENERS_REQUEST)

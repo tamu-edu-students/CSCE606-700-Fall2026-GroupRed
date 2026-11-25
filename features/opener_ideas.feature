@@ -22,3 +22,11 @@ Feature: Opener ideas for a match
         And I press "Help me start"
         Then I should see "Your companion is taking a quick break right now"
         And I should see "No messages yet."
+
+    Scenario: Switch to a different opener idea
+        Given the companion suggests "What's your best loaf?" and "Sourdough or rye?"
+        When I open my conversation with my match
+        And I press "Help me start"
+        And I follow the "Use this" link for "Sourdough or rye?"
+        Then the message box should say "Sourdough or rye?"
+        And I should see "What's your best loaf?"
