@@ -21,7 +21,7 @@ class CompanionService
     reaction = ask(companion, "#{profile_details(profile)}\n\nGive your friend a quick, honest reaction to this profile in one or two sentences.")
     return FALLBACK if reaction.nil?
 
-    companion.companion_messages.create!(profile: profile, role: "companion", body: reaction.truncate(500)).body
+    companion.companion_messages.create!(profile: profile, role: "companion", body: CompanionMessage.fit(reaction)).body
   end
 
   OPENERS_REQUEST = "Help me start a conversation.".freeze
@@ -40,7 +40,7 @@ class CompanionService
 
     CompanionMessage.transaction do
       companion.companion_messages.create!(profile: profile, role: "user", body: OPENERS_REQUEST)
-      companion.companion_messages.create!(profile: profile, role: "companion", body: openers.join("\n").truncate(500))
+      companion.companion_messages.create!(profile: profile, role: "companion", body: CompanionMessage.fit(openers.join("\n")))
     end
     openers
   end
@@ -56,7 +56,7 @@ class CompanionService
 
     CompanionMessage.transaction do
       companion.companion_messages.create!(profile: profile, role: "user", body: text)
-      companion.companion_messages.create!(profile: profile, role: "companion", body: answer.truncate(500))
+      companion.companion_messages.create!(profile: profile, role: "companion", body: CompanionMessage.fit(answer))
     end
     answer
   end
@@ -100,7 +100,7 @@ class CompanionService
         profile: other_profile, role: "user", body: REPLY_SUGGESTION_REQUEST
       )
       companion.companion_messages.create!(
-        profile: other_profile, role: "companion", body: suggestion.truncate(500)
+        profile: other_profile, role: "companion", body: CompanionMessage.fit(suggestion)
       )
     end
 
@@ -119,7 +119,7 @@ class CompanionService
 
     CompanionMessage.transaction do
       companion.companion_messages.create!(profile: profile, role: "user", body: FEEDBACK_REQUEST)
-      companion.companion_messages.create!(profile: profile, role: "companion", body: tips.truncate(500))
+      companion.companion_messages.create!(profile: profile, role: "companion", body: CompanionMessage.fit(tips))
     end
     tips
   end
@@ -236,7 +236,7 @@ class CompanionService
       companion.companion_messages.create!(
         profile: profile,
         role: "companion",
-        body: answer.truncate(500)
+        body: CompanionMessage.fit(answer)
       )
 
       companion.update!(
