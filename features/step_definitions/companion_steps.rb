@@ -63,6 +63,22 @@ Given('Sam matched with {string} this week') do |string|
   )
 end
 
+Given("I have used all my companion messages today") do
+  companion = @first_profile.user.companion
+  Companion::DAILY_MESSAGE_LIMIT.times do
+    companion.companion_messages.create!(profile: @first_profile, role: "user", body: "An earlier question.")
+  end
+  expect(CompanionService).not_to receive(:ask)
+end
+
+Given("the companion suggests {string} and {string}") do |first, second|
+  allow(CompanionService).to receive(:ask).and_return("#{first}\n#{second}")
+end
+
+When("I follow the {string} link for {string}") do |link, idea|
+  within("li", text: idea) { click_link link }
+end
+
 Given("the companion gives long feedback ending with {string}") do |ending|
   allow(CompanionService).to receive(:ask).and_return("Tell people what you love about hiking. " * 20 + ending)
 end

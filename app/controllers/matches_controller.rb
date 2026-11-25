@@ -22,7 +22,8 @@ class MatchesController < ApplicationController
     response.headers["Cache-Control"] = "no-store"
 
     @messages = @match.messages.oldest_first.includes(:sender)
-    @openers = Array(flash[:openers])
+    saved_ideas = session[:opener_ideas] || {}
+    @openers = saved_ideas["match_id"] == @match.id ? Array(saved_ideas["ideas"]) : []
     @draft = params[:draft].to_s.truncate(Message::MAX_LENGTH)
     mark_messages_as_seen
     set_unread_message_count

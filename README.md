@@ -261,7 +261,7 @@ Every account comes with a companion named **Wingman**.
 - **Ask it about the profile** in the box under its reaction and click **Send**. Your conversation about that person stays on the page.
 - **Meet and customize it** with **Companion** (`/companion`): click **Customize Wingman** to change its name and personality. It will greet you again in its new voice.
 - If a reply is inappropriate, click **Report this reply**; the admins see it quoted.
-- Your companion can handle up to 20 requests a day (chat, opener ideas, reply suggestions and feedback all count).
+- Your companion can handle up to 20 requests a day (chat, opener ideas, reply suggestions and feedback all count). Once you reach the limit, reactions on Discover and a new greeting also pause until tomorrow.
 
 If the AI service is unavailable, you'll see a short "taking a break" message and the rest of the app keeps working.
 

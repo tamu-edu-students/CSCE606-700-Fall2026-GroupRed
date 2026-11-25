@@ -9,6 +9,7 @@ class MessagesController < ApplicationController
     message = @match.messages.new(sender: @profile, body: params[:body].to_s)
 
     if message.save
+      session.delete(:opener_ideas) if session.dig(:opener_ideas, "match_id") == @match.id
       redirect_to match_path(@match, anchor: "message-form")
     else
       redirect_to match_path(@match, anchor: "message-form"),

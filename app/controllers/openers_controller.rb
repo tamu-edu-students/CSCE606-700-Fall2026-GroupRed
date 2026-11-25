@@ -16,7 +16,7 @@ class OpenersController < ApplicationController
     openers = CompanionService.openers(companion, @other_profile)
 
     if openers.any?
-      flash[:openers] = openers
+      session[:opener_ideas] = { "match_id" => @match.id, "ideas" => openers }
       redirect_to match_path(@match, anchor: "message-form")
     else
       redirect_to match_path(@match, anchor: "message-form"),

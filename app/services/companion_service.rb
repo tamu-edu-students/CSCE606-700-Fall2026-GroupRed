@@ -6,6 +6,7 @@ class CompanionService
 
   def self.greet(companion)
     return companion.greeting if companion.greeting.present?
+    return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
 
     greeting = ask(companion, "Say hi to your new friend who just joined the app. Keep it to two or three sentences.")
     return FALLBACK if greeting.nil?
@@ -17,6 +18,7 @@ class CompanionService
   def self.react(companion, profile)
     saved = companion.companion_messages.about(profile).find_by(role: "companion")
     return saved.body if saved
+    return DAILY_LIMIT_MESSAGE if companion.out_of_messages_today?
 
     reaction = ask(companion, "#{profile_details(profile)}\n\nGive your friend a quick, honest reaction to this profile in one or two sentences.")
     return FALLBACK if reaction.nil?
@@ -25,6 +27,8 @@ class CompanionService
   end
 
   OPENERS_REQUEST = "Help me start a conversation.".freeze
+  # Openers are kept in the session cookie, so each one stays short enough that 3 can't overflow it
+  OPENER_MAX_LENGTH = 200
 
   def self.openers(companion, profile)
     prompt = "#{profile_details(profile, "Your friend matched with this person:")}\n\n" \
@@ -36,7 +40,7 @@ class CompanionService
     return [] if answer.nil?
 
     lines = answer.lines.map { |line| line.sub(/\A\s*(?:[-*•]|\d+[.)])\s*/, "").strip.delete_prefix('"').delete_suffix('"') }
-    openers = lines.reject(&:blank?).first(3).map { |line| line.truncate(Message::MAX_LENGTH) }
+    openers = lines.reject(&:blank?).first(3).map { |line| line.truncate(OPENER_MAX_LENGTH, separator: " ") }
 
     CompanionMessage.transaction do
       companion.companion_messages.create!(profile: profile, role: "user", body: OPENERS_REQUEST)

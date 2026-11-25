@@ -78,6 +78,12 @@ RSpec.describe CompanionService do
       described_class.openers(companion, profile)
     end
 
+    it "keeps each opener short enough for the session cookie" do
+      allow(described_class).to receive(:ask).and_return("word " * 100)
+      opener = described_class.openers(companion, profile).first
+      expect(opener.length).to be <= CompanionService::OPENER_MAX_LENGTH
+    end
+
     it "returns up to 3 openers without numbers, bullets or quotes" do
       allow(described_class).to receive(:ask).and_return(
         "1. \"What's your best loaf?\"\n- Sourdough or rye?\n\n* Where did you learn to bake?\nOne more"
