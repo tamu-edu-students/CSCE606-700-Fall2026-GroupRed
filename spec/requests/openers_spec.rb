@@ -57,6 +57,19 @@ RSpec.describe "Openers", type: :request do
         get match_path(other_match)
         expect(response.body).not_to include("Sourdough or rye?")
       end
+
+      it "clears the ideas once I send a message" do
+        post match_messages_path(our_match), params: { body: "Sourdough or rye?" }
+        get match_path(our_match)
+        expect(response.body).not_to include("What&#39;s your best loaf?", "Use this")
+      end
+
+      it "keeps the ideas when I message a different match" do
+        other_match = create(:match, profile_1: profile, profile_2: create(:profile, display_name: "Jordan"))
+        post match_messages_path(other_match), params: { body: "Hi Jordan" }
+        get match_path(our_match)
+        expect(response.body).to include("What&#39;s your best loaf?")
+      end
     end
 
     it "explains when the companion is unavailable" do
