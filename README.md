@@ -38,14 +38,13 @@ git clone https://github.com/tamu-edu-students/CSCE606-700-Fall2026-GroupRed.git
 cd CSCE606-700-Fall2026-GroupRed
 bundle install
 bin/rails db:prepare   # creates and migrates the development and test databases
-bin/rails db:seed      # demo data: an admin, 30 profiles, sample swipes and a match
+bin/rails db:seed      # demo data: an admin, 30 profiles, matches, messages, a report, a banned user and a paused profile
 bin/rails server
 ```
 
 Open http://localhost:3000.
 
-**Demo logins** (local and production): any seeded profile, e.g. `peter.parker@wingmain.test`, password `password123`. Peter already has a match with Selina Kyle, so his Matches page isn't empty.
-The admin account is `admin@wingmain.test`; locally its password is `password123`.
+**Demo logins** (local and production): any seeded profile, e.g. `peter.parker@wingmain.test`, password `password123`. Peter has matches with Kara Zor-El (with an unread message) and Selina Kyle. Paige Turner has reported a message, Chad Thundercode is banned, and Cara Mel is paused. Running the seeds again resets the demo accounts to this state without touching real sign-ups.
 
 **AI companion locally:** set `ANTHROPIC_API_KEY` to get real AI replies. Without it, the companion shows a friendly fallback message and everything else works. The test suites always remove this key, so tests never call the real API.
 

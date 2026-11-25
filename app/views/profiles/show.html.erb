@@ -30,7 +30,7 @@
   <section class="companion-feedback" aria-labelledby="companion-feedback-heading">
     <h2 id="companion-feedback-heading">What <%= @companion.name %> thinks</h2>
     <% if @feedback %>
-      <p><%= @feedback.body %></p>
+      <%= simple_format(@feedback.body) %>
     <% else %>
       <p>Ask <%= @companion.name %> for tips on your profile.</p>
     <% end %>

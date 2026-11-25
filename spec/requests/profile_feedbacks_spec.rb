@@ -28,6 +28,16 @@ RSpec.describe "Profile feedback", type: :request do
         expect(response.body).to include("What Wingman thinks", "What do you think?")
       end
 
+      it "shows long feedback in full" do
+        long_feedback = "Mention your favorite trail. " * 25 + "And add a photo from your last hike."
+        allow(CompanionService).to receive(:ask).and_return(long_feedback)
+        post profile_feedback_path
+
+        follow_redirect!
+        expect(response.body).to include("And add a photo from your last hike.")
+        expect(response.body).not_to include("...")
+      end
+
       it "shows the tips on my profile" do
         allow(CompanionService).to receive(:ask).and_return("Say where you like to hike.")
         post profile_feedback_path

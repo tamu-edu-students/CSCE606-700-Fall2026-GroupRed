@@ -45,7 +45,7 @@ jobs:
         run: google-chrome --version
 
       - name: Prepare database
-        run: bin/rails db:prepare
+        run: bin/rails db:create db:schema:load
 
       - name: Run RSpec (unit test coverage)
         run: COVERAGE_DIR=coverage/rspec bundle exec rspec

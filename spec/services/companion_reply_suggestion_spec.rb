@@ -149,7 +149,7 @@ RSpec.describe CompanionService do
       )
 
       expect(suggestion.length).to eq(Message::MAX_LENGTH)
-      expect(saved_reply.body.length).to eq(500)
+      expect(saved_reply.body).to eq(suggestion)
     end
   end
 end
