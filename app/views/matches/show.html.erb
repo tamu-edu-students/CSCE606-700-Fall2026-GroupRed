@@ -1,4 +1,5 @@
 <% content_for :title, "Messages with #{@other_profile.display_name}" %>
+<% content_for :flash_in_page, "true" %>
 
 <section class="conversation" aria-labelledby="conversation-heading">
   <h1 id="conversation-heading">Messages with <%= @other_profile.display_name %></h1>

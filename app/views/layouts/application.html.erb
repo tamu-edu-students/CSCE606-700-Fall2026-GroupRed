@@ -59,14 +59,16 @@
       </nav>
     </header>
 
-    <div class="flash-messages" aria-live="polite">
-      <% if notice.present? %>
-        <p class="notice" role="status"><%= notice %></p>
-      <% end %>
-      <% if alert.present? %>
-        <p class="alert" role="alert"><%= alert %></p>
-      <% end %>
-    </div>
+    <% unless content_for?(:flash_in_page) %>
+      <div class="flash-messages" aria-live="polite">
+        <% if notice.present? %>
+          <p class="notice" role="status"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="alert" role="alert"><%= alert %></p>
+        <% end %>
+      </div>
+    <% end %>
 
     <main id="main-content" tabindex="-1">
       <%= yield %>

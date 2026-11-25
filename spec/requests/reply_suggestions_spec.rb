@@ -45,7 +45,13 @@ RSpec.describe "Reply suggestions", type: :request do
 
       follow_redirect!
       expect(response.body).to include(">\n#{suggestion}</textarea>")
-      expect(response.body).to include(
+
+      document = Nokogiri::HTML(response.body)
+      expect(document.css("[role='status']").size).to eq(1)
+
+      notice = document.at_css("form#message-form [role='status']")
+      expect(notice).to be_present
+      expect(notice.text).to eq(
         "Reply suggestion added. You can edit it before sending."
       )
     end

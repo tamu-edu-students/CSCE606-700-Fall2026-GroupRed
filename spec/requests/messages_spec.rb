@@ -132,7 +132,7 @@ RSpec.describe "Messages", type: :request do
         expect(form.at_css("textarea[name='body']").text).to be_blank
       end
 
-      it "rejects a blank message and shows the error beside the message box" do
+      it "rejects a blank message and shows the error once beside the message box" do
         expect { send_message("   ") }.not_to change(Message, :count)
 
         expect(response).to redirect_to(
@@ -141,9 +141,11 @@ RSpec.describe "Messages", type: :request do
         expect(flash[:alert]).to eq("Message can't be blank")
 
         follow_redirect!
-        error = Nokogiri::HTML(response.body).at_css(
-          "form#message-form [role='alert']"
-        )
+        document = Nokogiri::HTML(response.body)
+
+        expect(document.css("[role='alert']").size).to eq(1)
+
+        error = document.at_css("form#message-form [role='alert']")
         expect(error).to be_present
         expect(error.text).to eq("Message can't be blank")
       end
