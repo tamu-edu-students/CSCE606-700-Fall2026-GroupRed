@@ -14,7 +14,10 @@ class MatchesController < ApplicationController
       .involving(@profile)
       .where(profile_1_id: visible_profile_ids)
       .where(profile_2_id: visible_profile_ids)
-      .includes(:profile_1, :profile_2)
+      .includes(
+        profile_1: [ :user, { photo_attachment: :blob } ],
+        profile_2: [ :user, { photo_attachment: :blob } ]
+      )
   end
 
   # The conversation with one match. New messages show after sending or refreshing (ADR 0002).
