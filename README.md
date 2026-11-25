@@ -236,7 +236,7 @@ Returning users click **Sign in** in the header. When you're signed in, the head
 - **View it** with **Account → Profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
 - **Add a photo** on the edit page: choose a JPG or PNG up to 5 MB and describe it in **Photo alt text** (required, so screen readers can describe it), then click **Save profile**.
-- Profile photos appear on profile pages, Discover, My Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
+- Profile photos appear on profile pages, Discover, Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
 - **Prompts and interests:** optionally answer "Ideal first date" and "A perfect weekend," and list your interests. Each field allows up to 500 characters.
 - Filled-in answers appear on your profile, other people's view of your profile, and swipe-history profile popups. Your companion also receives them for reactions, conversation starters, chat, and profile feedback.
 - **Get feedback** by clicking **What do you think?** on your profile; your companion gives honest tips on improving it.
@@ -250,8 +250,8 @@ Click **Discover** (`/swipes`). You'll see one profile at a time, chosen to fit 
 - Click **Like** or **Pass** to move to the next profile.
 - When you and someone both like each other, you'll see **"It's a match!"**
 - When there's no one left, the page says **No more profiles available.**
-- Made a mistake? Click **Undo Last Swipe** and confirm; that profile comes back. If the swipe had made a match, you're warned first that the match and its conversation will be deleted for both of you.
-- Click **View Swipe History** to see everyone you've liked and passed on. Click **View** to see their profile, or **Change Decision** to switch a like to a pass (or the other way around). Changing a like to a pass on someone you matched with warns you first, because it unmatches you and deletes the conversation.
+- Made a mistake? Click **Undo Last Swipe** and confirm; that profile comes back. If the swipe had made a match, the match and its conversation are deleted for both of you. With JavaScript on, you're warned first.
+- Click **View Swipe History** to see everyone you've liked and passed on. Click **View** to see their profile, or **Change Decision** to switch a like to a pass (or the other way around). Changing a like to a pass on someone you matched with unmatches you and deletes the conversation; with JavaScript on, you're warned first.
 - You can't swipe on yourself, on someone twice, or on a banned user; the page tells you why.
 
 ## Your AI companion
@@ -283,11 +283,11 @@ Each message from your match has a **Report** button, which sends the message (q
 
 Click **Conversations** in the header to see all your conversations in one place, most recent first, with how many messages and how many are unread. Click **Open conversation** to read and reply; opening it marks the messages as read. Blocked and banned people's conversations don't appear.
 
-To end a match, click **Unmatch** on the conversation page. A warning explains that the conversation will be deleted for both of you and can't be undone; click **Unmatch** to confirm or **Cancel** to go back. Neither of you will see the match in My Matches afterward.
+To end a match, click **Unmatch** on the conversation page. A warning explains that the conversation will be deleted for both of you and can't be undone; click **Unmatch** to confirm or **Cancel** to go back. Neither of you will see the match in Matches afterward.
 
 ## Viewing, blocking and reporting people
 
-- Each person has a profile page at `/people/<id>`, reachable with **View &lt;name&gt;'s profile** on Discover, My Matches and conversations.
+- Each person has a profile page at `/people/<id>`, reachable with **View &lt;name&gt;'s profile** on Discover, Matches and conversations.
 - Click **Block &lt;their name&gt;** on their profile and confirm. Blocking works both ways: neither of you can see the other's profile, swipe on each other, or appear in each other's matches.
 - Manage blocks at **Account → Blocked people**, where you can **Unblock** anyone.
 - Click **Report &lt;their name&gt;** on their profile, give a reason (up to 500 characters), and click **Submit report**. You can't report yourself.
