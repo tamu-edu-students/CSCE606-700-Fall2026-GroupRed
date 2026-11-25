@@ -70,3 +70,7 @@ Given("I have used all my companion messages today") do
   end
   expect(CompanionService).not_to receive(:ask)
 end
+
+Given("the companion gives long feedback ending with {string}") do |ending|
+  allow(CompanionService).to receive(:ask).and_return("Tell people what you love about hiking. " * 20 + ending)
+end
