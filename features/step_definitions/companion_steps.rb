@@ -70,3 +70,7 @@ end
 When("I follow the {string} link for {string}") do |link, idea|
   within("li", text: idea) { click_link link }
 end
+
+Given("the companion gives long feedback ending with {string}") do |ending|
+  allow(CompanionService).to receive(:ask).and_return("Tell people what you love about hiking. " * 20 + ending)
+end

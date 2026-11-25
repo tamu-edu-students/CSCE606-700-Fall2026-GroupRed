@@ -18,6 +18,12 @@ Feature: Companion feedback on my profile
         Then I should see "What Wingman thinks"
         And I should see "Add a photo and say where you like to hike."
 
+    Scenario: Read long tips in full
+        Given the companion gives long feedback ending with "Last tip: add a photo from your last hike."
+        When I visit my profile page
+        And I press "What do you think?"
+        Then I should see "Last tip: add a photo from your last hike."
+
     Scenario: Companion is not available
         Given the companion service is down
         When I visit my profile page
