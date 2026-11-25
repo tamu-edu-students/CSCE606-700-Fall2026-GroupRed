@@ -33,6 +33,7 @@ RSpec.describe "Companion failures", type: :request do
   end
 
   def fail_api_with(&failure)
+    # Safe: the around hook in rails_helper.rb puts back the original key after each example
     ENV["ANTHROPIC_API_KEY"] = "test-key"
     messages = double("messages")
     allow(messages).to receive(:create, &failure)
