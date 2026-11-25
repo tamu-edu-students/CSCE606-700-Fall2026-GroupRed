@@ -26,3 +26,23 @@ Feature: AI companion error handling
         And I ask my companion "Should I like her?"
         Then I should see "Your companion is taking a quick break right now"
         And I should not see "You: Should I like her?"
+
+    Scenario: Asking for opener ideas while it is down
+        Given the two profiles have matched
+        When I open my conversation with my match
+        And I press "Help me start"
+        Then I should see "Your companion is taking a quick break right now"
+        And I should see "No messages yet."
+
+    Scenario: Asking for a suggested reply while it is down
+        Given the two profiles have matched
+        When I open my conversation with my match
+        And I press "Suggest a reply"
+        Then I should see "Your companion is taking a quick break right now"
+        And I should see "No messages yet."
+
+    Scenario: Asking for profile tips while it is down
+        When I visit my profile page
+        And I press "What do you think?"
+        Then I should see "Your companion is taking a quick break right now"
+        And I should see "Edit profile"
