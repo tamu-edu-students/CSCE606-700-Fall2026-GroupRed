@@ -116,18 +116,36 @@ RSpec.describe "Messages", type: :request do
     end
 
     describe "POST /matches/:match_id/messages" do
-      it "saves the message and goes back to the conversation" do
+      it "saves the message and returns to the message form" do
         expect { send_message("Hi Taylor!") }.to change(our_match.messages, :count).by(1)
 
-        expect(response).to redirect_to(match_path(our_match))
-        expect(our_match.messages.last).to have_attributes(sender: profile, body: "Hi Taylor!")
+        expect(response).to redirect_to(
+          match_path(our_match, anchor: "message-form")
+        )
+        expect(our_match.messages.last).to have_attributes(
+          sender: profile, body: "Hi Taylor!"
+        )
+
+        follow_redirect!
+        form = Nokogiri::HTML(response.body).at_css("form#message-form")
+        expect(form).to be_present
+        expect(form.at_css("textarea[name='body']").text).to be_blank
       end
 
-      it "doesn't save a blank message and shows an error" do
+      it "rejects a blank message and shows the error beside the message box" do
         expect { send_message("   ") }.not_to change(Message, :count)
 
-        expect(response).to redirect_to(match_path(our_match))
+        expect(response).to redirect_to(
+          match_path(our_match, anchor: "message-form")
+        )
         expect(flash[:alert]).to eq("Message can't be blank")
+
+        follow_redirect!
+        error = Nokogiri::HTML(response.body).at_css(
+          "form#message-form [role='alert']"
+        )
+        expect(error).to be_present
+        expect(error.text).to eq("Message can't be blank")
       end
 
       it "doesn't let a user message someone they blocked" do

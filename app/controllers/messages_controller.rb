@@ -9,9 +9,10 @@ class MessagesController < ApplicationController
     message = @match.messages.new(sender: @profile, body: params[:body].to_s)
 
     if message.save
-      redirect_to match_path(@match)
+      redirect_to match_path(@match, anchor: "message-form")
     else
-      redirect_to match_path(@match), alert: message.errors.full_messages.to_sentence
+      redirect_to match_path(@match, anchor: "message-form"),
+                  alert: message.errors.full_messages.to_sentence
     end
   end
 

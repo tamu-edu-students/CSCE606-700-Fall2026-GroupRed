@@ -37,7 +37,7 @@ RSpec.describe "Reply suggestions", type: :request do
       }.not_to change(Message, :count)
 
       expect(response).to redirect_to(
-        match_path(our_match, draft: suggestion)
+        match_path(our_match, draft: suggestion, anchor: "message-form")
       )
       expect(
         user.companion.companion_messages.where(role: "user").count
@@ -57,7 +57,7 @@ RSpec.describe "Reply suggestions", type: :request do
       post match_reply_suggestion_path(our_match)
 
       expect(response).to redirect_to(
-        match_path(our_match, draft: "See you Saturday!")
+        match_path(our_match, draft: "See you Saturday!", anchor: "message-form")
       )
     end
 
@@ -68,7 +68,7 @@ RSpec.describe "Reply suggestions", type: :request do
         post match_reply_suggestion_path(our_match)
       }.not_to change(CompanionMessage, :count)
 
-      expect(response).to redirect_to(match_path(our_match))
+      expect(response).to redirect_to(match_path(our_match, anchor: "message-form"))
       expect(flash[:alert]).to eq(CompanionService::FALLBACK)
     end
 
@@ -82,7 +82,7 @@ RSpec.describe "Reply suggestions", type: :request do
 
       post match_reply_suggestion_path(our_match)
 
-      expect(response).to redirect_to(match_path(our_match))
+      expect(response).to redirect_to(match_path(our_match, anchor: "message-form"))
       expect(flash[:alert]).to eq(
         "#{user.companion.name} needs a break. Chat again tomorrow!"
       )
