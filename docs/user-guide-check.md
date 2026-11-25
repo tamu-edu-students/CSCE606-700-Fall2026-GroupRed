@@ -32,8 +32,8 @@ This was a documentation walkthrough, not a full regression test.
 | Discover | Profile information, Wingman says, Report this reply, chat Send, Like, Pass, Undo Last Swipe and View Swipe History are visible. |
 | Swipe history | Liked and Passed sections include View and Change Decision controls. |
 | History profile popup | Peter's photo, bio, prompt answers and interests appear, with a Close button. |
-| Matches | Cards include Message <name> and View <name>'s profile links. |
-| Another person's profile | Block <name> and Report <name> controls are visible. |
+| Matches | Cards include Message &lt;name&gt; and View &lt;name&gt;'s profile links. |
+| Another person's profile | Block &lt;name&gt; and Report &lt;name&gt; controls are visible. |
 | Report form | Reason, Submit report and a link back to the profile are present. |
 | Blocked people and My reports | Both pages load and show clear empty states for Kara. |
 | Admin dashboard | All Users, Open reports and Banned accounts are displayed, with Ban, Dismiss report and Pardon controls. |
