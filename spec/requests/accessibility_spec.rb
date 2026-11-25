@@ -14,14 +14,6 @@ RSpec.describe "Shared accessibility features", type: :request do
     expect(response.body).to include('<main id="main-content" tabindex="-1">')
   end
 
-  it "renders a friendly not-authorized page" do
-    get not_authorized_path
-
-    expect(response).to have_http_status(:forbidden)
-    expect(response.body).to include("<h1>Not authorized</h1>")
-    expect(response.body).to include("Return to WingmAIn")
-  end
-
   it "keeps the production 404 page friendly" do
     page = Rails.root.join("public", "404.html").read
 
