@@ -229,18 +229,19 @@ erDiagram
 2. Enter your email, date of birth (you must be 18 or older), and a password (6+ characters).
 3. Create your profile: display name, bio, gender, who you're interested in, and the age range you're looking for.
 
-Returning users click **Sign in** in the header. When you're signed in, the header has **Discover**, **Matches** and **Companion**, an **Account** menu (Profile, Blocked people, My reports, Account settings, and Admin for admins), and **Sign out**. The home page has shortcut cards to the same places.
+Returning users click **Sign in** in the header. When you're signed in, the header has **Discover**, **Matches**, **Companion** and **Conversations** (with your unread count, e.g. "Conversations (2)"), an **Account** menu (Profile, Blocked people, My reports, Account settings, and Admin for admins), and **Sign out**. The home page has shortcut cards to the same places.
 
 ## Your profile
 
 - **View it** with **Account → Profile** (`/profile`).
 - **Edit it** with **Edit profile**. If something is invalid (e.g. an age under 18), the form explains what to fix.
 - **Add a photo** on the edit page: choose a JPG or PNG up to 5 MB and describe it in **Photo alt text** (required, so screen readers can describe it), then click **Save profile**.
-- Profile photos appear on profile pages, Discover, My Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
+- Profile photos appear on profile pages, Discover, Matches, conversation pages, and swipe-history profile popups. Photos include the uploader's alt text. Profiles without a photo show "No photo yet."
 - **Prompts and interests:** optionally answer "Ideal first date" and "A perfect weekend," and list your interests. Each field allows up to 500 characters.
 - Filled-in answers appear on your profile, other people's view of your profile, and swipe-history profile popups. Your companion also receives them for reactions, conversation starters, chat, and profile feedback.
 - **Get feedback** by clicking **What do you think?** on your profile; your companion gives honest tips on improving it.
 - **Delete it** with **Delete profile** and confirm. Your account stays, so you can create a new profile later.
+- **Pause it** with **Pause profile** on your profile page when you want a break. While paused, you're hidden from Discover, and your matches and conversations stay. Click **Unpause profile** to show up again.
 
 ## Swiping through profiles
 
@@ -249,8 +250,8 @@ Click **Discover** (`/swipes`). You'll see one profile at a time, chosen to fit 
 - Click **Like** or **Pass** to move to the next profile.
 - When you and someone both like each other, you'll see **"It's a match!"**
 - When there's no one left, the page says **No more profiles available.**
-- Made a mistake? Click **Undo Last Swipe** and confirm; that profile comes back. If the swipe had made a match, the match and its conversation are removed.
-- Click **View Swipe History** to see everyone you've liked and passed on. Click **View** to see their profile, or **Change Decision** to switch a like to a pass (or the other way around).
+- Made a mistake? Click **Undo Last Swipe** and confirm; that profile comes back. If the swipe had made a match, the match and its conversation are deleted for both of you. With JavaScript on, you're warned first.
+- Click **View Swipe History** to see everyone you've liked and passed on. Click **View** to see their profile, or **Change Decision** to switch a like to a pass (or the other way around). Changing a like to a pass on someone you matched with unmatches you and deletes the conversation; with JavaScript on, you're warned first.
 - You can't swipe on yourself, on someone twice, or on a banned user; the page tells you why.
 
 ## Your AI companion
@@ -260,6 +261,7 @@ Every account comes with a companion named **Wingman**.
 - **On Discover,** your companion reacts to each profile ("Wingman says…").
 - **Ask it about the profile** in the box under its reaction and click **Send**. Your conversation about that person stays on the page.
 - **Meet and customize it** with **Companion** (`/companion`): click **Customize Wingman** to change its name and personality. It will greet you again in its new voice.
+- **My week:** the Companion page also has a weekly recap of the last 7 days: new matches, likes you've given, and conversations with unread or unanswered messages. It counts toward the daily limit.
 - If a reply is inappropriate, click **Report this reply**; the admins see it quoted.
 - Your companion can handle up to 20 requests a day (chat, opener ideas, reply suggestions and feedback all count). Once you reach the limit, reactions on Discover and a new greeting also pause until tomorrow.
 
@@ -279,9 +281,13 @@ After **Send**, **Suggest a reply**, **Help me start**, or **Use this**, the pag
 
 Each message from your match has a **Report** button, which sends the message (quoted) to the admins; they can ban the sender from the report. You can **Delete** any message you sent, which removes it for both of you.
 
+Click **Conversations** in the header to see all your conversations in one place, most recent first, with how many messages and how many are unread. Click **Open conversation** to read and reply; opening it marks the messages as read. Blocked and banned people's conversations don't appear.
+
+To end a match, click **Unmatch** on the conversation page. A warning explains that the conversation will be deleted for both of you and can't be undone; click **Unmatch** to confirm or **Cancel** to go back. Neither of you will see the match in Matches afterward.
+
 ## Viewing, blocking and reporting people
 
-- Each person has a profile page at `/people/<id>`, reachable with **View &lt;name&gt;'s profile** on Discover, My Matches and conversations.
+- Each person has a profile page at `/people/<id>`, reachable with **View &lt;name&gt;'s profile** on Discover, Matches and conversations.
 - Click **Block &lt;their name&gt;** on their profile and confirm. Blocking works both ways: neither of you can see the other's profile, swipe on each other, or appear in each other's matches.
 - Manage blocks at **Account → Blocked people**, where you can **Unblock** anyone.
 - Click **Report &lt;their name&gt;** on their profile, give a reason (up to 500 characters), and click **Submit report**. You can't report yourself.
@@ -291,8 +297,9 @@ Each message from your match has a **Report** button, which sends the message (q
 
 Admins sign in with the admin account and open **Account → Admin** (`/admin`).
 
+- **All Users** lists every account with display name, email, joined date and status (Active or Suspended). Search by name or email, and **Ban** or **Pardon** anyone except admins right from the list.
 - **Open reports** lists each report with the reason and who sent it.
 - **Ban &lt;name&gt;** suspends the account and resolves that person's open reports. Banned users can't sign in, and they disappear from Discover, Matches and conversations.
 - **Dismiss report about &lt;name&gt;** closes a report without action.
 - **Banned accounts** lists suspended users; **Pardon &lt;name&gt;** restores one.
-- Only admins can open the dashboard; everyone else is sent to the "Not authorized" page.
+- Only admins can open the dashboard. Anyone else who tries, or who opens a page they're not allowed to see, is sent back with "You are not authorized to perform this action." Opening a conversation you're not part of shows "That conversation isn't available."
