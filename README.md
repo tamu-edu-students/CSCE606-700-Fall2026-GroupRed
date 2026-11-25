@@ -115,111 +115,37 @@ After every `git pull`, run `bundle install` and `bin/rails db:migrate` to pick 
 
 ## Architecture
 
-### System diagram
-
-```mermaid
-flowchart TB
-  Browser["User's browser<br/>(HTML forms, no JS required)"] -->|HTTPS| Rails["Rails 8.1 app<br/>(Puma on Heroku)"]
-  Rails --> DB[("Heroku Postgres")]
-  Rails -->|CompanionService| AI["Anthropic API"]
-  Dev["Developer"] -->|pull request| GitHub["GitHub"]
-  GitHub --> CI["GitHub Actions<br/>RSpec · Cucumber · RuboCop · coverage"]
-  CI -->|passes on main| Heroku["Heroku auto-deploy"]
-  Heroku --> Rails
-```
-
-### Database diagram (current schema)
-
-```mermaid
-erDiagram
-  USERS ||--o| PROFILES : "has one"
-  USERS ||--|| COMPANIONS : "has one"
-  USERS ||--o{ BLOCKS : "blocks (blocker)"
-  USERS ||--o{ BLOCKS : "is blocked (blocked)"
-  PROFILES ||--o{ SWIPES : "swipes (swiper)"
-  PROFILES ||--o{ SWIPES : "is swiped on (prospect)"
-  PROFILES ||--o{ MATCHES : "profile_1"
-  PROFILES ||--o{ MATCHES : "profile_2"
-  MATCHES ||--o{ MESSAGES : "has"
-  PROFILES ||--o{ MESSAGES : "sends (sender)"
-  COMPANIONS ||--o{ COMPANION_MESSAGES : "says / hears"
-  PROFILES ||--o{ COMPANION_MESSAGES : "is discussed in"
-
-  USERS {
-    bigint id PK
-    string email "unique"
-    string encrypted_password
-    date date_of_birth "18+"
-    string role "user or admin"
-    datetime suspended_at
-  }
-  PROFILES {
-    bigint id PK
-    bigint user_id FK "unique"
-    string display_name
-    text bio
-    text ideal_first_date
-    text perfect_weekend
-    text interests
-    string gender
-    string interested_in
-    integer age_min
-    integer age_max
-  }
-  COMPANIONS {
-    bigint id PK
-    bigint user_id FK "unique"
-    string name
-    string personality
-    text memory_summary
-    text greeting
-  }
-  COMPANION_MESSAGES {
-    bigint id PK
-    bigint companion_id FK
-    bigint profile_id FK
-    string role "user or companion"
-    text body
-  }
-  SWIPES {
-    bigint id PK
-    bigint swiper_id FK
-    bigint prospect_id FK
-    boolean liked
-  }
-  MATCHES {
-    bigint id PK
-    bigint profile_1_id FK
-    bigint profile_2_id FK
-  }
-  MESSAGES {
-    bigint id PK
-    bigint match_id FK
-    bigint sender_id FK
-    text body
-  }
-  BLOCKS {
-    bigint id PK
-    bigint blocker_id FK
-    bigint blocked_id FK
-  }
-```
+- [System architecture](docs/architecture.md): runtime diagram, application components, AI requests, photo storage and deployment.
+- [Data model](docs/data-model.md): database diagrams, relationships, constraints and important state fields.
+- [Live user-guide check](docs/user-guide-check.md): November 25 walkthrough, findings and verification limits.
 
 ### Key classes
 
 | Class | Responsibility |
 | --- | --- |
-| `User` | Devise account (18+); owns a profile and companion; block helpers (`blocked_with?`, `User.not_blocked_with`) |
-| `Profile` | Dating profile and preferences, with validations (name ≤ 40, bio ≤ 500, ages ≥ 18) |
-| `Swipe` | One profile liking or passing on another; one swipe per pair, never yourself |
-| `Match` | Created when two profiles like each other; one per pair |
-| `Message` | A message between the two people in a match (1–1000 characters); only someone in the match can send one |
-| `Companion` | The user's AI companion; created at sign-up; name and personality are customizable; 20 chat messages per day |
-| `CompanionMessage` | The companion's reaction to a profile and the chat about it |
-| `CompanionService` | Calls the AI for greetings, profile reactions, feedback, openers, and chats. Conversation reply suggestions also use the latest 10 match messages. Account email and birth-date fields are excluded; requests have a 10-second timeout, and callers show a fallback on API errors. |
-| `Block` | One user blocking another; blocks apply both ways |
+| `User` | Devise account with an age requirement, admin role, suspension state and block relationships. |
+| `Profile` | Dating profile, preferences, optional prompts and interests, photo attachment and paused state. |
+| `Swipe` | A like or pass from one profile to another; prevents duplicate pairs and self-swipes. |
+| `Match` | Connects two matched profiles and owns their conversation messages. |
+| `Message` | A validated message from a match participant, with a 1,000-character limit and seen state. |
+| `Companion` | Stores the user's companion settings and cached greeting and weekly recap; checks the daily allowance through message history. |
+| `CompanionMessage` | Stores user requests and companion responses associated with a profile. |
+| `CompanionService` | Builds AI context and handles greetings, reactions, chat, openers, feedback, reply suggestions and weekly recaps. |
+| `Block` | Records one account blocking another; access checks consider blocks in either direction. |
+| `Report` | Stores a user's report about an account or companion message, with an open, resolved or dismissed status. |
+
+### Architecture decision records
+
+- [ADR 0001: Route all AI calls through CompanionService](docs/adr/0001-route-ai-calls-through-companion-service.md)
+- [ADR 0002: Server-rendered pages that work without JavaScript](docs/adr/0002-server-rendered-pages-without-javascript.md)
+- [ADR 0003: Enforce coverage per test suite in CI](docs/adr/0003-enforce-coverage-per-suite-in-ci.md)
+- [ADR 0004: Store profile photos with Active Storage and S3](docs/adr/0004-store-profile-photos-with-active-storage-and-s3.md)
+- [ADR 0005: Keep AI suggestions as editable drafts](docs/adr/0005-keep-ai-suggestions-as-editable-drafts.md)
+- [ADR 0006: Use matches for conversations and unread state](docs/adr/0006-use-matches-for-conversations-and-unread-state.md)
+- [ADR 0007: Pause profiles without deleting their data](docs/adr/0007-pause-profiles-without-deleting-data.md)
 
 ---
+
 
 # User Guide
 
