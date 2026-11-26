@@ -35,6 +35,39 @@ RSpec.describe "Matches", type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).not_to include("Suspended Match")
     end
+
+    it "loads match photos without an extra query per match (no N+1)" do
+      create_match_with_photo = lambda do
+        other = create(:profile)
+        other.photo.attach(
+          io: Rails.root.join("spec/fixtures/files/profile.jpg").open,
+          filename: "profile.jpg",
+          content_type: "image/jpeg"
+        )
+        other.update!(photo_alt_text: "A smiling person")
+        ids = [ profile.id, other.id ].sort
+        create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+      end
+
+      count_queries = lambda do
+        count = 0
+        counter = lambda do |*, payload|
+          count += 1 unless payload[:name].in?(%w[SCHEMA TRANSACTION]) || payload[:cached]
+        end
+        ActiveSupport::Notifications.subscribed(counter, "sql.active_record") { get matches_path }
+        count
+      end
+
+      create_match_with_photo.call
+      get matches_path # warm up sign-in so only the page's own queries are compared
+      one_match_queries = count_queries.call
+
+      3.times { create_match_with_photo.call }
+      four_match_queries = count_queries.call
+
+      expect(response.body.scan('class="profile-photo"').size).to eq(4)
+      expect(four_match_queries).to eq(one_match_queries)
+    end
   end
 
   describe "DELETE /matches/:id" do
