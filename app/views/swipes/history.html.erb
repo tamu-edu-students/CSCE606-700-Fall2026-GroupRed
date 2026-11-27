@@ -22,14 +22,13 @@
             <%= render "prospect_profile", profile: swipe.prospect %>
           </td>
           <td>
-            <% change_form = if @matched_prospect_ids.include?(swipe.prospect_id)
-                 warning = "Change decision to Pass? This will unmatch you with #{swipe.prospect.display_name} and delete your conversation for both of you."
-                 { onsubmit: "return confirm(#{warning.to_json});" }
-               else
-                 {}
-               end %>
-            <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"),
-                  method: :post, form: change_form %>
+            <% if @matched_prospect_ids.include?(swipe.prospect_id) %>
+              <%# Changing to Pass would unmatch, so warn on a page that works without JavaScript (ADR 0002). %>
+              <%= link_to "Change Decision", confirm_change_decision_swipes_path(swipe_id: swipe.id) %>
+            <% else %>
+              <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: swipe.id, new_decision: "dislike"),
+                    method: :post %>
+            <% end %>
           </td>
         </tr>
       <% end %>

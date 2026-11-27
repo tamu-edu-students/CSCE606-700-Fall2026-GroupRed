@@ -18,18 +18,48 @@ Feature: Unmatch someone
     Then I should see "You unmatched with Taylor."
     And neither person should see the match or its messages
 
-  Scenario: Undo warns when it would remove a match
+  Scenario: Undo asks for confirmation when it would remove a match
     Given I liked my match
     And I am logged in as "sam@example.com"
     When I visit the Discover page
-    Then the "Undo Last Swipe" button should warn that the conversation will be deleted
+    And I follow "Undo Last Swipe"
+    Then I should see "This will unmatch you with Taylor and delete your conversation for both of you."
+    And the match should still exist
+    When I press "Undo Last Swipe"
+    Then I should see "Last swipe undone."
+    And the match should no longer exist
 
-  Scenario: Change Decision in swipe history warns when it would remove a match
+  Scenario: Cancel an Undo that would remove a match
+    Given I liked my match
+    And I am logged in as "sam@example.com"
+    When I visit the Discover page
+    And I follow "Undo Last Swipe"
+    And I follow "Cancel"
+    Then I should see "Discover"
+    And the match should still exist
+
+  Scenario: Change Decision asks for confirmation when it would remove a match
     Given I liked my match
     And I am logged in as "sam@example.com"
     When I visit the Discover page
     And I visit my swipe history
-    Then the "Change Decision" button should warn that the conversation will be deleted
+    And I follow "Change Decision"
+    Then I should see "Change your decision on Taylor to Pass?"
+    And I should see "This will unmatch you with Taylor and delete your conversation for both of you."
+    And the match should still exist
+    When I press "Change Decision"
+    Then I should see "Swipe decision updated."
+    And the match should no longer exist
+
+  Scenario: Cancel a Change Decision that would remove a match
+    Given I liked my match
+    And I am logged in as "sam@example.com"
+    When I visit the Discover page
+    And I visit my swipe history
+    And I follow "Change Decision"
+    And I follow "Cancel"
+    Then I should see "History of Swipes"
+    And the match should still exist
 
   Scenario: Cancel from the unmatch page keeps the match
     Given I am logged in as "sam@example.com"

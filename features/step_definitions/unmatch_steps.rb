@@ -26,17 +26,14 @@ Then("neither person should see the match or its messages") do
   expect(page).not_to have_content(@first_profile.display_name)
 end
 
-Then("the {string} button should warn that the conversation will be deleted") do |label|
-  onsubmit = find_button(label).ancestor("form")["onsubmit"]
-  expect(onsubmit).to include("confirm(")
-  expect(onsubmit).to include("unmatch")
-  expect(onsubmit).to include("delete your conversation for both of you")
-end
-
 When("I try to unmatch that match directly") do
   page.driver.submit :delete, match_path(current_match), {}
 end
 
 Then("the match should still exist") do
   expect(Match.between(@first_profile, @other_profile)).to exist
+end
+
+Then("the match should no longer exist") do
+  expect(Match.between(@first_profile, @other_profile)).not_to exist
 end
