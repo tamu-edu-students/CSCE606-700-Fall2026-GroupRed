@@ -1,0 +1,12 @@
+<% content_for :title, "Delete your profile?" %>
+
+<section class="confirmation" aria-labelledby="confirmation-heading">
+  <h1 id="confirmation-heading">Delete your profile?</h1>
+  <p class="alert" role="alert">
+    This will delete your profile, your matches and your conversations for everyone.
+    It can't be undone.
+  </p>
+
+  <%= button_to "Delete profile", profile_path, method: :delete %>
+  <p><%= link_to "Cancel", profile_path %></p>
+</section>

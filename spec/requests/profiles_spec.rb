@@ -127,5 +127,26 @@ RSpec.describe "Profiles", type: :request do
       expect(other_profile.reload.display_name).to eq("Other")
       expect(profile.reload.user).to eq(user)
     end
+
+    describe "deleting the profile (works without JavaScript)" do
+      it "links Delete profile to a confirmation page" do
+        get profile_path
+        expect(response.body).to include(%(href="#{confirm_destroy_profile_path}"))
+        expect(response.body).not_to include("turbo-confirm")
+      end
+
+      it "shows a warning without deleting yet" do
+        get confirm_destroy_profile_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("This will delete your profile, your matches and your conversations for everyone.")
+        expect(response.body).to include(%(href="#{profile_path}"))
+        expect(Profile.exists?(profile.id)).to be(true)
+      end
+
+      it "deletes the profile once confirmed" do
+        expect { delete profile_path }.to change(Profile, :count).by(-1)
+        expect(response).to redirect_to(new_profile_path)
+      end
+    end
   end
 end
