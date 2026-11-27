@@ -5,10 +5,11 @@ Rails.application.routes.draw do
     resources :reports, only: :create, controller: "companion_message_reports"
   end
   resource :profile, only: %i[ show new create edit update destroy ] do
+    get :confirm_destroy
     resource :feedback, only: :create, controller: "profile_feedbacks"
   end
   resources :people, only: :show do
-    resource :block, only: %i[ create destroy ]
+    resource :block, only: %i[ new create destroy ]
     resources :reports, only: %i[ new create ]
   end
   resources :conversations, only: :index
@@ -16,7 +17,9 @@ Rails.application.routes.draw do
   resources :reports, only: :index
   resources :swipes, only: %i[index create] do
     collection do
+      get :confirm_undo
       post :undo
+      get :confirm_change_decision
       post :change_decision
     end
   end
@@ -24,6 +27,7 @@ Rails.application.routes.draw do
   resources :matches, only: %i[ index show destroy ] do
     get :unmatch, on: :member
     resources :messages, only: %i[ create destroy ] do
+      get :confirm_destroy, on: :member
       resource :report, only: :create, controller: "message_reports"
     end
     resource :openers, only: :create
