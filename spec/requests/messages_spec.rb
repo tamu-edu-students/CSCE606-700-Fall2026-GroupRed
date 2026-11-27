@@ -172,6 +172,48 @@ RSpec.describe "Messages", type: :request do
         expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
       end
     end
+    describe "GET /matches/:match_id/messages/:id/confirm_destroy" do
+      it "links Delete to a confirmation page instead of deleting right away" do
+        message = create(:message, match: our_match, sender: profile, body: "Oops")
+
+        get match_path(our_match)
+
+        expect(response.body).to include(%(href="#{confirm_destroy_match_message_path(our_match, message)}"))
+        expect(response.body).not_to include("turbo-confirm")
+      end
+
+      it "shows the message and a warning without deleting it" do
+        message = create(:message, match: our_match, sender: profile, body: "Oops")
+
+        get confirm_destroy_match_message_path(our_match, message)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Oops")
+        expect(response.body).to include("This will delete the message for both you and Taylor.")
+        expect(response.body).to include(%(href="#{match_path(our_match)}"))
+        expect(Message.exists?(message.id)).to be(true)
+      end
+
+      it "won't confirm deleting the other person's message" do
+        message = create(:message, match: our_match, sender: other_profile)
+
+        get confirm_destroy_match_message_path(our_match, message)
+
+        expect(response).to redirect_to(match_path(our_match))
+        expect(flash[:alert]).to eq("You can only delete your own messages.")
+      end
+
+      it "won't show a message from someone else's conversation" do
+        stranger_match = create(:match, profile_1: create(:profile), profile_2: create(:profile))
+        message = create(:message, match: stranger_match, body: "Private")
+
+        get confirm_destroy_match_message_path(stranger_match, message)
+
+        expect(response).to redirect_to(matches_path)
+        expect(flash[:alert]).to eq(MatchConversation::NOT_AVAILABLE)
+      end
+    end
+
     describe "DELETE /matches/:match_id/messages/:id" do
       it "deletes my own message" do
         message = create(:message, match: our_match, sender: profile, body: "Oops")

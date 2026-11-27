@@ -26,9 +26,18 @@ Feature: Report or delete a message
     Scenario: Delete a message I sent
         When I open my conversation with my match
         And I send the message "Oops, wrong person"
-        And I press "Delete" on the message "Oops, wrong person"
+        And I follow "Delete" on the message "Oops, wrong person"
+        Then I should see "This will delete the message for both you and Taylor."
+        When I press "Delete message"
         Then I should see "Message deleted."
         And I should not see "You: Oops, wrong person"
+
+    Scenario: Cancel deleting a message I sent
+        When I open my conversation with my match
+        And I send the message "Keep this one"
+        And I follow "Delete" on the message "Keep this one"
+        And I follow "Cancel"
+        Then I should see "You: Keep this one"
 
     Scenario: Only my messages can be deleted, only theirs can be reported
         Given my match sent me the message "Hey Sam!"

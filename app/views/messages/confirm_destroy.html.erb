@@ -1,0 +1,13 @@
+<% content_for :title, "Delete this message?" %>
+
+<section class="confirmation" aria-labelledby="confirmation-heading">
+  <h1 id="confirmation-heading">Delete this message?</h1>
+  <blockquote><%= @message.body %></blockquote>
+  <p class="alert" role="alert">
+    This will delete the message for both you and <%= @other_profile.display_name %>.
+    It can't be undone.
+  </p>
+
+  <%= button_to "Delete message", match_message_path(@match, @message), method: :delete %>
+  <p><%= link_to "Cancel", match_path(@match) %></p>
+</section>
