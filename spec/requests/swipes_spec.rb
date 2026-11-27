@@ -389,38 +389,108 @@ end
     expect(response.body).not_to include("Paused Prospect")
   end
 
-  it "warns on Undo when the last swipe has a match" do
-    prospect = create(:profile, display_name: "Taylor")
-    create(:swipe, swiper: profile, prospect: prospect, liked: true)
-    ids = [ profile.id, prospect.id ].sort
-    create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+  describe "confirming an Undo or Change Decision that would unmatch (works without JavaScript)" do
+    let(:prospect) { create(:profile, display_name: "Taylor") }
+    let!(:swipe) { create(:swipe, swiper: profile, prospect: prospect, liked: true) }
 
-    get swipes_path
+    def create_match
+      ids = [ profile.id, prospect.id ].sort
+      create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+    end
 
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("This will unmatch you and delete your conversation for both of you.")
-  end
+    it "links Undo to a confirmation page when the last swipe has a match" do
+      create_match
 
-  it "uses the regular Undo prompt when the last swipe has no match" do
-    prospect = create(:profile, display_name: "Taylor")
-    create(:swipe, swiper: profile, prospect: prospect, liked: true)
+      get swipes_path
 
-    get swipes_path
+      expect(response.body).to include(%(href="#{confirm_undo_swipes_path}"))
+      expect(response.body).not_to include("return confirm(")
+    end
 
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Are you sure you want to undo your last swipe?")
-    expect(response.body).not_to include("delete your conversation for both of you")
-  end
+    it "uses the regular Undo prompt when the last swipe has no match" do
+      get swipes_path
 
-  it "warns on Change Decision in history only for matched likes" do
-    prospect = create(:profile, display_name: "Taylor")
-    create(:swipe, swiper: profile, prospect: prospect, liked: true)
-    ids = [ profile.id, prospect.id ].sort
-    create(:match, profile_1_id: ids[0], profile_2_id: ids[1])
+      expect(response.body).to include("Are you sure you want to undo your last swipe?")
+      expect(response.body).not_to include(confirm_undo_swipes_path)
+    end
 
-    get history_index_path
+    it "shows the Undo confirmation page without removing anything" do
+      match = create_match
 
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("This will unmatch you with #{prospect.display_name} and delete your conversation for both of you.")
+      get confirm_undo_swipes_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("This will unmatch you with Taylor and delete your conversation for both of you.")
+      expect(response.body).to include(%(action="#{undo_swipes_path}"))
+      expect(response.body).to include(%(href="#{swipes_path}"))
+      expect(Swipe.exists?(swipe.id)).to be(true)
+      expect(Match.exists?(match.id)).to be(true)
+    end
+
+    it "skips the Undo confirmation page when nothing would be unmatched" do
+      get confirm_undo_swipes_path
+
+      expect(response).to redirect_to(swipes_path)
+    end
+
+    it "explains when there is nothing to undo" do
+      swipe.destroy
+
+      get confirm_undo_swipes_path
+
+      expect(response).to redirect_to(swipes_path)
+      expect(flash[:alert]).to eq("No swipes to undo.")
+    end
+
+    it "links Change Decision to a confirmation page only for matched likes" do
+      create_match
+      unmatched = create(:profile, display_name: "Jordan")
+      create(:swipe, swiper: profile, prospect: unmatched, liked: true)
+
+      get history_index_path
+
+      expect(response.body).to include(%(href="#{confirm_change_decision_swipes_path(swipe_id: swipe.id)}"))
+      expect(response.body).not_to include(confirm_change_decision_swipes_path(swipe_id: Swipe.last.id))
+      expect(response.body).not_to include("return confirm(")
+    end
+
+    it "shows the Change Decision confirmation page without removing anything" do
+      match = create_match
+
+      get confirm_change_decision_swipes_path(swipe_id: swipe.id)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Change your decision on Taylor to Pass?")
+      expect(response.body).to include("This will unmatch you with Taylor and delete your conversation for both of you.")
+      expect(response.body).to include(%(href="#{history_index_path}"))
+      expect(swipe.reload.liked).to be(true)
+      expect(Match.exists?(match.id)).to be(true)
+    end
+
+    it "skips the Change Decision confirmation page when nothing would be unmatched" do
+      get confirm_change_decision_swipes_path(swipe_id: swipe.id)
+
+      expect(response).to redirect_to(history_index_path)
+    end
+
+    it "won't show the Change Decision confirmation page for someone else's swipe" do
+      other_swipe = create(:swipe, swiper: create(:profile), prospect: prospect, liked: true)
+
+      get confirm_change_decision_swipes_path(swipe_id: other_swipe.id)
+
+      expect(response).to redirect_to(history_index_path)
+      expect(flash[:alert]).to eq("Swipe not found.")
+    end
+
+    it "won't show the Change Decision confirmation page for a blocked person" do
+      create_match
+      create(:block, blocker: user, blocked: prospect.user)
+
+      get confirm_change_decision_swipes_path(swipe_id: swipe.id)
+
+      expect(response).to redirect_to(history_index_path)
+      expect(flash[:alert]).to eq("Swipe not found.")
+      expect(response.body).not_to include("Taylor")
+    end
   end
 end

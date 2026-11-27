@@ -1,0 +1,12 @@
+<% content_for :title, "Undo your last swipe?" %>
+
+<section class="confirmation" aria-labelledby="confirmation-heading">
+  <h1 id="confirmation-heading">Undo your last swipe?</h1>
+  <p class="alert" role="alert">
+    This will unmatch you with <%= @swipe.prospect.display_name %> and delete your conversation for both of you.
+    It can't be undone.
+  </p>
+
+  <%= button_to "Undo Last Swipe", undo_swipes_path, method: :post %>
+  <p><%= link_to "Cancel", swipes_path %></p>
+</section>

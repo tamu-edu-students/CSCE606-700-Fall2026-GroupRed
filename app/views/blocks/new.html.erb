@@ -1,0 +1,12 @@
+<% content_for :title, "Block #{@person.display_name}?" %>
+
+<section class="confirmation" aria-labelledby="confirmation-heading">
+  <h1 id="confirmation-heading">Block <%= @person.display_name %>?</h1>
+  <p class="alert" role="alert">
+    <%= @person.display_name %> won't be able to see or contact you, and you won't see them.
+    You can unblock them later from Blocked people.
+  </p>
+
+  <%= button_to "Block #{@person.display_name}", person_block_path(@person) %>
+  <p><%= link_to "Cancel", person_path(@person) %></p>
+</section>

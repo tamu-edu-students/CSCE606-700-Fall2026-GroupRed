@@ -1,0 +1,12 @@
+<% content_for :title, "Change your decision to Pass?" %>
+
+<section class="confirmation" aria-labelledby="confirmation-heading">
+  <h1 id="confirmation-heading">Change your decision on <%= @swipe.prospect.display_name %> to Pass?</h1>
+  <p class="alert" role="alert">
+    This will unmatch you with <%= @swipe.prospect.display_name %> and delete your conversation for both of you.
+    It can't be undone.
+  </p>
+
+  <%= button_to "Change Decision", change_decision_swipes_path(swipe_id: @swipe.id, new_decision: "dislike"), method: :post %>
+  <p><%= link_to "Cancel", history_index_path %></p>
+</section>

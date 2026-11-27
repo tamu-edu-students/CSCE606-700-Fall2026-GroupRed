@@ -109,8 +109,14 @@ end
 
 When("I change the decision for {string}") do |display_name|
   within("tr", text: display_name) do
-    click_button "Change Decision"
+    # A matched like links to a confirmation page; anything else is a button.
+    if has_link?("Change Decision", wait: 0)
+      click_link "Change Decision"
+    else
+      click_button "Change Decision"
+    end
   end
+  click_button "Change Decision" if has_css?("h1", text: "to Pass?", wait: 0)
 end
 
 Then("my like should be recorded") do

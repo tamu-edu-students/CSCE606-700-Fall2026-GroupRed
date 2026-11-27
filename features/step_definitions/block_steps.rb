@@ -2,6 +2,10 @@ Given("{string} has blocked {string}") do |blocker_email, blocked_email|
   User.find_by!(email: blocker_email).blocks.create!(blocked: User.find_by!(email: blocked_email))
 end
 
+Then("{string} should not have blocked {string}") do |blocker_email, blocked_email|
+  expect(User.find_by!(email: blocker_email).blocking?(User.find_by!(email: blocked_email))).to be(false)
+end
+
 When("I visit the profile of {string}") do |email|
   visit person_path(User.find_by!(email: email))
 end

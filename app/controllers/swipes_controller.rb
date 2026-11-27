@@ -1,10 +1,9 @@
 class SwipesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[index create history undo change_decision]
+  before_action :set_profile, only: %i[index create history confirm_undo undo confirm_change_decision change_decision]
 
   def index
-    last_swipe = Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
-    @undo_would_unmatch = last_swipe&.liked? && Match.between(last_swipe.swiper_id, last_swipe.prospect_id).exists?
+    @undo_would_unmatch = would_unmatch?(last_swipe)
 
     @prospect = find_potential_profiles.order(:id).first
     return unless @prospect
@@ -73,8 +72,16 @@ class SwipesController < ApplicationController
                                  .flatten.uniq - [ @profile.id ]
   end
 
+  # Confirmation page for an Undo that would unmatch, so the warning shows even without JavaScript (ADR 0002).
+  def confirm_undo
+    @swipe = last_swipe
+    return redirect_to(swipes_path, alert: "No swipes to undo.") unless @swipe
+    # Only an Undo that removes a match needs this page.
+    redirect_to swipes_path unless would_unmatch?(@swipe)
+  end
+
   def undo
-    last_swipe = Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
+    last_swipe = self.last_swipe
     if last_swipe
       last_swipe.destroy
       flash[:notice] = "Last swipe undone."
@@ -86,6 +93,16 @@ class SwipesController < ApplicationController
       flash[:alert] = "No swipes to undo."
     end
     redirect_to swipes_path
+  end
+
+  # Confirmation page for changing a matched like to Pass, so the warning shows even without JavaScript (ADR 0002).
+  def confirm_change_decision
+    @swipe = Swipe.joins(prospect: :user)
+                  .merge(User.not_blocked_with(@profile.user))
+                  .find_by(id: params[:swipe_id], swiper_id: @profile.id)
+    return redirect_to(history_index_path, alert: "Swipe not found.") unless @swipe
+    # Only a change that removes a match needs this page.
+    redirect_to history_index_path unless would_unmatch?(@swipe)
   end
 
   def change_decision
@@ -119,6 +136,15 @@ class SwipesController < ApplicationController
   end
 
   private
+
+  def last_swipe
+    Swipe.where(swiper_id: @profile.id).order(created_at: :desc).first
+  end
+
+  # A liked swipe that is part of a match: undoing it or changing it to Pass unmatches.
+  def would_unmatch?(swipe)
+    swipe.present? && swipe.liked? && Match.between(swipe.swiper_id, swipe.prospect_id).exists?
+  end
 
   def set_profile
     @profile = current_user.profile

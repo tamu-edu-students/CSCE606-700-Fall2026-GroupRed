@@ -48,6 +48,10 @@ Then("{string} should not have a profile") do |email|
   expect(User.find_by!(email: email).profile).to be_nil
 end
 
+Then("{string} should still have a profile") do |email|
+  expect(User.find_by!(email: email).profile).to be_present
+end
+
 Then("I should see the profile details for Sam") do
   expect(page).to have_content("Sam")
   expect(page).to have_content("30 years old")

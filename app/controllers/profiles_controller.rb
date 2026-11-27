@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: %i[ show edit update destroy ]
+  before_action :set_profile, only: %i[ show edit update confirm_destroy destroy ]
   before_action :redirect_if_profile_exists, only: %i[ new create ]
 
   def show
@@ -31,6 +31,10 @@ class ProfilesController < ApplicationController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  # Confirmation page, so the warning shows even without JavaScript (ADR 0002).
+  def confirm_destroy
   end
 
   def destroy
