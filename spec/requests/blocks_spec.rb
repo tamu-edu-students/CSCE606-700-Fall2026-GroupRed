@@ -21,6 +21,43 @@ RSpec.describe "Blocks", type: :request do
   context "when signed in" do
     before { sign_in user }
 
+    describe "the Block confirmation page (works without JavaScript)" do
+      before { create(:profile, user: user) }
+
+      it "links Block on a profile to the confirmation page" do
+        get person_path(alex)
+
+        expect(response.body).to include(%(href="#{new_person_block_path(alex)}"))
+        expect(response.body).not_to include("turbo-confirm")
+      end
+
+      it "explains what blocking does without blocking yet" do
+        expect { get new_person_block_path(alex) }.not_to change(Block, :count)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Block Alex?")
+        expect(response.body).to include("Alex won't be able to see or contact you")
+        expect(response.body).to include(%(href="#{person_path(alex)}"))
+      end
+
+      it "sends a user to their own profile instead of blocking themselves" do
+        get new_person_block_path(user)
+        expect(response).to redirect_to(profile_path)
+      end
+
+      it "handles a person who does not exist" do
+        get new_person_block_path(person_id: 0)
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq("That profile isn't available.")
+      end
+
+      it "treats someone already blocked as unavailable" do
+        create(:block, blocker: alex, blocked: user)
+        get new_person_block_path(alex)
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq("That profile isn't available.")
+      end
+    end
+
     it "blocks a person and explains what that means" do
       expect { post person_block_path(alex) }.to change(Block, :count).by(1)
       expect(user.blocking?(alex)).to be(true)

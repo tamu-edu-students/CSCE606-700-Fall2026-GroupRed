@@ -26,7 +26,9 @@ Feature: Block users
         And I am logged in as "sam@example.com"
         When I visit the swipe page
         And I follow "View Alex's profile"
-        And I press "Block Alex"
+        And I follow "Block Alex"
+        Then I should see "Alex won't be able to see or contact you"
+        When I press "Block Alex"
         Then I should be on the blocked people page
         And I should see "You blocked Alex. They can no longer see or contact you."
         And I should see "Alex"
@@ -38,11 +40,21 @@ Feature: Block users
         And I am logged in as "sam@example.com"
         When I visit my matches page
         And I follow "View Alex's profile"
-        And I press "Block Alex"
+        And I follow "Block Alex"
+        Then I should see "Alex won't be able to see or contact you"
+        When I press "Block Alex"
         Then I should be on the blocked people page
         And I should see "You blocked Alex. They can no longer see or contact you."
         When I visit my matches page
         Then I should not see "Alex"
+
+    Scenario: Cancel blocking someone
+        Given I am logged in as "sam@example.com"
+        When I visit the profile of "alex@example.com"
+        And I follow "Block Alex"
+        And I follow "Cancel"
+        Then I should see "Coffee and climbing."
+        And "sam@example.com" should not have blocked "alex@example.com"
 
     Scenario: I cannot block myself on my own profile
         Given I am logged in as "sam@example.com"
